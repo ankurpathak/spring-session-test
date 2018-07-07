@@ -69,7 +69,7 @@ public class ExtendedTokenBasedRememberMeServices extends TokenBasedRememberMeSe
     protected String extractRememberMeCookie(HttpServletRequest request) {
         String token = request.getHeader(X_REMEMBER_ME_HEADER);
         if (StringUtils.isEmpty(token)) {
-            return null;
+            token = super.extractRememberMeCookie(request);
         }
         return token;
     }

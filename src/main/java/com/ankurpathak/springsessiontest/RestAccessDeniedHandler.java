@@ -3,17 +3,18 @@ package com.ankurpathak.springsessiontest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+
 @Component
-public final class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class RestAccessDeniedHandler implements AccessDeniedHandler {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -21,12 +22,8 @@ public final class RestAuthenticationEntryPoint implements AuthenticationEntryPo
     @Autowired
     private MessageSource messageSource;
 
-
     @Override
-    public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException authException) throws IOException {
-        FilterUtil.generateUnauthorized(request, response, objectMapper, messageSource);
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException ex) throws IOException, ServletException {
+        FilterUtil.generateForbidden(request, response, objectMapper, messageSource);
     }
-
-
-
 }

@@ -4,14 +4,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
-@Component
-public class CustomUserDetailsDetails implements UserDetailsService {
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
 
     public static final String USERNAME_NOT_FOUND_MESSAGE = "Username %s not found.";
 

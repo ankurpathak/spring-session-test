@@ -1,6 +1,8 @@
 package com.ankurpathak.springsessiontest;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.util.CollectionUtils;
 
 
@@ -54,6 +56,10 @@ public class User extends Domain<String> implements Serializable {
         return this;
     }
 
+    protected User(){
+
+    }
+    @JsonCreator
     public static User getInstance(){
         return new User();
     }
@@ -65,6 +71,7 @@ public class User extends Domain<String> implements Serializable {
         return this;
     }
 
+    @JsonView(View.Public.class)
     public String getFirstName() {
         return firstName;
     }
@@ -73,7 +80,7 @@ public class User extends Domain<String> implements Serializable {
         this.firstName = firstName;
     }
 
-
+    @JsonView(View.Public.class)
     public String getLastName() {
         return lastName;
     }
@@ -82,6 +89,7 @@ public class User extends Domain<String> implements Serializable {
         this.lastName = lastName;
     }
 
+    @JsonView(View.Public.class)
     public String getEmail() {
         return email;
     }
@@ -90,6 +98,7 @@ public class User extends Domain<String> implements Serializable {
         this.email = email;
     }
 
+    @JsonView(View.Public.class)
     public Set<String> getRoles() {
         return roles;
     }
@@ -104,5 +113,19 @@ public class User extends Domain<String> implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+
+    @Override
+    @JsonView(View.Public.class)
+    public String getId() {
+        return super.getId();
+    }
+
+    public interface View {
+
+        interface Public {
+
+        }
     }
 }

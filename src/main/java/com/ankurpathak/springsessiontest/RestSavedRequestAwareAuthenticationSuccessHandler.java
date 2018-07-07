@@ -1,5 +1,9 @@
 package com.ankurpathak.springsessiontest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -15,9 +19,17 @@ import java.io.IOException;
 
 
 @Component
-public class RestRequestAwareAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class RestSavedRequestAwareAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private RequestCache requestCache = new HttpSessionRequestCache();
+
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private MessageSource messageSource;
+
 
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws ServletException, IOException {
@@ -25,16 +37,20 @@ public class RestRequestAwareAuthenticationSuccessHandler extends SimpleUrlAuthe
 
         if (savedRequest == null) {
             clearAuthenticationAttributes(request);
+            generateResponse(request, response);
             return;
         }
         final String targetUrlParameter = getTargetUrlParameter();
         if (isAlwaysUseDefaultTargetUrl() || (targetUrlParameter != null && StringUtils.hasText(request.getParameter(targetUrlParameter)))) {
             requestCache.removeRequest(request, response);
             clearAuthenticationAttributes(request);
+            generateResponse(request, response);
             return;
         }
 
         clearAuthenticationAttributes(request);
+        generateResponse(request, response);
+
 
         // Use the DefaultSavedRequest URL
         // final String targetUrl = savedRequest.getRedirectUrl();
@@ -44,5 +60,10 @@ public class RestRequestAwareAuthenticationSuccessHandler extends SimpleUrlAuthe
 
     public void setRequestCache(final RequestCache requestCache) {
         this.requestCache = requestCache;
+    }
+
+
+    private void generateResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        FilterUtil.generateSuccess(request, response, objectMapper, messageSource);
     }
 }

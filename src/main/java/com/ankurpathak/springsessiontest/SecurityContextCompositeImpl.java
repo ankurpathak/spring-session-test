@@ -4,7 +4,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
 
-public class SecurityContextCompositeImpl extends SecurityContextImpl {
+import java.io.Serializable;
+
+public class SecurityContextCompositeImpl extends SecurityContextImpl  {
     private final DomainContext domainContext;
     private final SecurityContext securityContext;
 

@@ -19,6 +19,7 @@ public class SecurityContextCompositeFilter extends GenericFilterBean {
         SecurityContextCompositeImpl contextExtended = new SecurityContextCompositeImpl(context, domainContext);
         SecurityContextHolder.setContext(contextExtended);
         filterChain.doFilter(servletRequest, servletResponse);
-        SecurityContextHolder.setContext(((SecurityContextCompositeImpl)SecurityContextHolder.getContext()).getSecurityContext());
+        if(SecurityContextHolder.getContext() instanceof SecurityContextCompositeImpl)
+            SecurityContextHolder.setContext(((SecurityContextCompositeImpl)SecurityContextHolder.getContext()).getSecurityContext());
     }
 }

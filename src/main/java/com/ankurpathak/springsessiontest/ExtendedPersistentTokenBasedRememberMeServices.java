@@ -81,7 +81,7 @@ public class ExtendedPersistentTokenBasedRememberMeServices extends PersistentTo
     protected String extractRememberMeCookie(HttpServletRequest request) {
         String token = request.getHeader(X_REMEMBER_ME_TOKEN_HEADER);
         if (StringUtils.isEmpty(token)) {
-            return null;
+            token = super.extractRememberMeCookie(request);
         }
         return token;
     }
