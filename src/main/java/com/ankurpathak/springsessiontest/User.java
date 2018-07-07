@@ -3,6 +3,7 @@ package com.ankurpathak.springsessiontest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.CollectionUtils;
 
 
@@ -10,7 +11,11 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+
+@Document(collection = DocumentCollections.USERS)
 public class User extends Domain<String> implements Serializable {
+
+
     private String firstName;
     private String lastName;
     private String email;
