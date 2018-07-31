@@ -12,6 +12,9 @@ public interface RequestMappingPaths {
     String PATH_GET_ERROR = "/error";
 
 
+    String PATH_CREATE_USER = "/users";
+
+
 
 
 

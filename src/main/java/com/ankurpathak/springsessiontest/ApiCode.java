@@ -6,7 +6,8 @@ public enum ApiCode {
     USER_FOUND(2),
     FORBIDDEN(3),
     UNAUTHORIZED(4),
-    UNKNOWN(17)
+    UNKNOWN(17),
+    VALIDATION(5)
     ;
     int code;
 

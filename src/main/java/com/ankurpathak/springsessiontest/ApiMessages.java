@@ -8,4 +8,5 @@ public interface ApiMessages {
     String FORBIDDEN = "api.message.forbidden";
     String UNAUTHORIZED = "api.message.unauthorized";
     String UNKNOWN = "api.message.unknown";
+    String VALIDATION = "api.message.validation";
 }
