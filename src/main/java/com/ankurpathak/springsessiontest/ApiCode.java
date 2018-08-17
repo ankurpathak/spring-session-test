@@ -6,6 +6,7 @@ public enum ApiCode {
     USER_FOUND(2),
     FORBIDDEN(3),
     UNAUTHORIZED(4),
+    REQUIRED_QUERY_PARAM(5),
     UNKNOWN(17),
     VALIDATION(5)
     ;

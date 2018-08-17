@@ -1,8 +1,8 @@
 package com.ankurpathak.springsessiontest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.AuthenticationException;
@@ -22,7 +22,7 @@ import java.io.IOException;
 
 @Component
 public class RestSimpleUrlAuthenticationFailureHandler implements AuthenticationFailureHandler {
-    protected final Log logger = LogFactory.getLog(getClass());
+    protected static final Logger logger = LoggerFactory.getLogger(RestSimpleUrlAuthenticationFailureHandler.class);
 
     private String defaultFailureUrl;
     private boolean forwardToDestination = false;
@@ -41,15 +41,15 @@ public class RestSimpleUrlAuthenticationFailureHandler implements Authentication
         setDefaultFailureUrl(defaultFailureUrl);
     }
   public void onAuthenticationFailure(HttpServletRequest request,
-                                        HttpServletResponse response, AuthenticationException exception)
+                                        HttpServletResponse response, AuthenticationException ex)
             throws IOException, ServletException {
 
         if (defaultFailureUrl == null) {
-            logger.debug("No failure URL set, sending 401 Unauthorized error");
+            logger.info("Message: {}  Cause: {}", ex.getMessage(), ex.getCause());
             generateResponse(request,response);
         }
         else {
-            saveException(request, exception);
+            saveException(request, ex);
 
             if (forwardToDestination) {
                 logger.debug("Forwarding to " + defaultFailureUrl);

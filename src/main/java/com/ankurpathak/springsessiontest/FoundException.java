@@ -1,11 +1,16 @@
 package com.ankurpathak.springsessiontest;
 
-public class FoundException extends RuntimeException {
+import org.springframework.dao.DuplicateKeyException;
+
+public class FoundException extends DuplicateKeyException {
     private final String entity;
     private final ApiCode code;
     private final String id;
     private final String property;
-    public FoundException(String id ,String property, String entity, ApiCode code) {
+    private final DuplicateKeyException duplicateKeyException;
+    public FoundException(DuplicateKeyException duplicateKeyException,String id ,String property, String entity, ApiCode code) {
+        super(duplicateKeyException.getMessage(), duplicateKeyException.getCause());
+        this.duplicateKeyException = duplicateKeyException;
         this.id = id;
         this.property = property;
         this.entity = entity;
@@ -26,5 +31,9 @@ public class FoundException extends RuntimeException {
 
     public String getProperty() {
         return property;
+    }
+
+    public DuplicateKeyException getDuplicateKeyException() {
+        return duplicateKeyException;
     }
 }

@@ -1,6 +1,8 @@
 package com.ankurpathak.springsessiontest;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -22,35 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/*
-import co.indexify.dto.ResponseCode;
-import co.indexify.dto.ResponseDto;
-import co.indexify.dto.ResponseMessage;
-import co.indexify.dto.ValidationErrorDto;
-import co.indexify.exception.ExistException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-@RestControllerAdvice(basePackageClasses = MeController.class)
+@RestControllerAdvice
 public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandler {
+
+
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
 
     @Autowired
@@ -104,70 +83,54 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
         return localizedErrorMessage;
     }
 
-    @ExceptionHandler({ExistException.class})
-    public ResponseEntity<Object> handleExistException(ExistException ex, WebRequest request) {
-        logger.error("409 Status Code", ex);
-        return handleValidationErrors(ex, request, HttpStatus.CONFLICT);
+
+
+
+
+
+    @ExceptionHandler({ValidationException.class})
+    public ResponseEntity<Object> handleValidationException(ValidationException ex, WebRequest request) {
+        return handleValidationErrors(ex, request);
     }
 
 
     @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return handleExceptionInternal(
+                ex,
+                ApiResponse.getInstance(ApiCode.REQUIRED_QUERY_PARAM, MessageUtil.getMessage(messageSource, ApiMessages.REQUIRED_QUERY_PARAM, ex.getParameterName())),
+                new HttpHeaders(),
+                status,
+                request
+        );
+    }
+
+    @Override
     protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        logger.error("400 Status Code", ex);
         return handleValidationErrors(ex, request);
     }
 
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        logger.error("400 Status Code", ex);
         return handleValidationErrors(ex, request);
     }
 
-    private ResponseEntity<Object> handleValidationErrors(Exception ex, WebRequest request){
-        return handleValidationErrors(ex, request, HttpStatus.BAD_REQUEST);
-    }
 
-
-    @ExceptionHandler({ ValidationException.class })
-    public ResponseEntity<Object> handleUserAlreadyExist(ValidationException ex, WebRequest request) {
-        logger.error("409 Status Code", ex);
-        return handleValidationErrors(ex, request, HttpStatus.BAD_REQUEST);
-    }
-
-
-
-    @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String message = messageSource.getMessage(ResponseMessage.MESSAGE_QUERY_PARAM_MISSING, new Object[]{ex.getParameterName()}, request.getLocale());
-        ResponseDto dto = ResponseDto.of(message, ResponseCode.QUERY_PARAM_MISSING, status);
-        return handleExceptionInternal(ex, dto, new HttpHeaders(), status, request);
-    }
-
-    private ResponseEntity<Object> handleValidationErrors(Exception ex, WebRequest request, HttpStatus status) {
-        String message = messageSource.getMessage(ResponseMessage.MESSAGE_VALIDATION, null, request.getLocale());
-        ResponseCode code = ResponseCode.VALIDATION;
+    private ResponseEntity<Object> handleValidationErrors(Exception ex, WebRequest request) {
+        String message = MessageUtil.getMessage(messageSource, ApiMessages.MESSAGE_VALIDATION);
+        ApiCode code = ApiCode.VALIDATION;
         BindingResult result = null;
-        if(ex instanceof BindException){
-            result = ((BindException)ex).getBindingResult();
-        }else if(ex instanceof MethodArgumentNotValidException){
-            result = ((MethodArgumentNotValidException)ex).getBindingResult();
-        }else if(ex instanceof ValidationException){
-            ValidationException vex = (ValidationException)ex;
-            result = vex.getBindingResult();
-            message  = ex.getMessage();
-            code = vex.getResponseCode();
-        }else if(ex instanceof ExistException){
-            ExistException eex = (ExistException)ex;
-            result = eex.getBindingResult();
-            code = eex.getResponseCode();
-            message  = eex.getMessage();
-            if(message == null){
-                message = messageSource.getMessage(ResponseMessage.MESSAGE_EXIST, new Object[]{((ExistException)ex).getEntity()}, request.getLocale());
-            }
+        if (ex instanceof BindException) {
+            result = ((BindException) ex).getBindingResult();
+        } else if (ex instanceof MethodArgumentNotValidException) {
+            result = ((MethodArgumentNotValidException) ex).getBindingResult();
+        } else if (ex instanceof ValidationException) {
+           result = ((ValidationException)ex).getBindingResult();
+
         }
-        ResponseDto dto = ResponseDto.of(message, code, status);
-        if(result != null){
+        ApiResponse dto = ApiResponse.getInstance(code, message);
+        if (result != null) {
             List<FieldError> fieldErrors = result.getFieldErrors();
             ValidationErrorDto validationErrorDto = processFieldErrors(fieldErrors);
             List<ObjectError> objectErrors = result.getGlobalErrors();
@@ -175,16 +138,13 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
             for (String starError : starErrors) {
                 validationErrorDto.addError("*", starError);
             }
-            dto.addExtra("validationErrors", validationErrorDto);
+            dto.addExtra("hints", validationErrorDto);
 
         }
-        return handleExceptionInternal(ex, dto, new HttpHeaders(), status, request);
+        return handleExceptionInternal(ex, dto, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
-
-
 
 
 }
 
 
-*/

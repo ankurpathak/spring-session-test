@@ -1,10 +1,11 @@
 package com.ankurpathak.springsessiontest;
 
-import com.github.ankurpathak.bean.constraints.NotContainConsecutivePeriod;
-import com.github.ankurpathak.bean.constraints.UsernamePattern;
+import com.github.ankurpathak.password.bean.constraints.ContainUppercase;
+import com.github.ankurpathak.password.bean.constraints.PasswordMatches;
 
 import java.io.Serializable;
 
+@PasswordMatches(password = "username", confirmPassword = "usernameConfirm", showErrorOnConfirmPassword = false)
 public class UsernameDto implements Serializable {
 
     @Override
@@ -15,8 +16,11 @@ public class UsernameDto implements Serializable {
     }
 
 
-    @UsernamePattern(includeUnderscore = true)
+    @ContainUppercase
     private String username;
+
+
+    private String usernameConfirm;
 
 
     public String getUsername() {
@@ -25,5 +29,14 @@ public class UsernameDto implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+
+    public String getUsernameConfirm() {
+        return usernameConfirm;
+    }
+
+    public void setUsernameConfirm(String usernameConfirm) {
+        this.usernameConfirm = usernameConfirm;
     }
 }

@@ -9,4 +9,6 @@ public interface ApiMessages {
     String UNAUTHORIZED = "api.message.unauthorized";
     String UNKNOWN = "api.message.unknown";
     String VALIDATION = "api.message.validation";
+    String REQUIRED_QUERY_PARAM = "api.message.required-query-param";
+    String MESSAGE_VALIDATION = "api.message.validation";
 }

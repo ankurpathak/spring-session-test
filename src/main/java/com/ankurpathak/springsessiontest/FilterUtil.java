@@ -11,30 +11,45 @@ import java.io.IOException;
 public class FilterUtil {
 
     public static void generateForbidden(HttpServletRequest request, HttpServletResponse response, ObjectMapper objectMapper, MessageSource messageSource) throws IOException{
-        String message = messageSource.getMessage(ApiMessages.FORBIDDEN, new Object[]{}, "", request.getLocale());
         if(!response.isCommitted()){
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            objectMapper.writeValue(response.getWriter(), ApiResponse.getInstance(ApiCode.FORBIDDEN, message));
+            objectMapper.writeValue(
+                    response.getWriter(),
+                    ApiResponse.getInstance(
+                            ApiCode.FORBIDDEN,
+                            MessageUtil.getMessage(messageSource, ApiMessages.FORBIDDEN)
+                    )
+            );
         }
     }
 
     public static void generateUnauthorized(HttpServletRequest request, HttpServletResponse response, ObjectMapper objectMapper, MessageSource messageSource) throws IOException{
-        String message = messageSource.getMessage(ApiMessages.UNAUTHORIZED, new Object[]{}, "", request.getLocale());
         if(!response.isCommitted()){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            objectMapper.writeValue(response.getWriter(), ApiResponse.getInstance(ApiCode.UNAUTHORIZED, message));
+            objectMapper.writeValue(
+                    response.getWriter(),
+                    ApiResponse.getInstance(
+                            ApiCode.UNAUTHORIZED,
+                            MessageUtil.getMessage(messageSource, ApiMessages.UNAUTHORIZED)
+                    )
+            );
         }
     }
 
 
     public static void generateSuccess(HttpServletRequest request, HttpServletResponse response, ObjectMapper objectMapper, MessageSource messageSource) throws IOException{
-        String message = messageSource.getMessage(ApiMessages.SUCCESS, new Object[]{}, "", request.getLocale());
         if(!response.isCommitted()){
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            objectMapper.writeValue(response.getWriter(), ApiResponse.getInstance(ApiCode.SUCCESS, message));
+            objectMapper.writeValue(
+                    response.getWriter(),
+                    ApiResponse.getInstance(
+                            ApiCode.SUCCESS,
+                            MessageUtil.getMessage(messageSource, ApiMessages.FORBIDDEN)
+                    )
+            );
         }
     }
 

@@ -11,14 +11,36 @@ public class ControllerUtil {
 
     public static void processValidaton(BindingResult result, MessageSource messageSource, HttpServletRequest request){
         if(result.hasErrors()){
-            String message = messageSource.getMessage(ApiMessages.VALIDATION, null,"", request.getLocale());
-            throw new ValidationException(result, message, ApiCode.VALIDATION);
+            throw new ValidationException(
+                    result,
+                    MessageUtil.getMessage(messageSource,ApiMessages.VALIDATION),
+                    ApiCode.VALIDATION
+            );
         }
     }
 
 
+
+    public static ResponseEntity<?> processError(MessageSource messageSource, HttpServletRequest request){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(
+                ApiResponse.getInstance(
+                    ApiCode.UNKNOWN,
+                    MessageUtil.getMessage(messageSource,ApiMessages.UNKNOWN)
+                )
+            );
+
+    }
+
+
+
     public static ResponseEntity<?> processSuccess(MessageSource messageSource, HttpServletRequest request, HttpStatus code){
-        String message = messageSource.getMessage(ApiMessages.SUCCESS, null, "", request.getLocale());
-        return ResponseEntity.status(code).body(ApiResponse.getInstance(ApiCode.SUCCESS, message));
+        return ResponseEntity.status(code)
+                .body(
+                    ApiResponse.getInstance(
+                        ApiCode.SUCCESS,
+                        MessageUtil.getMessage(messageSource,ApiMessages.SUCCESS)
+                    )
+                );
     }
 }

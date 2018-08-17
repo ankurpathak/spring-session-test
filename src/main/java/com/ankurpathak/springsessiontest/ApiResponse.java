@@ -27,7 +27,7 @@ public class ApiResponse {
     }
 
 
-    public ApiResponse extras(Map<String, Object> extras) {
+    public ApiResponse addExtras(Map<String, Object> extras) {
         if(this.extras != null)
             this.extras.putAll(extras);
         return this;

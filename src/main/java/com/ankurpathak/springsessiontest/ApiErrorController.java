@@ -32,9 +32,7 @@ public class ApiErrorController extends AbstractErrorController {
 
     @GetMapping(PATH_GET_ERROR)
     public ResponseEntity<?> error(HttpServletRequest request) {
-        HttpStatus status = this.getStatus(request);
-        String message = messageSource.getMessage(ApiMessages.UNKNOWN, new Object[]{}, "", request.getLocale());
-        return new ResponseEntity<>(ApiResponse.getInstance(ApiCode.UNKNOWN, message), status);
+        return ControllerUtil.processError(messageSource, request);
     }
 
 }
