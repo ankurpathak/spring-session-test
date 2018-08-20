@@ -85,9 +85,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, apiPath(PATH_GET_ME)).hasAuthority(Role.ROLE_ADMIN)
-                .antMatchers(HttpMethod.GET, apiPath(PATH_GET_USER)).hasAuthority(Role.ROLE_ADMIN)
-                .antMatchers(HttpMethod.POST, apiPath(PATH_CREATE_USER)).hasAuthority(Role.ROLE_ADMIN)
+                .antMatchers(HttpMethod.GET, apiPath(PATH_GET_ME)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.GET, apiPath(PATH_GET_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.POST, apiPath(PATH_CREATE_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .anyRequest()
                 .denyAll()
                 .and()
@@ -99,6 +99,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
+              //  .addFilterAt(new SecurityContextPersistenceFilter(new HttpSessionSecurityContextRepositoryExtended()), SecurityContextPersistenceFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(accessDeniedHandler);
     }

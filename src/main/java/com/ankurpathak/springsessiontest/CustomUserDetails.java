@@ -5,22 +5,24 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 
 public class CustomUserDetails implements UserDetails {
 
     private User user;
+    private Set<String> privileges;
 
 
     public User getUser() {
         return user;
     }
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetails(User user, Set<String> privileges) {
         this.user = user;
+        this.privileges = privileges;
     }
 
 
@@ -28,8 +30,8 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(!CollectionUtils.isEmpty(user.getRoles()))
-            return AuthorityUtils.createAuthorityList(user.getRoles().toArray(new String[user.getRoles().size()]));
+        if(!CollectionUtils.isEmpty(privileges))
+            return AuthorityUtils.createAuthorityList(privileges.toArray(new String[user.getRoles().size()]));
         else
             return Collections.emptyList();
     }

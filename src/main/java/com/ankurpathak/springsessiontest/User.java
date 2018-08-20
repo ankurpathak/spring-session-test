@@ -3,8 +3,10 @@ package com.ankurpathak.springsessiontest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 
 import java.io.Serializable;
@@ -18,19 +20,22 @@ public class User extends Domain<String> implements Serializable {
 
     private String firstName;
     private String lastName;
+    @Indexed(name = DocumentCollections.Index.USERS_EMAIL_IDX, unique = true, sparse = true)
     private String email;
-    private Set<String> roles = new HashSet<>();
+    private Set<String> roles;
     private String password;
 
 
     public User addRole(String role){
-        if(roles != null)
+        if(roles == null)
+            roles = new HashSet<>();
+        if(!StringUtils.isEmpty(role))
             roles.add(role);
         return this;
     }
 
     public User removeRole(String role){
-        if(roles != null)
+        if(!CollectionUtils.isEmpty(roles))
             roles.remove(role);
         return this;
     }

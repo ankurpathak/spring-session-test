@@ -26,6 +26,17 @@ public class SecurityContextCompositeImpl extends SecurityContextImpl  {
 
 
     @Override
+    public void setAuthentication(Authentication authentication) {
+        securityContext.setAuthentication(authentication);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return securityContext.equals(obj);
+    }
+
+
+    @Override
     public Authentication getAuthentication() {
         return securityContext.getAuthentication();
     }
@@ -33,11 +44,6 @@ public class SecurityContextCompositeImpl extends SecurityContextImpl  {
     @Override
     public int hashCode() {
         return securityContext.hashCode();
-    }
-
-    @Override
-    public void setAuthentication(Authentication authentication) {
-        securityContext.setAuthentication(authentication);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class UserController {
     @GetMapping(PATH_GET_USER)
     @JsonView(User.View.Public.class)
     public User get(@PathVariable(ID) String id){
-        return CustomUserDetailsService.users.stream().filter(user -> Objects.equals(id, user.getId())).findFirst().orElseThrow(() -> new NotFoundException(id, PathVariables.ID, User.class.getSimpleName(), ApiCode.USER_NOT_FOUND));
+        return ContextRefreshedListener.users.stream().filter(user -> Objects.equals(id, user.getId())).findFirst().orElseThrow(() -> new NotFoundException(id, PathVariables.ID, User.class.getSimpleName(), ApiCode.USER_NOT_FOUND));
     }
 
 

@@ -23,7 +23,7 @@ public class ExtendedTokenBasedRememberMeServices extends TokenBasedRememberMeSe
 
     @Override
     protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
-        super.setCookie(tokens, maxAge, request, response);
+        //super.setCookie(tokens, maxAge, request, response);
         setHeader(tokens, request, response);
     }
 

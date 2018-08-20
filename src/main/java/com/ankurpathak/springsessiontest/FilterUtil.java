@@ -47,7 +47,7 @@ public class FilterUtil {
                     response.getWriter(),
                     ApiResponse.getInstance(
                             ApiCode.SUCCESS,
-                            MessageUtil.getMessage(messageSource, ApiMessages.FORBIDDEN)
+                            MessageUtil.getMessage(messageSource, ApiMessages.SUCCESS)
                     )
             );
         }

@@ -3,12 +3,10 @@ package com.ankurpathak.springsessiontest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Service
@@ -16,25 +14,42 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public static final String USERNAME_NOT_FOUND_MESSAGE = "Username %s not found.";
 
+    private final IRoleService roleService;
+    private final IUserService userService;
+
+    public CustomUserDetailsService(IRoleService roleService, IUserService userService) {
+        this.roleService = roleService;
+        this.userService = userService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return users.stream()
-                .filter(user -> Objects.equals(username, user.getEmail()) || Objects.equals(username, String.valueOf(user.getId())))
-                .findFirst().map(CustomUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format(USERNAME_NOT_FOUND_MESSAGE, username)));
+        Optional<User> user = userService.findByCandidateKey(username);
+        if(user.isPresent()){
+            return new CustomUserDetails(user.get(), getPrivileges(user.get().getRoles()));
+        }else{
+            throw new UsernameNotFoundException(String.format(USERNAME_NOT_FOUND_MESSAGE, username));
+        }
+    }
 
+
+    private Set<String> getPrivileges(Set<String> roles){
+        Set<String> privileges;
+        if(!CollectionUtils.isEmpty(roles)){
+            privileges = new HashSet<>();
+            for(String roleName: roles){
+                Optional<Role> role = roleService.findByName(roleName);
+                role.ifPresent(x -> privileges.addAll(x.getPrivileges()));
+            }
+        }else {
+            privileges = Collections.emptySet();
+        }
+        return privileges;
     }
 
 
 
 
 
-    public static final List<User> users = new ArrayList<>();
 
-
-    static {
-        users.add(User.getInstance().id("1").firstName("Ankur").lastName("Pathak").addRole(Role.ROLE_ADMIN).email("ankurpathak@live.in").password("password"));
-        users.add(User.getInstance().id("2").firstName("Amar").lastName("Mule").addRole(Role.ROLE_ADMIN).email("amarmule@live.in").password("password"));
-    }
 }
