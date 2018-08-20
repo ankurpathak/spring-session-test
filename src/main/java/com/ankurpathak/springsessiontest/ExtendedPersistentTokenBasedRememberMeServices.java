@@ -31,11 +31,9 @@ public class ExtendedPersistentTokenBasedRememberMeServices extends PersistentTo
         this.alwaysRemember = alwaysRemember;
     }
 
-    /*
-    private LoginRequestDto obtainLoginRequest(HttpServletRequest request) {
-        return (LoginRequestDto) request.getAttribute(LoginRequestDto.class.getName());
 
-    }
+
+
 
 
     @Override
@@ -43,48 +41,43 @@ public class ExtendedPersistentTokenBasedRememberMeServices extends PersistentTo
         if (this.alwaysRemember) {
             return true;
         } else {
-            LoginRequestDto dto = obtainLoginRequest(request);
-            return dto != null && dto.isRememberMe();
+            if(WebUtil.isAjax(request))
+                return Boolean.parseBoolean(request.getHeader(X_REMEMBER_ME_HEADER));
+            else
+                return super.rememberMeRequested(request, parameter);
         }
     }
 
-    */
 
-
-    private void addHeader(PersistentRememberMeToken token, HttpServletRequest request, HttpServletResponse response) {
-        this.setHeader(new String[]{token.getSeries(), token.getTokenValue()}, request, response);
-    }
-
-
-    @Override
-    protected boolean rememberMeRequested(HttpServletRequest request, String parameter) {
-        if (this.alwaysRemember) {
-            return true;
-        } else {
-            return Boolean.parseBoolean(request.getHeader(X_REMEMBER_ME_HEADER));
-        }
-    }
 
 
     @Override
     protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
-       // super.setCookie(tokens, maxAge, request, response);
-        setHeader(tokens, request, response);
+        if(WebUtil.isAjax(request))
+            setHeader(tokens, request, response);
+        else
+            super.setCookie(tokens, maxAge, request, response);
     }
 
-    public void setHeader(String[] tokens, HttpServletRequest request, HttpServletResponse response) {
+
+    public void setHeader(String[] tokens, HttpServletRequest request, HttpServletResponse response){
         String cookieValue = this.encodeCookie(tokens);
         response.setHeader(X_REMEMBER_ME_TOKEN_HEADER, cookieValue);
     }
 
+
+
     @Override
     protected String extractRememberMeCookie(HttpServletRequest request) {
-        String token = request.getHeader(X_REMEMBER_ME_TOKEN_HEADER);
-        if (StringUtils.isEmpty(token)) {
-            token = super.extractRememberMeCookie(request);
+        if(WebUtil.isAjax(request)){
+            return request.getHeader(X_REMEMBER_ME_HEADER);
+        }else {
+            return super.extractRememberMeCookie(request);
         }
-        return token;
     }
+
+
+
 
 
 }

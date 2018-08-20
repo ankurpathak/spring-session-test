@@ -19,4 +19,5 @@ public class DomainContext extends WebAuthenticationDetails implements Serializa
     public Locale getLocale() {
         return locale;
     }
+
 }

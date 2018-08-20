@@ -8,7 +8,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class HttpSessionSecurityContextRepositoryExtended extends HttpSessionSecurityContextRepository {
+public class ExtendedHttpSessionSecurityContextRepository extends HttpSessionSecurityContextRepository {
 
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {

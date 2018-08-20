@@ -1,15 +1,10 @@
 package com.ankurpathak.springsessiontest;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
-import org.springframework.util.StringUtils;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
 
 public class ExtendedTokenBasedRememberMeServices extends TokenBasedRememberMeServices {
     private boolean alwaysRemember;
@@ -23,8 +18,10 @@ public class ExtendedTokenBasedRememberMeServices extends TokenBasedRememberMeSe
 
     @Override
     protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
-        //super.setCookie(tokens, maxAge, request, response);
-        setHeader(tokens, request, response);
+        if(WebUtil.isAjax(request))
+            setHeader(tokens, request, response);
+        else
+            super.setCookie(tokens, maxAge, request, response);
     }
 
     public void setHeader(String[] tokens, HttpServletRequest request, HttpServletResponse response){
@@ -61,17 +58,21 @@ public class ExtendedTokenBasedRememberMeServices extends TokenBasedRememberMeSe
         if (this.alwaysRemember) {
             return true;
         } else {
-            return Boolean.parseBoolean(request.getHeader(X_REMEMBER_ME_HEADER));
+            if(WebUtil.isAjax(request))
+                return Boolean.parseBoolean(request.getHeader(X_REMEMBER_ME_HEADER));
+            else
+               return super.rememberMeRequested(request, parameter);
         }
     }
 
 
+    @Override
     protected String extractRememberMeCookie(HttpServletRequest request) {
-        String token = request.getHeader(X_REMEMBER_ME_HEADER);
-        if (StringUtils.isEmpty(token)) {
-            token = super.extractRememberMeCookie(request);
+        if(WebUtil.isAjax(request)){
+            return request.getHeader(X_REMEMBER_ME_HEADER);
+        }else {
+            return super.extractRememberMeCookie(request);
         }
-        return token;
     }
 
 

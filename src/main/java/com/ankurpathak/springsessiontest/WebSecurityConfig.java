@@ -99,7 +99,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
-              //  .addFilterAt(new SecurityContextPersistenceFilter(new HttpSessionSecurityContextRepositoryExtended()), SecurityContextPersistenceFilter.class)
+              //  .addFilterAt(new SecurityContextPersistenceFilter(new ExtendedHttpSessionSecurityContextRepository()), SecurityContextPersistenceFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(accessDeniedHandler);
     }
