@@ -22,6 +22,11 @@ public class Role extends Domain<String> implements Serializable {
 
 
     @Override
+    public DomainDto<String> toDto() {
+        return null;
+    }
+
+    @Override
     public Role id(String id) {
         super.id(id);
         return this;

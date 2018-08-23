@@ -24,17 +24,17 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
     }
 
     @Override
-    public <S extends T> S create(S entity) {
+    public T create(T entity) {
         return getDao().save(entity);
     }
 
     @Override
-    public <S extends T> S update(S entity) {
+    public T update(T entity) {
         return getDao().insert(entity);
     }
 
     @Override
-    public <S extends T> Iterable<S> createAll(Iterable<S> entities) {
+    public Iterable<T> createAll(Iterable<T> entities) {
         return getDao().insert(entities);
     }
 
@@ -49,5 +49,14 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
     }
 
     protected abstract MongoRepository<T, ID> getDao();
+
+    @Override
+    public String domainName(){
+        String name = this.getClass().getSimpleName();
+        name = name != null ? name : "";
+        int index = name.indexOf('S');
+        index = index > -1 ? index : 1;
+        return name.substring(1, index).trim();
+    }
 
 }

@@ -7,7 +7,6 @@ public interface RequestMappingPaths {
     String PATH_GET_ME = "/me";
 
 
-    String PATH_GET_USER = "/users/{id}";
 
     String PATH_GET_ERROR = "/error";
 

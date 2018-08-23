@@ -21,15 +21,17 @@ public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
 
     // write
 
-    <S extends T> S create(S entity);
+    T create(T entity);
 
-    <S extends T> S update(S entity);
+    T update(T entity);
 
-    <S extends T> Iterable<S> createAll(Iterable<S> entities);
+    Iterable<T> createAll(Iterable<T> entities);
 
 
     void delete(T entity);
 
     void deleteById(ID id);
+
+    String domainName();
 
 }

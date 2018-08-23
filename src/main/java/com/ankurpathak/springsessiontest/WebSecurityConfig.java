@@ -86,7 +86,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, apiPath(PATH_GET_ME)).hasAuthority(Role.Privilege.PRIV_ADMIN)
-                .antMatchers(HttpMethod.GET, apiPath(PATH_GET_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.POST, apiPath(PATH_CREATE_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .anyRequest()
                 .denyAll()

@@ -11,15 +11,20 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-abstract public class Domain<T> implements Serializable {
-    private  T id;
+abstract public class Domain<ID extends Serializable> implements Serializable {
 
 
-    public T getId() {
+    abstract public DomainDto<ID> toDto();
+
+
+    private  ID id;
+
+
+    public ID getId() {
         return id;
     }
 
-    public void setId(T id) {
+    public void setId(ID id) {
         this.id = id;
     }
 
@@ -40,7 +45,7 @@ abstract public class Domain<T> implements Serializable {
     }
 
 
-    public Domain id(T id) {
+    public Domain id(ID id) {
         this.id = id;
         return this;
     }
@@ -56,7 +61,7 @@ abstract public class Domain<T> implements Serializable {
     private Set<String> tags;
 
 
-    public Domain<T> addTag(String tag){
+    public Domain<ID> addTag(String tag){
         if(tags == null)
             tags = new HashSet<>();
         if(!StringUtils.isEmpty(tag))
@@ -64,7 +69,7 @@ abstract public class Domain<T> implements Serializable {
         return this;
     }
 
-    public Domain<T> removeTag(String tag){
+    public Domain<ID> removeTag(String tag){
         if(!CollectionUtils.isEmpty(tags))
             tags.remove(tag);
         return this;

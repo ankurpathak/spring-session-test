@@ -62,7 +62,8 @@ public class ExtendedPersistentTokenBasedRememberMeServices extends PersistentTo
 
     public void setHeader(String[] tokens, HttpServletRequest request, HttpServletResponse response){
         String cookieValue = this.encodeCookie(tokens);
-        response.setHeader(X_REMEMBER_ME_TOKEN_HEADER, cookieValue);
+        if(!StringUtils.isEmpty(cookieValue))
+            response.setHeader(X_REMEMBER_ME_TOKEN_HEADER, cookieValue);
     }
 
 
