@@ -2,6 +2,7 @@ package com.ankurpathak.springsessiontest;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -9,9 +10,11 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.thymeleaf.expression.Sets;
 
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,12 +25,13 @@ import java.util.Set;
         @CompoundIndex(name = DocumentCollections.Index.USERS_EMAIL_IDX, sparse = true, unique = true, def = DocumentCollections.Index.USERS_EMAIL_IDX_DEF),
         @CompoundIndex(name = DocumentCollections.Index.USERS_CONTACT_IDX, sparse = true, unique = true, def = DocumentCollections.Index.USERS_CONTACT_IDX_DEF)
 })
-public class User extends Domain<String> implements Serializable {
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class User extends Domain<BigInteger> implements Serializable {
 
 
     private String firstName;
     private String lastName;
-    private Email email;
+    private Contact email;
     @Indexed(name = DocumentCollections.Index.USERS_USERNAME_IDX, unique = true, sparse = true)
     private String username;
     private Contact contact;
@@ -35,7 +39,7 @@ public class User extends Domain<String> implements Serializable {
     private String password;
 
 
-    private Set<Email> emails;
+    private Set<Contact> emails;
 
     private Set<Contact> contacts;
 
@@ -55,7 +59,7 @@ public class User extends Domain<String> implements Serializable {
     }
 
 
-    public User addEmail(Email email) {
+    public User addEmail(Contact email) {
         if (emails == null)
             emails = new HashSet<>();
         if (email != null)
@@ -63,7 +67,7 @@ public class User extends Domain<String> implements Serializable {
         return this;
     }
 
-    public User removeEmail(Email email) {
+    public User removeEmail(Contact email) {
         if (!CollectionUtils.isEmpty(emails))
             roles.remove(email);
         return this;
@@ -107,7 +111,7 @@ public class User extends Domain<String> implements Serializable {
         return this;
     }
 
-    public User email(Email email) {
+    public User email(Contact email) {
         this.email = email;
         return this;
     }
@@ -134,7 +138,7 @@ public class User extends Domain<String> implements Serializable {
 
 
     @Override
-    public User id(String id) {
+    public User id(BigInteger id) {
         super.id(id);
         return this;
     }
@@ -158,11 +162,11 @@ public class User extends Domain<String> implements Serializable {
     }
 
     @JsonView({View.Me.class})
-    public Email getEmail() {
+    public Contact getEmail() {
         return email;
     }
 
-    public void setEmail(Email email) {
+    public void setEmail(Contact email) {
         this.email = email;
     }
 
@@ -184,14 +188,10 @@ public class User extends Domain<String> implements Serializable {
     }
 
 
-    @Override
-    public DomainDto<String> toDto() {
-        return null;
-    }
 
     @Override
     @JsonView({View.Public.class, View.Me.class})
-    public String getId() {
+    public BigInteger getId() {
         return super.getId();
     }
 
@@ -205,7 +205,7 @@ public class User extends Domain<String> implements Serializable {
         return this;
     }
 
-    public User emails(Set<Email> emails) {
+    public User emails(Set<Contact> emails) {
         this.emails = emails;
         return this;
     }
@@ -247,11 +247,11 @@ public class User extends Domain<String> implements Serializable {
         this.contact = contact;
     }
     @JsonView({View.Me.class})
-    public Set<Email> getEmails() {
+    public Set<Contact> getEmails() {
         return emails;
     }
 
-    public void setEmails(Set<Email> emails) {
+    public void setEmails(Set<Contact> emails) {
         this.emails = emails;
     }
 
@@ -263,6 +263,17 @@ public class User extends Domain<String> implements Serializable {
     public void setContacts(Set<Contact> contacts) {
         this.contacts = contacts;
     }
+
+    public static final String ANONYMOUS_USERNAME= "anonymous";
+    public static final User ANONYMOUS_USER = User.getInstance();
+    public static final BigInteger ANONYMOUS_ID = BigInteger.ONE;
+    static
+    {
+        ANONYMOUS_USER.username(ANONYMOUS_USERNAME)
+                .roles(Set.of(Role.ROLE_ANONYMOUS))
+                .id(ANONYMOUS_ID);
+    }
+
 
 
 }

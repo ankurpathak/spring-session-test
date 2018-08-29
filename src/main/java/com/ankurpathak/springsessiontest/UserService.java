@@ -3,11 +3,13 @@ package com.ankurpathak.springsessiontest;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
-public class UserService extends AbstractDomainService<User, String> implements IUserService  {
+public class UserService extends AbstractDomainService<User,BigInteger> implements IUserService  {
 
     private final IUserRepository dao;
 
@@ -16,12 +18,19 @@ public class UserService extends AbstractDomainService<User, String> implements 
     }
 
     @Override
-    protected MongoRepository<User, String> getDao() {
+    protected MongoRepository<User,BigInteger> getDao() {
         return dao;
     }
 
     @Override
     public Optional<User> findByCandidateKey(String candidateKey) {
-        return dao.findByCandidateKey(candidateKey);
+        return dao.findByCandidateKey(PrimitiveUtils.toBigInteger(candidateKey), candidateKey);
+    }
+
+    @Override
+    public void createContactVerificationToken(User user, Contact email) {
+        Token token = new Token(UUID.randomUUID().toString());
+        email.setToken(token);
+        update(user);
     }
 }

@@ -1,5 +1,7 @@
 package com.ankurpathak.springsessiontest;
 
+import org.springframework.http.ResponseEntity;
+
 import java.nio.file.Paths;
 
 public interface RequestMappingPaths {
@@ -15,9 +17,7 @@ public interface RequestMappingPaths {
 
 
 
-
-
-
+    String PATH_REGISTER = "/register";
 
 
     static String apiPath(String path){

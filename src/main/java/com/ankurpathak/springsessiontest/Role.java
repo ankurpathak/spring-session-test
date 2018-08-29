@@ -4,6 +4,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.thymeleaf.expression.Sets;
 
 import java.io.Serializable;
 import java.util.EnumSet;
@@ -21,9 +22,14 @@ public class Role extends Domain<String> implements Serializable {
     public static final String ROLE_ANONYMOUS = "ROLE_ANONYMOUS";
 
 
-    @Override
-    public DomainDto<String> toDto() {
-        return null;
+    public static final Role ANONYMOUS_ROLE = Role.getInstance().name(ROLE_ANONYMOUS);
+
+
+    public Role(String name) {
+        this.name = name;
+    }
+
+    public Role() {
     }
 
     @Override
@@ -87,5 +93,22 @@ public class Role extends Domain<String> implements Serializable {
         String PRIV_ANONYMOUS = "PRIV_ANONYMOUS";
         String PRIV_USER = "PRIV_USER";
         String PRIV_ADMIN = "PRIV_ADMIN";
+        String PRIV_REGISTER = "PRIV_REGISTER";
+    }
+
+
+    public String[] privilegesAsArray(){
+        if(CollectionUtils.isEmpty(privileges)){
+            return new String[0];
+        }else {
+           return privileges.toArray(new String[0]);
+        }
+    }
+
+
+    static {
+        ANONYMOUS_ROLE.privileges = Set.of(
+                Privilege.PRIV_REGISTER
+        );
     }
 }

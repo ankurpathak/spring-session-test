@@ -1,17 +1,41 @@
 package com.ankurpathak.springsessiontest;
 
+import com.github.ankurpathak.password.bean.constraints.NotContainWhitespace;
+import com.github.ankurpathak.password.bean.constraints.PasswordMatches;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.Set;
 
-public class UserDto extends DomainDto<String> implements Serializable {
+@PasswordMatches(groups = DomainDto.Register.class)
+public class UserDto extends DomainDto<User, BigInteger> implements Serializable {
+
+    @NotBlank(groups = Default.class)
+    @NotContainWhitespace(groups = Default.class)
     private String firstName;
+    @NotContainWhitespace(groups = Default.class)
+    @NotBlank(groups = Default.class)
     private String lastName;
+    @NotBlank(groups = Default.class)
+    @com.github.ankurpathak.primitive.bean.constraints.string.Email
     private String email;
     private String username;
+    @NotContainWhitespace(groups = Default.class)
     private String middleName;
-    private String password;
-    private String matchingPassword;
 
+    @NotBlank(groups = {Register.class})
+    private String password;
+    private String confirmPassword;
+    private String contact;
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
 
     public String getMiddleName() {
         return middleName;
@@ -29,12 +53,12 @@ public class UserDto extends DomainDto<String> implements Serializable {
         this.password = password;
     }
 
-    public String getMatchingPassword() {
-        return matchingPassword;
+    public String getConfirmPassword() {
+        return confirmPassword;
     }
 
-    public void setMatchingPassword(String matchingPassword) {
-        this.matchingPassword = matchingPassword;
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
     public String getFirstName() {
@@ -70,24 +94,44 @@ public class UserDto extends DomainDto<String> implements Serializable {
         this.username = username;
     }
 
+
     @Override
-    public Domain<String> toDomain() {
+    public User toDomain(Class<?> type) {
+        if (type != null) {
+            if (type.equals(Register.class)) {
+                return forRegister();
+            }
+        }
+        return forCreate();
+    }
+
+
+    private User forCreate() {
         return User.getInstance()
                 .firstName(firstName)
                 .lastName(lastName)
                 .middleName(middleName)
-                .password(password)
-                .email(Email.getInstance(email)).roles(Set.of(Role.ROLE_USER));
+                .email(Contact.getInstance(email))
+                .roles(Set.of(Role.ROLE_USER));
+    }
+
+    private User forRegister() {
+        return User.getInstance()
+                .firstName(firstName)
+                .lastName(lastName)
+                .middleName(middleName)
+                .email(Contact.getInstance(email))
+                .roles(Set.of(Role.ROLE_ADMIN))
+                .password(getPassword());
     }
 
     @Override
-    public Domain<String> updateDomain(Domain<String> domain) {
-        if(domain instanceof User){
-            User user = (User) domain;
-            if(firstName != null) user.firstName(firstName);
-            if(lastName != null) user.lastName(lastName);
-            if(middleName != null) user.middleName(middleName);
-        }
-        return domain;
+    public User updateDomain(User user) {
+        if (firstName != null) user.firstName(firstName);
+        if (lastName != null) user.lastName(lastName);
+        if (middleName != null) user.middleName(middleName);
+        return user;
     }
+
+
 }

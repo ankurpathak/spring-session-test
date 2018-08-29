@@ -1,14 +1,27 @@
 package com.ankurpathak.springsessiontest;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 import java.io.Serializable;
 
 public class Contact implements Serializable {
+
+
     private String value;
     private String tag;
     boolean checked;
+    private Token token;
 
+    public static Contact getInstance(String value){
+        return new Contact(value);
+    }
+
+
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
+    }
 
     public Contact(String value) {
         this(value, null, false);
@@ -19,7 +32,7 @@ public class Contact implements Serializable {
         this(value, tag, false);
     }
 
-    @JsonCreator
+
     public Contact(String value, String tag, boolean checked) {
         this.value = value;
         this.tag = tag;
@@ -50,6 +63,10 @@ public class Contact implements Serializable {
         this.value = value;
     }
 
+
+    public Contact() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -58,12 +75,12 @@ public class Contact implements Serializable {
         Contact contact = (Contact) o;
 
         if (checked != contact.checked) return false;
-        return value.equals(contact.value);
+        return value != null ? value.equals(contact.value) : contact.value == null;
     }
 
     @Override
     public int hashCode() {
-        int result = value.hashCode();
+        int result = value != null ? value.hashCode() : 0;
         result = 31 * result + (checked ? 1 : 0);
         return result;
     }

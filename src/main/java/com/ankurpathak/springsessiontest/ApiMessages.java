@@ -10,5 +10,5 @@ public interface ApiMessages {
     String UNKNOWN = "api.message.unknown";
     String VALIDATION = "api.message.validation";
     String REQUIRED_QUERY_PARAM = "api.message.required-query-param";
-    String MESSAGE_VALIDATION = "api.message.validation";
+    String FOUND_DEFAULT = "api.message.found-default";
 }

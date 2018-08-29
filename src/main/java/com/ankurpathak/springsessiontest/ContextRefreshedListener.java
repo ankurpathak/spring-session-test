@@ -2,9 +2,11 @@ package com.ankurpathak.springsessiontest;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,8 +28,16 @@ public class ContextRefreshedListener implements ApplicationListener<ContextRefr
     public void onApplicationEvent(ContextRefreshedEvent event) {
         mongoTemplate.dropCollection(User.class);
         mongoTemplate.dropCollection(Role.class);
-        userService.createAll(users);
-        roleService.createAll(roles);
+        try{
+            userService.createAll(users);
+        }catch (DuplicateKeyException ex){
+            try{
+                roleService.createAll(roles);
+            }catch (DuplicateKeyException ex1){
+
+            }
+
+        }
     }
 
 
@@ -36,8 +46,8 @@ public class ContextRefreshedListener implements ApplicationListener<ContextRefr
 
 
     static {
-        users.add(User.getInstance().id("1").firstName("Ankur").lastName("Pathak").addRole(Role.ROLE_ADMIN).email(Email.getInstance("ankurpathak@live.in")).password("password"));
-        users.add(User.getInstance().id("2").firstName("Amar").lastName("Mule").addRole(Role.ROLE_ADMIN).email(Email.getInstance("amarmule@live.in")).password("password"));
+        users.add(User.getInstance().id(BigInteger.TWO).firstName("Ankur").lastName("Pathak").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("ankurpathak@live.in")).password("password"));
+        users.add(User.getInstance().id(BigInteger.TWO.add(BigInteger.ONE)).firstName("Amar").lastName("Mule").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("amarmule@live.in")).password("password"));
 
 
         roles.add(Role.getInstance().id("1").name(Role.ROLE_ADMIN).addPrivilege(Role.Privilege.PRIV_ADMIN));

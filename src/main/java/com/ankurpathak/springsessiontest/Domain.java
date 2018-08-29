@@ -14,9 +14,6 @@ import java.util.Set;
 abstract public class Domain<ID extends Serializable> implements Serializable {
 
 
-    abstract public DomainDto<ID> toDto();
-
-
     private  ID id;
 
 
@@ -98,4 +95,10 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
     public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
+
+    private Token passwordReset;
+
+    public  void setPasswordResetToken(Token passwordReset){
+        this.passwordReset = passwordReset;
+    };
 }

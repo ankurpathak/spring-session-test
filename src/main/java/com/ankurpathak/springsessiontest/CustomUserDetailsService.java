@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userService.findByCandidateKey(username);
         if(user.isPresent()){
-            return new CustomUserDetails(user.get(), getPrivileges(user.get().getRoles()));
+            return CustomUserDetails.getInstance(user.get(), getPrivileges(user.get().getRoles()));
         }else{
             throw new UsernameNotFoundException(String.format(USERNAME_NOT_FOUND_MESSAGE, username));
         }

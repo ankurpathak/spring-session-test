@@ -1,11 +1,11 @@
 package com.ankurpathak.springsessiontest;
 
-import org.springframework.data.mongodb.repository.Query;
-
+import java.math.BigInteger;
 import java.util.Optional;
 
-public interface IUserService  extends IDomainService<User, String> {
+public interface IUserService  extends IDomainService<User, BigInteger> {
 
-    @Query
     Optional<User> findByCandidateKey(String s);
+
+    void createContactVerificationToken(User user, Contact email);
 }

@@ -1,14 +1,12 @@
 package com.ankurpathak.springsessiontest;
 
-import org.springframework.util.StringUtils;
-
 import java.io.Serializable;
 
-public abstract class DomainDto<ID extends Serializable> implements  Serializable {
+public abstract class DomainDto<T extends Domain<ID>, ID extends Serializable> implements  Serializable {
 
-    abstract public Domain<ID> toDomain();
+    abstract public T toDomain(Class<?> type);
 
-    abstract public Domain<ID> updateDomain(Domain<ID> domain);
+    abstract public T updateDomain(T domain);
 
     public String domainName(){
         String name = this.getClass().getSimpleName();
@@ -17,4 +15,15 @@ public abstract class DomainDto<ID extends Serializable> implements  Serializabl
         index = index > -1 ? index : 0;
         return name.substring(0, index);
     }
+
+
+    public interface Default {
+
+    }
+
+
+    public interface Register {
+
+    }
+
 }

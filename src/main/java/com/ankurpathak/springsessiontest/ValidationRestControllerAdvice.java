@@ -31,7 +31,6 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-
     @Autowired
     private MessageSource messageSource;
 
@@ -47,8 +46,7 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
 
 
     private String resolveLocalizedFieldErrorMessage(FieldError fieldError) {
-        Locale currentLocale = LocaleContextHolder.getLocale();
-        String localizedErrorMessage = messageSource.getMessage(fieldError, currentLocale);
+        String localizedErrorMessage = MessageUtil.getMessage(messageSource, fieldError);
         //If the message was not found, return the most accurate field error code instead.
         //You can remove this check if you prefer to get the default error message.
         if (localizedErrorMessage.equals(fieldError.getDefaultMessage())) {
@@ -84,10 +82,6 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
     }
 
 
-
-
-
-
     @ExceptionHandler({ValidationException.class})
     public ResponseEntity<Object> handleValidationException(ValidationException ex, WebRequest request) {
         return handleValidationErrors(ex, request);
@@ -118,17 +112,24 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
 
 
     private ResponseEntity<Object> handleValidationErrors(Exception ex, WebRequest request) {
-        String message = MessageUtil.getMessage(messageSource, ApiMessages.MESSAGE_VALIDATION);
-        ApiCode code = ApiCode.VALIDATION;
+        String message = null;
+        ApiCode code = null;
         BindingResult result = null;
         if (ex instanceof BindException) {
             result = ((BindException) ex).getBindingResult();
         } else if (ex instanceof MethodArgumentNotValidException) {
             result = ((MethodArgumentNotValidException) ex).getBindingResult();
         } else if (ex instanceof ValidationException) {
-           result = ((ValidationException)ex).getBindingResult();
-
+            ValidationException vEx = (ValidationException) ex;
+            result = vEx.getBindingResult();
+            message = vEx.getMessage();
+            code = vEx.getCode();
         }
+        if(message == null)
+            message = MessageUtil.getMessage(messageSource, ApiMessages.VALIDATION);
+        if(code == null)
+            code = ApiCode.VALIDATION;
+
         ApiResponse dto = ApiResponse.getInstance(code, message);
         if (result != null) {
             List<FieldError> fieldErrors = result.getFieldErrors();

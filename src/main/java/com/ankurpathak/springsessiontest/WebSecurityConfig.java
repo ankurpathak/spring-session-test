@@ -17,13 +17,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.RememberMeServices;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.*;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
+
+import java.util.UUID;
 
 import static com.ankurpathak.springsessiontest.RequestMappingPaths.*;
 
@@ -64,6 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     public static final String REMEMBER_ME_KEY = "3deb2240-b5d0-49b9-801c-a88d541e7ed1";
+    public static final String ANNONYMOUS_KEY = "18f618ee-fa0f-4147-920c-8659f672f4d2";
 
 
 
@@ -82,23 +82,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf()
-                .disable()
+                .csrf().disable()
+                .anonymous().authenticationFilter(anonymousAuthenticationFilter())
+
+                .and()
+
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, apiPath(PATH_GET_ME)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.POST, apiPath(PATH_CREATE_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.POST, apiPath(PATH_REGISTER)).hasAuthority(Role.Privilege.PRIV_REGISTER)
                 .anyRequest()
                 .denyAll()
+
                 .and()
+
                 .logout()
                 .deleteCookies("JSESSIONID", "SESSION")
+
                 .and()
+
                 .rememberMe()
                 .rememberMeServices(persistentTokenBasedRememberMeServices())
+
                 .and()
+
                 .addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
-              //  .addFilterAt(new SecurityContextPersistenceFilter(new ExtendedHttpSessionSecurityContextRepository()), SecurityContextPersistenceFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(accessDeniedHandler);
     }
@@ -136,5 +145,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public SecurityContextCompositeFilter securityContextCompositeFilter(){
         return new SecurityContextCompositeFilter();
     }
+
+    @Bean
+    @Lazy
+    public AnonymousAuthenticationFilter anonymousAuthenticationFilter(){
+        return new ExtendedAnonymousAuthenticationFilter(ANNONYMOUS_KEY);
+    }
+
 
 }

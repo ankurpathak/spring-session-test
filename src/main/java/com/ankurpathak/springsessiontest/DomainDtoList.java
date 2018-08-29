@@ -6,11 +6,11 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
-public class DomainDtoList<T extends DomainDto<ID>, ID extends Serializable> {
+public class DomainDtoList<T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> {
 
     @NotEmpty
     @NotNull
-    private List<@NotNull @Valid T> dtos;
+    private List<@NotNull @Valid TDto> dtos;
 
 
     public int size(){
@@ -18,15 +18,15 @@ public class DomainDtoList<T extends DomainDto<ID>, ID extends Serializable> {
     }
 
 
-    public List<T> getDtos() {
+    public List<TDto> getDtos() {
         return dtos;
     }
 
-    public void setDtos(List<T> dtos) {
+    public void setDtos(List<TDto> dtos) {
         this.dtos = dtos;
     }
 
-    public T getDto(){
+    public TDto getDto(){
         return dtos.get(0);
     }
 }

@@ -3,7 +3,6 @@ package com.ankurpathak.springsessiontest;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.web.context.request.WebRequest;
 

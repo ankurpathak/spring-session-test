@@ -25,12 +25,12 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
 
     @Override
     public T create(T entity) {
-        return getDao().save(entity);
+        return getDao().insert(entity);
     }
 
     @Override
     public T update(T entity) {
-        return getDao().insert(entity);
+        return getDao().save(entity);
     }
 
     @Override

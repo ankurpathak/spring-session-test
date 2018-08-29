@@ -16,6 +16,9 @@ public class CustomUserDetails implements UserDetails {
     private Set<String> privileges;
 
 
+    public static final CustomUserDetails ANNONYMOUS_CUSTOM_USER_DETAILS = getInstance(User.ANONYMOUS_USER, Role.ANONYMOUS_ROLE.getPrivileges());
+
+
     public User getUser() {
         return user;
     }
@@ -23,6 +26,11 @@ public class CustomUserDetails implements UserDetails {
     public CustomUserDetails(User user, Set<String> privileges) {
         this.user = user;
         this.privileges = privileges;
+    }
+
+
+    public static CustomUserDetails getInstance(User user, Set<String> privileges){
+        return new CustomUserDetails(user, privileges);
     }
 
 

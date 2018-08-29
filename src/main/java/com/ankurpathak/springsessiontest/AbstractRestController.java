@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class AbstractRestController<T extends Domain<ID>, TDto extends DomainDto<ID>, ID extends Serializable> {
+public abstract class AbstractRestController<T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> {
 
 
     abstract public IDomainService<T, ID> getService();
@@ -72,60 +72,71 @@ public abstract class AbstractRestController<T extends Domain<ID>, TDto extends 
         return ResponseEntity.ok(page.getContent());
     }
 
-    public ResponseEntity<?> createMany(DomainDtoList<TDto, ID> dtoList, BindingResult result, HttpServletRequest request) {
-        ControllerUtil.processValidaton(result, messageSource, request);
-        List<ID> ids = createMany(dtoList.getDtos(), result);
-        return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of("ids", ids));
+    public ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request) {
+        return createMany(dtoList, result, request, DomainDto.Default.class);
+    }
 
+    public ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request, Class<?> type) {
+        ControllerUtil.processValidation(result, messageSource, request);
+        Iterable<T> domains = getService().createAll(dtoList.getDtos().stream().map(dto -> dto.toDomain(type)).collect(Collectors.toList()));
+        List<ID> ids = new ArrayList<>();
+        domains.forEach(domain -> ids.add(domain.getId()));
+        return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of("ids", ids));
+    }
+
+    public T tryCreateOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, Class<?> type) {
+        ControllerUtil.processValidation(result, messageSource, request);
+        T t = getService().create(dto.toDomain(type));
+        applicationEventPublisher.publishEvent(new DomainCreatedEvent<T, ID>(t, response));
+        return t;
     }
 
     public ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response) {
-        ControllerUtil.processValidaton(result, messageSource, request);
-        ID id = createOne(dto, result, response);
-        return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of("id", id));
+        return createOne(dto, result, request, response, DomainDto.Default.class);
     }
 
-
-    @SuppressWarnings("unchecked")
-    private List<ID> createMany(List<TDto> dtos, BindingResult result) {
-        Iterable<T> domains = getService().createAll(dtos.stream().map(dto -> ((T) dto.toDomain())).collect(Collectors.toList()));
-        List<ID> ids = new ArrayList<>();
-        domains.forEach(domain -> ids.add(domain.getId()));
-        return ids;
-    }
-
-    @SuppressWarnings("unchecked")
-    private ID createOne(TDto dto, BindingResult result, HttpServletResponse response) {
-        try {
-            T t = getService().create((T) dto.toDomain());
-            applicationEventPublisher.publishEvent(new DomainCreatedEvent<T,ID>(t, response));
-            return t.getId();
+    public ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, Class<?> type) {
+        try{
+            T t = tryCreateOne(dto, result, request, response, type);
+            return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of("id", t.getId()));
         } catch (DuplicateKeyException ex) {
-            throw ApplicationExceptionTranslator.convertToFoundException(ex, dto);
+            catchCreateOne(dto, ex, result, request);
+            throw ex;
         }
     }
 
-    public ResponseEntity<?> delete(ID id, HttpServletRequest request){
+    public void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request){
+        FoundException foundEx = ApplicationExceptionProcessor.processDuplicateKeyException(ex, dto, result);
+        if (foundEx != null) {
+            ControllerUtil.processValidationForFound(result, messageSource, request, foundEx);
+        }
+    }
+
+
+    public ResponseEntity<?> delete(ID id, HttpServletRequest request) {
         Optional<T> domain = getService().findById(id);
-        if(domain.isPresent()){
+        if (domain.isPresent()) {
             getService().delete(domain.get());
-            return ControllerUtil.processSuccess(messageSource,  request, HttpStatus.NO_CONTENT);
-        }else {
+            return ControllerUtil.processSuccessNoContent();
+        } else {
             throw new NotFoundException(String.valueOf(id), "id", getService().domainName(), ApiCode.NOT_FOUND);
         }
     }
 
-    public ResponseEntity<?> update(TDto dto, ID id, HttpServletRequest request){
+    public ResponseEntity<?> update(TDto dto, ID id, HttpServletRequest request) {
         Optional<T> domain = getService().findById(id);
-        if(domain.isPresent()){
-            dto.updateDomain(domain.get());
-            getService().update(domain.get());
-            return ControllerUtil.processSuccess(messageSource,  request);
-        }else {
+        if (domain.isPresent()) {
+            getService().update(dto.updateDomain(domain.get()));
+            return ControllerUtil.processSuccess(messageSource, request);
+        } else {
             throw new NotFoundException(String.valueOf(id), "id", dto.domainName(), ApiCode.NOT_FOUND);
         }
 
 
+    }
+
+    public ResponseEntity<?> search(String field, String value, int block, int size, String sort, HttpServletResponse response){
+        return null;
     }
 
 }
