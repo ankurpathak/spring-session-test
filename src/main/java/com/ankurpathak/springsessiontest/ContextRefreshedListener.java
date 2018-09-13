@@ -31,11 +31,13 @@ public class ContextRefreshedListener implements ApplicationListener<ContextRefr
         try{
             userService.createAll(users);
         }catch (DuplicateKeyException ex){
-            try{
-                roleService.createAll(roles);
-            }catch (DuplicateKeyException ex1){
 
-            }
+
+        }
+
+        try{
+            roleService.createAll(roles);
+        }catch (DuplicateKeyException ex1){
 
         }
     }

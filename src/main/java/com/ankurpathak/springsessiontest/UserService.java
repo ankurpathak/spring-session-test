@@ -1,6 +1,5 @@
 package com.ankurpathak.springsessiontest;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -18,7 +17,7 @@ public class UserService extends AbstractDomainService<User,BigInteger> implemen
     }
 
     @Override
-    protected MongoRepository<User,BigInteger> getDao() {
+    protected ExtendedRepository<User,BigInteger> getDao() {
         return dao;
     }
 

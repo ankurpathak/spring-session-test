@@ -12,6 +12,7 @@ import org.springframework.security.authentication.RememberMeAuthenticationProvi
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,13 +23,11 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
-import java.util.UUID;
-
 import static com.ankurpathak.springsessiontest.RequestMappingPaths.*;
 
 
 @Configuration
-//@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String SUCCESS_URL = "/";
@@ -91,6 +90,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, apiPath(PATH_GET_ME)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.POST, apiPath(PATH_CREATE_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.POST, apiPath(PATH_REGISTER)).hasAuthority(Role.Privilege.PRIV_REGISTER)
+                .antMatchers(HttpMethod.GET, apiPath(PATH_SEARCH_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.GET, apiPath(PATH_LIST_FIELD_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .anyRequest()
                 .denyAll()
 
@@ -107,11 +108,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(socialWebAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(accessDeniedHandler);
     }
 
+
+    @Bean
+    @Lazy
+    SocialWebAuthenticationFilter socialWebAuthenticationFilter(){
+        SocialWebAuthenticationFilter filter = new SocialWebAuthenticationFilter();
+        filter.setAuthenticationManager(authenticationManager);
+        return filter;
+    }
 
     @Autowired
     private AuthenticationEntryPoint restAuthenticationEntryPoint;

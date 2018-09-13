@@ -3,18 +3,17 @@ package com.ankurpathak.springsessiontest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.math.BigInteger;
 
-import static com.ankurpathak.springsessiontest.RequestMappingPaths.*;
+import static com.ankurpathak.springsessiontest.RequestMappingPaths.PATH_REGISTER;
 
 @ApiController
 public class RegisterRestController extends AbstractRestController<User, BigInteger, UserDto> {

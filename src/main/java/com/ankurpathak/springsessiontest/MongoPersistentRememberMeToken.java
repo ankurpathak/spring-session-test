@@ -1,12 +1,12 @@
 package com.ankurpathak.springsessiontest;
 
-import java.util.Date;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
+
+import java.util.Date;
 
 @Document(collection = "persistentlogins")
 @CompoundIndexes({

@@ -1,6 +1,5 @@
 package com.ankurpathak.springsessiontest;
 
-import org.springframework.context.ApplicationEvent;
 import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletResponse;

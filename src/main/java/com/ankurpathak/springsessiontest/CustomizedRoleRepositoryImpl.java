@@ -3,13 +3,11 @@ package com.ankurpathak.springsessiontest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigInteger;
-
 @Repository
-public class CustomizedUserRepositoryImpl extends AbstractDomainCustomizedRepository<User, BigInteger> implements CustomizedUserRepository {
+public class CustomizedRoleRepositoryImpl extends AbstractDomainCustomizedRepository<Role, String> implements CustomizedRoleRepository {
     private MongoTemplate template;
 
-    public CustomizedUserRepositoryImpl(MongoTemplate template) {
+    public CustomizedRoleRepositoryImpl(MongoTemplate template) {
         this.template = template;
     }
 

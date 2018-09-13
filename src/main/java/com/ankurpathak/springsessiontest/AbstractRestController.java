@@ -45,7 +45,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    public ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
+    private Pageable getPageable(int block, int size, String sort) {
         Pageable request = null;
         int indexOfSort = -1;
         if (!StringUtils.isEmpty(sort) && (indexOfSort = sort.indexOf(",")) != -1) {
@@ -63,10 +63,22 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
             }
 
         }
+        if (size > 200)
+            size = 200;
+        else if (size <=0)
+            size = 20;
         if (request == null)
-            request = PageRequest.of(block, size);
+            request = PageRequest.of(block - 1, size);
+        return request;
+    }
+
+
+    public ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
+        if(block < 1)
+            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+        Pageable request = getPageable(block, size, sort);
         Page<T> page = getService().findPaginated(request);
-        if (block > page.getTotalPages() - 1)
+        if (block > page.getTotalPages())
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<Page<T>, T, ID>(page, response));
         return ResponseEntity.ok(page.getContent());
@@ -96,7 +108,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
     public ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, Class<?> type) {
-        try{
+        try {
             T t = tryCreateOne(dto, result, request, response, type);
             return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of("id", t.getId()));
         } catch (DuplicateKeyException ex) {
@@ -105,7 +117,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         }
     }
 
-    public void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request){
+    public void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
         FoundException foundEx = ApplicationExceptionProcessor.processDuplicateKeyException(ex, dto, result);
         if (foundEx != null) {
             ControllerUtil.processValidationForFound(result, messageSource, request, foundEx);
@@ -135,8 +147,25 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
     }
 
-    public ResponseEntity<?> search(String field, String value, int block, int size, String sort, HttpServletResponse response){
-        return null;
+    public List<T> search(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
+        if(block < 1)
+            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+        Pageable pageable = getPageable(block, size, sort);
+        Page<T> page = getService().search(field, value, pageable, type);
+        if (block > page.getTotalPages())
+            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<Page<T>, T, ID>(page, response));
+        return page.getContent();
+    }
+
+    public List<String> listField(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
+        if(block < 1)
+            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+        Pageable pageable = getPageable(block, size, sort);
+        Page<String> page = getService().listField(field, value, pageable, type);
+        if (block > page.getTotalPages())
+            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+        return page.getContent();
     }
 
 }

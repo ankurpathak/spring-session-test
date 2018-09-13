@@ -2,7 +2,6 @@ package com.ankurpathak.springsessiontest;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.io.Serializable;
 import java.util.List;
@@ -48,7 +47,7 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
         getDao().deleteById(id);
     }
 
-    protected abstract MongoRepository<T, ID> getDao();
+    protected abstract ExtendedRepository<T, ID> getDao();
 
     @Override
     public String domainName(){
@@ -59,4 +58,14 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
         return name.substring(1, index).trim();
     }
 
+
+    @Override
+    public Page<T> search(String field, String value, Pageable pageable, Class<T> type) {
+        return getDao().search(field, value, pageable, type);
+    }
+
+    @Override
+    public Page<String> listField(String field, String value, Pageable pageable, Class<T> type) {
+        return getDao().listField(field, value, pageable, type);
+    }
 }

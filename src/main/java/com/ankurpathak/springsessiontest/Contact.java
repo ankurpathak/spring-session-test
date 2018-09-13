@@ -1,10 +1,12 @@
 package com.ankurpathak.springsessiontest;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import java.io.Serializable;
 
 public class Contact implements Serializable {
 
-
+    @JsonView({User.View.Me.class})
     private String value;
     private String tag;
     boolean checked;

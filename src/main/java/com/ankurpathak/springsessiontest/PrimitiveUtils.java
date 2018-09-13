@@ -1,7 +1,5 @@
 package com.ankurpathak.springsessiontest;
 
-import org.springframework.data.redis.core.index.Indexed;
-
 import java.math.BigInteger;
 
 public class PrimitiveUtils {

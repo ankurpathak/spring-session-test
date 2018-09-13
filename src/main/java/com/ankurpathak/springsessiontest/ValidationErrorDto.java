@@ -1,8 +1,13 @@
 package com.ankurpathak.springsessiontest;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ValidationErrorDto {

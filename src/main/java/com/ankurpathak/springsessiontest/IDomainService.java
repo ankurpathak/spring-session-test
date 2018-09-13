@@ -34,4 +34,7 @@ public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
 
     String domainName();
 
+    Page<T> search(String field, String value, Pageable pageable, Class<T> type);
+    Page<String> listField(String field, String value, Pageable pageable, Class<T> type);
+
 }

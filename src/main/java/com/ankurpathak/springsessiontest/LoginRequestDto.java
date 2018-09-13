@@ -1,9 +1,5 @@
 package com.ankurpathak.springsessiontest;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class LoginRequestDto {
     private  String username;
     private String password;

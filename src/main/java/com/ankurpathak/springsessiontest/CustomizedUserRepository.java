@@ -1,8 +1,6 @@
 package com.ankurpathak.springsessiontest;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.math.BigInteger;
 
-public interface CustomizedUserRepository {
-    Page<User> search(String field, String value, Pageable pageable);
+public interface CustomizedUserRepository extends IDomainCustomizedRepository<User, BigInteger> {
 }

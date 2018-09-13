@@ -1,6 +1,5 @@
 package com.ankurpathak.springsessiontest;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,7 +10,7 @@ public class RoleService extends AbstractDomainService<Role, String> implements 
     private final IRoleRepository dao;
 
     @Override
-    protected MongoRepository<Role, String> getDao() {
+    protected ExtendedRepository<Role, String> getDao() {
         return dao;
     }
 

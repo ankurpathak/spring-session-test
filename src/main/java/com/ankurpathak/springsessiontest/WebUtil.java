@@ -1,11 +1,9 @@
 package com.ankurpathak.springsessiontest;
 
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.security.web.savedrequest.SavedRequest;
-import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 /**

@@ -1,7 +1,5 @@
 package com.ankurpathak.springsessiontest;
 
-import org.springframework.http.ResponseEntity;
-
 import java.nio.file.Paths;
 
 public interface RequestMappingPaths {
@@ -18,6 +16,13 @@ public interface RequestMappingPaths {
 
 
     String PATH_REGISTER = "/register";
+
+
+    String PATH_SEARCH_USER = "/users/search/{field}/{value}";
+
+
+    String PATH_LIST_FIELD_USER = "/users/list/{field}/{value}";
+
 
 
     static String apiPath(String path){
