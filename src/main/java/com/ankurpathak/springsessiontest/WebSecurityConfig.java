@@ -33,21 +33,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String SUCCESS_URL = "/";
 
 
-    @Autowired private MongoTemplate mongoTemplate;
-    @Autowired private UserDetailsService userDetailsService;
-    @Autowired private PasswordEncoder passwordEncoder;
-    @Autowired private ObjectMapper objectMapper;
-    @Autowired private DaoAuthenticationProvider daoAuthenticationProvider;
-    @Autowired private RememberMeAuthenticationProvider rememberMeAuthenticationProvider;
-    @Autowired private AuthenticationManager authenticationManager;
-    @Autowired private RememberMeServices persistentTokenBasedRememberMeServices;
-    @Autowired private SocialWebAuthenticationProvider socialWebAuthenticationProvider;
-
-
-
-
-
-
+    @Autowired
+    private MongoTemplate mongoTemplate;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private DaoAuthenticationProvider daoAuthenticationProvider;
+    @Autowired
+    private RememberMeAuthenticationProvider rememberMeAuthenticationProvider;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private RememberMeServices persistentTokenBasedRememberMeServices;
+    @Autowired
+    private SocialWebAuthenticationProvider socialWebAuthenticationProvider;
+    @Autowired
+    private SocialApplicationAuthenticationProvider socialApplicationAuthenticationProvider;
 
 
     @Bean
@@ -66,12 +71,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String ANNONYMOUS_KEY = "18f618ee-fa0f-4147-920c-8659f672f4d2";
 
 
-
     @Autowired
     void globalConfigure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider)
                 .authenticationProvider(rememberMeAuthenticationProvider)
-        .authenticationProvider(socialWebAuthenticationProvider);
+                .authenticationProvider(socialWebAuthenticationProvider)
+                .authenticationProvider(socialApplicationAuthenticationProvider);
     }
 
 
@@ -110,6 +115,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(socialApplicationAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(socialWebAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
                 .exceptionHandling()
@@ -119,8 +125,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Lazy
-    SocialWebAuthenticationFilter socialWebAuthenticationFilter(){
+    public SocialWebAuthenticationFilter socialWebAuthenticationFilter() {
         SocialWebAuthenticationFilter filter = new SocialWebAuthenticationFilter();
+        filter.setAuthenticationManager(authenticationManager);
+        filter.setRememberMeServices(persistentTokenBasedRememberMeServices);
+        filter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
+        filter.setAuthenticationSuccessHandler(restAuthenticationSuccessHandler);
+        return filter;
+    }
+
+    @Bean
+    @Lazy
+    public SocialApplicationAuthenticationFilter socialApplicationAuthenticationFilter() {
+        SocialApplicationAuthenticationFilter filter = new SocialApplicationAuthenticationFilter();
         filter.setAuthenticationManager(authenticationManager);
         filter.setRememberMeServices(persistentTokenBasedRememberMeServices);
         filter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
@@ -141,8 +158,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private AccessDeniedHandler accessDeniedHandler;
 
 
-
-
     @Bean
     public PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
         return new ExtendedPersistentTokenBasedRememberMeServices(REMEMBER_ME_KEY, userDetailsService, persistentTokenRepository());
@@ -157,17 +172,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Lazy
-    public SecurityContextCompositeFilter securityContextCompositeFilter(){
+    public SecurityContextCompositeFilter securityContextCompositeFilter() {
         return new SecurityContextCompositeFilter();
     }
 
     @Bean
     @Lazy
-    public AnonymousAuthenticationFilter anonymousAuthenticationFilter(){
+    public AnonymousAuthenticationFilter anonymousAuthenticationFilter() {
         return new ExtendedAnonymousAuthenticationFilter(ANNONYMOUS_KEY);
     }
-
-
 
 
 }

@@ -1,5 +1,7 @@
 package com.ankurpathak.springsessiontest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,20 +18,22 @@ import org.springframework.util.Assert;
 import java.util.Optional;
 
 public class SocialWebAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
+    final static Logger log = LoggerFactory.getLogger(SocialWebAuthenticationProvider.class);
+
     private static final String USER_NOT_FOUND_PASSWORD = "userNotFoundPassword";
     private volatile String userNotFoundEncodedPassword;
-    private UserDetailsService userDetailsService;
-    private PasswordEncoder passwordEncoder;
-    private final GoogleService googleService;
-    private final FacebookService facebookService;
-    private final LinkedinService linkedinService;
+    protected final UserDetailsService userDetailsService;
+    protected final PasswordEncoder passwordEncoder;
+    protected final GoogleService googleService;
+    protected final FacebookService facebookService;
+    protected final LinkedinService linkedinService;
 
-    public SocialWebAuthenticationProvider(GoogleService googleService, UserDetailsService userDetailsService, FacebookService facebookService, LinkedinService linkedinService) {
+    public SocialWebAuthenticationProvider(UserDetailsService userDetailsService, GoogleService googleService, FacebookService facebookService, LinkedinService linkedinService) {
         this.googleService = googleService;
         this.userDetailsService  = userDetailsService;
         this.facebookService = facebookService;
         this.linkedinService = linkedinService;
-        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         super.hideUserNotFoundExceptions = false;
     }
 
@@ -174,10 +178,6 @@ public class SocialWebAuthenticationProvider extends AbstractUserDetailsAuthenti
 
     }
 
-
-    public void setUserDetailsService(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
     protected UserDetailsService getUserDetailsService() {
         return this.userDetailsService;

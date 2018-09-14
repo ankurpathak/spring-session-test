@@ -33,12 +33,22 @@ public class AppConfig {
 
 
     @Bean
-    public SocialWebAuthenticationProvider socialAuthenticationProvider(
+    public SocialWebAuthenticationProvider socialWebAuthenticationProvider(
+            UserDetailsService userDetailsService,
             GoogleService googleService,
             FacebookService facebookService,
-            LinkedinService linkedinService,
-            UserDetailsService userDetailsService){
-        return new SocialWebAuthenticationProvider(googleService, userDetailsService, facebookService, linkedinService);
+            LinkedinService linkedinService){
+        return new SocialWebAuthenticationProvider(userDetailsService, googleService, facebookService, linkedinService);
+    }
+
+
+    @Bean
+    public SocialApplicationAuthenticationProvider socialApplicationAuthenticationProvider(
+            UserDetailsService userDetailsService,
+            GoogleService googleService,
+            FacebookService facebookService,
+            LinkedinService linkedinService){
+        return new SocialApplicationAuthenticationProvider(userDetailsService, googleService, facebookService, linkedinService);
     }
 
 
