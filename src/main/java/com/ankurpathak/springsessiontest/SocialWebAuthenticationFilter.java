@@ -1,37 +1,28 @@
 package com.ankurpathak.springsessiontest;
 
-import org.pac4j.core.context.J2EContext;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.oauth.client.FacebookClient;
-import org.pac4j.oauth.client.Google2Client;
-import org.pac4j.oauth.credentials.OAuth20Credentials;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriTemplate;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
-public class SocialWebAuthenticationFilter extends AbstractAuthenticationProcessingFilter{
+public class SocialWebAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private final String  defaultFilterProcessesUrl;
+    private final String defaultFilterProcessesUrl;
 
     protected SocialWebAuthenticationFilter(String defaultFilterProcessesUrl) {
         super(new AntPathRequestMatcher(defaultFilterProcessesUrl));
         this.defaultFilterProcessesUrl = defaultFilterProcessesUrl;
     }
 
-    protected SocialWebAuthenticationFilter(){
+    protected SocialWebAuthenticationFilter() {
         this("/login/social/*");
-
     }
 
 
@@ -39,18 +30,44 @@ public class SocialWebAuthenticationFilter extends AbstractAuthenticationProcess
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+        String provider = obtainProvider(request);
+        String code = obtainCode(request);
+
+        if (provider == null) {
+            provider = "";
+        }
+
+        if (code == null) {
+            code = "";
+        }
 
 
-        //System.out.println(request.getRequestURI());
+        provider = provider.trim();
+        code = code.trim();
 
-        //System.out.println(request.getQueryString());
+        SocialWebAuthenticationToken authRequest = new SocialWebAuthenticationToken(
+                provider,code);
+
+        setDetails(request, authRequest);
+
+        return this.getAuthenticationManager().authenticate(authRequest);
+    }
 
 
+    protected void setDetails(HttpServletRequest request,
+                              SocialWebAuthenticationToken authRequest) {
+        authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
+    }
+
+    protected String obtainProvider(HttpServletRequest request) {
+        UriTemplate template = new UriTemplate("/login/social/{provider}");
+        Map<String, String> uriParams = template.match(request.getRequestURI());
+        return uriParams.get("provider");
+    }
 
 
-
-
-        return null;
+    protected String obtainCode(HttpServletRequest request) {
+        return request.getParameter("code");
     }
 
 

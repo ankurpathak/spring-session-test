@@ -41,6 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired private RememberMeAuthenticationProvider rememberMeAuthenticationProvider;
     @Autowired private AuthenticationManager authenticationManager;
     @Autowired private RememberMeServices persistentTokenBasedRememberMeServices;
+    @Autowired private SocialWebAuthenticationProvider socialWebAuthenticationProvider;
 
 
 
@@ -69,7 +70,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     void globalConfigure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider)
-                .authenticationProvider(rememberMeAuthenticationProvider);
+                .authenticationProvider(rememberMeAuthenticationProvider)
+        .authenticationProvider(socialWebAuthenticationProvider);
     }
 
 
@@ -120,6 +122,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     SocialWebAuthenticationFilter socialWebAuthenticationFilter(){
         SocialWebAuthenticationFilter filter = new SocialWebAuthenticationFilter();
         filter.setAuthenticationManager(authenticationManager);
+        filter.setRememberMeServices(persistentTokenBasedRememberMeServices);
+        filter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
+        filter.setAuthenticationSuccessHandler(restAuthenticationSuccessHandler);
         return filter;
     }
 
@@ -161,6 +166,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AnonymousAuthenticationFilter anonymousAuthenticationFilter(){
         return new ExtendedAnonymousAuthenticationFilter(ANNONYMOUS_KEY);
     }
+
+
 
 
 }

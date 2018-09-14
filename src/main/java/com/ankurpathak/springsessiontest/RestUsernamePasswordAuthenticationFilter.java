@@ -20,19 +20,19 @@ public class RestUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
 
     @Override
     protected String obtainPassword(HttpServletRequest request)  {
-        if(WebUtil.isAjax(request)){
+     //   if(WebUtil.isAjax(request)){
             return obtainLoginRequest(request).getPassword();
-        }else {
-            return super.obtainPassword(request);
-        }
+     //   }else {
+       //     return super.obtainPassword(request);
+     //   }
     }
 
     @Override
     protected String obtainUsername(HttpServletRequest request) {
-        if(WebUtil.isAjax(request))
+       // if(WebUtil.isAjax(request))
             return obtainLoginRequest(request).getUsername();
-        else
-            return super.obtainUsername(request);
+       // else
+       //     return super.obtainUsername(request);
     }
 
 

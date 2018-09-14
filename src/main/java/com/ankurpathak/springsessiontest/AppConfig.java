@@ -32,6 +32,16 @@ public class AppConfig {
     }
 
 
+    @Bean
+    public SocialWebAuthenticationProvider socialAuthenticationProvider(
+            GoogleService googleService,
+            FacebookService facebookService,
+            LinkedinService linkedinService,
+            UserDetailsService userDetailsService){
+        return new SocialWebAuthenticationProvider(googleService, userDetailsService, facebookService, linkedinService);
+    }
+
+
 
 
 }

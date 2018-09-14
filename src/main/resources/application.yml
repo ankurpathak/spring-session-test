@@ -7,3 +7,24 @@ spring:
             client-id: 326660090908-3so8blmps3nv6460tqv0js9salijsg26.apps.googleusercontent.com
             client-secret: ukfB2KmsBDGckQ9CIlW5qJrk
 
+
+
+
+
+
+social:
+  google:
+    clientId: 326660090908-3so8blmps3nv6460tqv0js9salijsg26.apps.googleusercontent.com
+    clientSecret: ukfB2KmsBDGckQ9CIlW5qJrk
+    redirectUrl: http://localhost:8080/login/social/google
+    scope: profile email openid
+  facebook:
+    clientId: 469238430226460
+    clientSecret: 389c6717d14f3f8a721a00c6fe4121a6
+    redirectUrl: http://localhost:8080/login/social/facebook
+    scope: public_profile email
+  linkedin:
+    clientId: 81k8nat3jj8h10
+    clientSecret: igCWjf3uEWOMpEjF
+    redirectUrl: http://localhost:8080/login/social/linkedin
+    scope: r_basicprofile r_emailaddress

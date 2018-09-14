@@ -50,6 +50,7 @@ public class ContextRefreshedListener implements ApplicationListener<ContextRefr
     static {
         users.add(User.getInstance().id(BigInteger.TWO).firstName("Ankur").lastName("Pathak").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("ankurpathak@live.in")).password("password"));
         users.add(User.getInstance().id(BigInteger.TWO.add(BigInteger.ONE)).firstName("Amar").lastName("Mule").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("amarmule@live.in")).password("password"));
+       // users.add(User.getInstance().id(BigInteger.TWO.add(BigInteger.TWO)).firstName("Pradeep").lastName("Negi").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("ankurpathak.ap@gmail.com")).password("password"));
 
 
         roles.add(Role.getInstance().id("1").name(Role.ROLE_ADMIN).addPrivilege(Role.Privilege.PRIV_ADMIN));

@@ -46,7 +46,7 @@ public class RestSimpleUrlAuthenticationFailureHandler implements Authentication
 
         if (defaultFailureUrl == null) {
             logger.info("Message: {}  Cause: {}", ex.getMessage(), ex.getCause());
-            generateResponse(request,response);
+            generateResponse(request,response, ex);
         }
         else {
             saveException(request, ex);
@@ -108,7 +108,7 @@ public class RestSimpleUrlAuthenticationFailureHandler implements Authentication
         this.allowSessionCreation = allowSessionCreation;
     }
 
-    private void generateResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        FilterUtil.generateUnauthorized(request, response, objectMapper, messageSource);
+    private void generateResponse(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex) throws IOException {
+        FilterUtil.generateUnauthorized(request, response, objectMapper, messageSource, ex);
     }
 }

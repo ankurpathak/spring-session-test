@@ -21,11 +21,10 @@ public class HeaderCookieHttpSessionIdResolver implements HttpSessionIdResolver 
 
     private HttpSessionIdResolver resolve(HttpServletRequest request){
         HttpSessionIdResolver httpSessionIdResolver = null;
-        if(WebUtil.isAjax(request))
+        if(WebUtil.isAjax(request)) {
             httpSessionIdResolver = headerHttpSessionIdResolver;
-        else {
+        }else {
             httpSessionIdResolver = cookieHttpSessionIdResolver;
-            request.setAttribute(HeaderCookieHttpSessionIdResolver.class.getName(), cookieHttpSessionIdResolver);
         }
         request.setAttribute(HeaderCookieHttpSessionIdResolver.class.getName(), httpSessionIdResolver);
         return httpSessionIdResolver;

@@ -3,6 +3,7 @@ package com.ankurpathak.springsessiontest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.AuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,20 +12,34 @@ import java.io.IOException;
 public class FilterUtil {
 
     public static void generateForbidden(HttpServletRequest request, HttpServletResponse response, ObjectMapper objectMapper, MessageSource messageSource) throws IOException{
-        if(!response.isCommitted()){
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            objectMapper.writeValue(
-                    response.getWriter(),
-                    ApiResponse.getInstance(
-                            ApiCode.FORBIDDEN,
-                            MessageUtil.getMessage(messageSource, ApiMessages.FORBIDDEN)
-                    )
-            );
-        }
+        generateUnauthorized(request, response, objectMapper, messageSource, null);
     }
 
-    public static void generateUnauthorized(HttpServletRequest request, HttpServletResponse response, ObjectMapper objectMapper, MessageSource messageSource) throws IOException{
+    public static void generateUnauthorized(HttpServletRequest request, HttpServletResponse response, ObjectMapper objectMapper, MessageSource messageSource, AuthenticationException ex) throws IOException{
+        if(!response.isCommitted()){
+            if(ex instanceof SocialProfileNotFoundException){
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                objectMapper.writeValue(
+                        response.getWriter(),
+                        ApiResponse.getInstance(
+                                ApiCode.UNAUTHORIZED,
+                                MessageUtil.getMessage(messageSource, ApiMessages.NOT_FOUND, SocialProfile.class.getSimpleName(), "email", ((SocialProfileNotFoundException) ex).getProfile().getEmail())
+                        ).addExtra("profile", ((SocialProfileNotFoundException) ex).getProfile())
+                );
+            }else{
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                objectMapper.writeValue(
+                        response.getWriter(),
+                        ApiResponse.getInstance(
+                                ApiCode.UNAUTHORIZED,
+                                MessageUtil.getMessage(messageSource, ApiMessages.UNAUTHORIZED)
+                        )
+                );
+            }
+        }
+    }public static void generateUnauthorized(HttpServletRequest request, HttpServletResponse response, ObjectMapper objectMapper, MessageSource messageSource) throws IOException{
         if(!response.isCommitted()){
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
