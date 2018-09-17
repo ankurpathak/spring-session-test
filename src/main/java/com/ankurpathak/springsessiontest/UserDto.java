@@ -8,7 +8,10 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Set;
 
-@PasswordMatches(groups = DomainDto.Register.class)
+import static org.hamcrest.Matchers.notNullValue;
+import static org.valid4j.Assertive.ensure;
+
+@PasswordMatches(groups = {DomainDto.Register.class, DomainDto.PasswordReset.class})
 public class UserDto extends DomainDto<User, BigInteger> implements Serializable {
 
     @NotBlank(groups = Default.class)
@@ -18,13 +21,13 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
     @NotBlank(groups = Default.class)
     private String lastName;
     @NotBlank(groups = Default.class)
-    @com.github.ankurpathak.primitive.bean.constraints.string.Email
+    @com.github.ankurpathak.primitive.bean.constraints.string.Email(groups = {Register.class})
     private String email;
     private String username;
     @NotContainWhitespace(groups = Default.class)
     private String middleName;
 
-    @NotBlank(groups = {Register.class})
+    @NotBlank(groups = {Register.class, PasswordReset.class})
     private String password;
     private String confirmPassword;
     private String contact;
@@ -122,14 +125,24 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
                 .middleName(middleName)
                 .email(Contact.getInstance(email))
                 .roles(Set.of(Role.ROLE_ADMIN))
-                .password(getPassword());
+                .password(Password.getInstance().value(password));
+    }
+
+
+    private User forForgetPassword(User user){
+        user.setPassword(user.getPassword().value(this.password));
+        return user;
     }
 
     @Override
-    public User updateDomain(User user) {
-        if (firstName != null) user.firstName(firstName);
-        if (lastName != null) user.lastName(lastName);
-        if (middleName != null) user.middleName(middleName);
+    public User updateDomain(User user, Class<?> type) {
+        ensure(user, notNullValue());
+        ensure(type, notNullValue());
+        if (type.equals(PasswordReset.class)) {
+            return forForgetPassword(user);
+        }
+
+
         return user;
     }
 

@@ -28,7 +28,8 @@ import java.util.Locale;
 public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandler {
 
 
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private static final Logger log = LoggerFactory.getLogger(ValidationRestControllerAdvice.class);
 
 
     @Autowired
@@ -84,29 +85,22 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
 
     @ExceptionHandler({ValidationException.class})
     public ResponseEntity<Object> handleValidationException(ValidationException ex, WebRequest request) {
+        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
         return handleValidationErrors(ex, request);
     }
 
 
-    @Override
-    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return handleExceptionInternal(
-                ex,
-                ApiResponse.getInstance(ApiCode.REQUIRED_QUERY_PARAM, MessageUtil.getMessage(messageSource, ApiMessages.REQUIRED_QUERY_PARAM, ex.getParameterName())),
-                new HttpHeaders(),
-                status,
-                request
-        );
-    }
 
     @Override
     protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
         return handleValidationErrors(ex, request);
     }
 
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
         return handleValidationErrors(ex, request);
     }
 

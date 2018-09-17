@@ -48,4 +48,7 @@ public class SecurityContextCompositeImpl extends SecurityContextImpl  {
     public String toString() {
         return securityContext.toString();
     }
+
+
+
 }

@@ -5,9 +5,14 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.stereotype.Component;
 
 @SpringBootApplication
+@EnableMongoAuditing(
+        auditorAwareRef = "userIdAuditorAware",
+        dateTimeProviderRef = "instantDateTimeProvider"
+)
 public class SpringSessionTestApplication {
 
 
@@ -28,7 +33,5 @@ class ApplicationRunnerImpl implements ApplicationRunner{
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        var url = linkedinService.authorizationUrl();
-        System.out.println(url);
     }
 }

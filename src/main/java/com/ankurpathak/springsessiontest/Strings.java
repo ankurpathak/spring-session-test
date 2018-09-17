@@ -4,6 +4,8 @@ import org.springframework.util.StringUtils;
 
 public class Strings {
 
+    public static final String EMPTY = "";
+
     public static String makeFirstLowercase(String string){
         if(StringUtils.isEmpty(string))
             return string;

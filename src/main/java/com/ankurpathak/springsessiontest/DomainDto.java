@@ -6,7 +6,7 @@ public abstract class DomainDto<T extends Domain<ID>, ID extends Serializable> i
 
     abstract public T toDomain(Class<?> type);
 
-    abstract public T updateDomain(T domain);
+    abstract public T updateDomain(T domain, Class<?> type);
 
     public String domainName(){
         String name = this.getClass().getSimpleName();
@@ -26,4 +26,6 @@ public abstract class DomainDto<T extends Domain<ID>, ID extends Serializable> i
 
     }
 
+    public interface PasswordReset {
+    }
 }

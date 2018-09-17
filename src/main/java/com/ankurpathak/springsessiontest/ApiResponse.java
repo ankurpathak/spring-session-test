@@ -15,7 +15,7 @@ public class ApiResponse {
 
     @JsonAnyGetter
     public Map<String, Object> getExtras() {
-        return Collections.unmodifiableMap(extras);
+        return extras;
     }
 
 
@@ -39,8 +39,11 @@ public class ApiResponse {
         this.extras.put("message", message);
     }
 
-    @JsonCreator
     public static ApiResponse getInstance(@JsonProperty("code") ApiCode code, @JsonProperty("message") String message){
         return new ApiResponse(code, message);
+    }
+
+
+    public ApiResponse() {
     }
 }

@@ -7,10 +7,11 @@ import java.math.BigInteger;
 
 @Repository
 public class CustomizedUserRepositoryImpl extends AbstractDomainCustomizedRepository<User, BigInteger> implements CustomizedUserRepository {
-    private MongoTemplate template;
-
-    public CustomizedUserRepositoryImpl(MongoTemplate template) {
+    private final MongoTemplate template;
+    private final ISequenceRepository sequenceRepository;
+    public CustomizedUserRepositoryImpl(MongoTemplate template, ISequenceRepository sequenceRepository) {
         this.template = template;
+        this.sequenceRepository = sequenceRepository;
     }
 
 
@@ -18,5 +19,11 @@ public class CustomizedUserRepositoryImpl extends AbstractDomainCustomizedReposi
     @Override
     public MongoTemplate getTemplate() {
         return template;
+    }
+
+    @Override
+    public User persist(final User user) {
+        template.insert(user.id(sequenceRepository.next(Sequence.ID_USER_SEQ)));
+        return user;
     }
 }

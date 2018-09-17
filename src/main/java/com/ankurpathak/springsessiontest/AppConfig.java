@@ -2,6 +2,8 @@ package com.ankurpathak.springsessiontest;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -49,6 +51,16 @@ public class AppConfig {
             FacebookService facebookService,
             LinkedinService linkedinService){
         return new SocialApplicationAuthenticationProvider(userDetailsService, googleService, facebookService, linkedinService);
+    }
+
+
+    @Bean
+    public TaskExecutor getTaskExecutor() {
+        ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+        threadPoolTaskExecutor.setCorePoolSize(1);
+        threadPoolTaskExecutor.setMaxPoolSize(1);
+        return threadPoolTaskExecutor;
+
     }
 
 

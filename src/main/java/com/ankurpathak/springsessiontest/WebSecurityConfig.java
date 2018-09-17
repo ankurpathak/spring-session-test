@@ -99,6 +99,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, apiPath(PATH_REGISTER)).hasAuthority(Role.Privilege.PRIV_REGISTER)
                 .antMatchers(HttpMethod.GET, apiPath(PATH_SEARCH_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.GET, apiPath(PATH_LIST_FIELD_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.PUT, apiPath(PATH_REGISTER_EMAIL)).hasAuthority(Role.Privilege.PRIV_REGISTER_EMAIL)
+                .antMatchers(HttpMethod.PUT, apiPath(PATH_REGISTER_ENABLE)).hasAuthority(Role.Privilege.PRIV_ACCOUNT_ENABLE)
+                .antMatchers(HttpMethod.PUT, apiPath(PATH_FORGET_PASSWORD_EMAIL)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD_EMAIL)
+                .antMatchers(HttpMethod.PUT, apiPath(PATH_FORGET_PASSWORD_ENABLE)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD_ENABLE)
+                .antMatchers(HttpMethod.PUT, apiPath(PATH_FORGET_PASSWORD)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD)
                 .anyRequest()
                 .denyAll()
 

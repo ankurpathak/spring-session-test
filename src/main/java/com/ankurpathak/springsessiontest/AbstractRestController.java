@@ -65,7 +65,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         }
         if (size > 200)
             size = 200;
-        else if (size <=0)
+        else if (size <= 0)
             size = 20;
         if (request == null)
             request = PageRequest.of(block - 1, size);
@@ -74,7 +74,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
 
     public ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
-        if(block < 1)
+        if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
         Pageable request = getPageable(block, size, sort);
         Page<T> page = getService().findPaginated(request);
@@ -135,20 +135,28 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         }
     }
 
-    public ResponseEntity<?> update(TDto dto, ID id, HttpServletRequest request) {
+    public ResponseEntity<?> update(TDto dto, ID id, Class<?> type, HttpServletRequest request) {
         Optional<T> domain = getService().findById(id);
-        if (domain.isPresent()) {
-            getService().update(dto.updateDomain(domain.get()));
+        return update(dto, domain.orElse(null), id, type, request);
+    }
+
+
+    public ResponseEntity<?> update(TDto dto, T t, Class<?> type, HttpServletRequest request) {
+        return update(dto, t, t.getId(),type, request);
+    }
+
+
+    public ResponseEntity<?> update(TDto dto, T t, ID id, Class<?> type, HttpServletRequest request) {
+        if (t != null) {
+            getService().update(dto.updateDomain(t, type));
             return ControllerUtil.processSuccess(messageSource, request);
         } else {
             throw new NotFoundException(String.valueOf(id), "id", dto.domainName(), ApiCode.NOT_FOUND);
         }
-
-
     }
 
     public List<T> search(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
-        if(block < 1)
+        if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
         Pageable pageable = getPageable(block, size, sort);
         Page<T> page = getService().search(field, value, pageable, type);
@@ -159,7 +167,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
     public List<String> listField(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
-        if(block < 1)
+        if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
         Pageable pageable = getPageable(block, size, sort);
         Page<String> page = getService().listField(field, value, pageable, type);

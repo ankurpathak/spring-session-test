@@ -6,23 +6,24 @@ import java.io.Serializable;
 
 public class Contact implements Serializable {
 
+    public static final String TAG_PRIMARY = "primary";
+
     @JsonView({User.View.Me.class})
     private String value;
     private String tag;
-    boolean checked;
-    private Token token;
+    private boolean checked;
+    private String tokenId;
 
     public static Contact getInstance(String value){
         return new Contact(value);
     }
 
-
-    public Token getToken() {
-        return token;
+    public String getTokenId() {
+        return tokenId;
     }
 
-    public void setToken(Token token) {
-        this.token = token;
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
     }
 
     public Contact(String value) {

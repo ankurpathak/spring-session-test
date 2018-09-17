@@ -17,24 +17,42 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-@Document(collection = DocumentCollections.USERS)
+@Document(collection = DocumentCollections.USER)
 @CompoundIndexes({
-        @CompoundIndex(name = DocumentCollections.Index.USERS_EMAIL_IDX, sparse = true, unique = true, def = DocumentCollections.Index.USERS_EMAIL_IDX_DEF),
-        @CompoundIndex(name = DocumentCollections.Index.USERS_CONTACT_IDX, sparse = true, unique = true, def = DocumentCollections.Index.USERS_CONTACT_IDX_DEF)
+        @CompoundIndex(name = DocumentCollections.Index.USER_EMAIL_IDX, sparse = true, unique = true, def = DocumentCollections.Index.USER_EMAIL_IDX_DEF),
+        @CompoundIndex(name = DocumentCollections.Index.USER_CONTACT_IDX, sparse = true, unique = true, def = DocumentCollections.Index.USER_CONTACT_IDX_DEF),
+        @CompoundIndex(name = DocumentCollections.Index.USER_EMAIL_TOKEN_ID_IDX, sparse = true, unique = true, def = DocumentCollections.Index.USER_EMAIL_TOKEN_ID_IDX_DEF)
 })
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class User extends Domain<BigInteger> implements Serializable {
+public class User extends ExtendedDomain<BigInteger> implements Serializable {
 
 
     private String firstName;
     private String lastName;
     private Contact email;
-    @Indexed(name = DocumentCollections.Index.USERS_USERNAME_IDX, unique = true, sparse = true)
+    @Indexed(name = DocumentCollections.Index.USER_USERNAME_IDX, unique = true, sparse = true)
     private String username;
     private Contact contact;
     private Set<String> roles;
-    private String password;
+    private boolean enabled;
 
+
+    public User password(Password password){
+        this.password = password;
+        return this;
+    }
+
+
+    private Password password;
+
+
+    public Password getPassword() {
+        return password;
+    }
+
+    public void setPassword(Password password) {
+        this.password = password;
+    }
 
     private Set<Contact> emails;
 
@@ -118,13 +136,19 @@ public class User extends Domain<BigInteger> implements Serializable {
         return this;
     }
 
-    public User password(String password) {
-        this.password = password;
-        return this;
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
 
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     protected User() {
+        enabled = false;
 
     }
 
@@ -175,17 +199,6 @@ public class User extends Domain<BigInteger> implements Serializable {
     public void setRoles(Set<String> roles) {
         this.roles = roles;
     }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-
     @Override
     @JsonView({View.Public.class, View.Me.class})
     public BigInteger getId() {
@@ -216,6 +229,14 @@ public class User extends Domain<BigInteger> implements Serializable {
         this.middleName = middleName;
         return this;
     }
+
+    public User enabled(boolean enabled) {
+        this.enabled = enabled;
+        return this;
+    }
+
+
+
 
     public interface View {
 
@@ -272,7 +293,23 @@ public class User extends Domain<BigInteger> implements Serializable {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
+        User user = (User) o;
+
+        return email != null ? email.equals(user.email) : user.email == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        return result;
+    }
 }
 
 

@@ -7,7 +7,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,6 +27,9 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
         this.id = id;
     }
 
+    public Domain() {
+        created = updated = Instant.now();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -49,11 +54,11 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
 
 
     @CreatedDate
-    private LocalDateTime created;
+    private Instant created;
 
 
     @LastModifiedDate
-    private LocalDateTime updated;
+    private Instant updated;
 
     private Set<String> tags;
 
@@ -80,25 +85,35 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
         this.tags = tags;
     }
 
-    public LocalDateTime getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
-    public LocalDateTime getUpdated() {
+    public Instant getUpdated() {
         return updated;
     }
 
-    public void setUpdated(LocalDateTime updated) {
+    public void setUpdated(Instant updated) {
         this.updated = updated;
     }
 
-    private Token passwordReset;
 
-    public  void setPasswordResetToken(Token passwordReset){
-        this.passwordReset = passwordReset;
-    };
+    public Domain created(Instant created) {
+        this.created = created;
+        return this;
+    }
+
+    public Domain updated(Instant updated) {
+        this.updated = updated;
+        return this;
+    }
+
+    public Domain tags(Set<String> tags) {
+        this.tags = tags;
+        return this;
+    }
 }

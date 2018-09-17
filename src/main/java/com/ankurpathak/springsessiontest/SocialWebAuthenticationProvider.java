@@ -77,7 +77,7 @@ public class SocialWebAuthenticationProvider extends AbstractUserDetailsAuthenti
             }
 
             try {
-                super.getPostAuthenticationChecks().check(user);
+                super.getPreAuthenticationChecks().check(user);
                 this.additionalAuthenticationChecks(user, (UsernamePasswordAuthenticationToken)authentication);
             } catch (AuthenticationException var7) {
                 if (!cacheWasUsed) {
@@ -92,7 +92,7 @@ public class SocialWebAuthenticationProvider extends AbstractUserDetailsAuthenti
                     this.logger.debug("User '" + profile.get().getEmail() + "' not found");
                     throw new SocialProfileNotFoundException(var6.getMessage(), var6, profile.get());
                 }
-                this.getPostAuthenticationChecks().check(user);
+                this.getPreAuthenticationChecks().check(user);
                 this.additionalAuthenticationChecks(user, (UsernamePasswordAuthenticationToken)authentication);
             }
 

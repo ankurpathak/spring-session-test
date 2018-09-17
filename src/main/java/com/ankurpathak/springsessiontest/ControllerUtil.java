@@ -1,5 +1,6 @@
 package com.ankurpathak.springsessiontest;
 
+import com.ankurpathak.springsessiontest.controller.InvalidTokenException;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,5 +84,25 @@ public class ControllerUtil {
 
     public static ResponseEntity<?> processSuccessCreated(MessageSource messageSource, HttpServletRequest request, Map<String, Object> extras) {
         return processSuccess(messageSource, request, HttpStatus.CREATED, extras);
+    }
+
+
+    public static ResponseEntity<?> processTokenStatus(Token.TokenStatus status, String token, MessageSource messageSource, HttpServletRequest request){
+        switch (status) {
+            case VALID:
+                return ControllerUtil.processSuccess(messageSource, request);
+
+            case EXPIRED:
+                throw new InvalidTokenException(
+                        MessageUtil.getMessage(messageSource, ApiMessages.EXPIRED_TOKEN, token),
+                        ApiCode.EXPIRED_TOKEN
+                );
+            case INVALID:
+            default:
+                throw new InvalidTokenException(
+                        MessageUtil.getMessage(messageSource, ApiMessages.INVALID_TOKEN, token),
+                        ApiCode.INVALID_TOKEN
+                );
+        }
     }
 }

@@ -11,4 +11,9 @@ public interface ApiMessages {
     String VALIDATION = "api.message.validation";
     String REQUIRED_QUERY_PARAM = "api.message.required-query-param";
     String FOUND_DEFAULT = "api.message.found-default";
+    String INCORRECT_STATE = "api.message.incorrect-state";
+    String ACCOUNT_DISABLED = "api.message.account-disabled";
+    String BAD_REQUEST = "api.message.bad-request";
+    String INVALID_TOKEN = "api.message.invalid-token";
+    String EXPIRED_TOKEN = "api.message.expired-token";
 }

@@ -14,8 +14,12 @@ public enum ApiCode {
     CONTACT_FOUND(8),
     USERNAME_FOUND(9),
     UNKNOWN(17),
-    VALIDATION(5)
-    ;
+    VALIDATION(5),
+    INCORRECT_STATE(19),
+    ACCOUNT_DISABLED(10),
+    BAD_REQUEST(11),
+    INVALID_TOKEN(12),
+    EXPIRED_TOKEN(13);
     int code;
 
     ApiCode(int code){

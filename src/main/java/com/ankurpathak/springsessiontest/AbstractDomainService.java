@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.notNullValue;
+import static org.valid4j.Assertive.ensure;
+
 public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Serializable> implements IDomainService<T, ID> {
     @Override
     public Optional<T> findById(final ID id) {
@@ -44,6 +47,7 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
 
     @Override
     public void deleteById(ID id) {
+        ensure(id, notNullValue());
         getDao().deleteById(id);
     }
 
@@ -67,5 +71,15 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
     @Override
     public Page<String> listField(String field, String value, Pageable pageable, Class<T> type) {
         return getDao().listField(field, value, pageable, type);
+    }
+
+    @Override
+    public void deleteAll() {
+        getDao().deleteAll();
+    }
+
+    @Override
+    public void deleteAll(Iterable<T> domains) {
+        getDao().deleteAll(domains);
     }
 }

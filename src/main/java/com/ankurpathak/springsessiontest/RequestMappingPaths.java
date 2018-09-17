@@ -24,6 +24,18 @@ public interface RequestMappingPaths {
     String PATH_LIST_FIELD_USER = "/users/list/{field}/{value}";
 
 
+    String PATH_REGISTER_EMAIL = "/register/email";
+
+    String PATH_REGISTER_ENABLE = "/register/token/{token}";
+
+    String PATH_FORGET_PASSWORD_EMAIL = "/password/email";
+
+
+    String PATH_FORGET_PASSWORD = "/password";
+
+    String PATH_FORGET_PASSWORD_ENABLE = "/password/token/{token}";
+
+
 
     static String apiPath(String path){
         return Paths.get(PATH_API, path).toString();

@@ -1,6 +1,7 @@
-package com.ankurpathak.springsessiontest;
+package com.ankurpathak.springsessiontest.controller;
 
 
+import com.ankurpathak.springsessiontest.*;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;

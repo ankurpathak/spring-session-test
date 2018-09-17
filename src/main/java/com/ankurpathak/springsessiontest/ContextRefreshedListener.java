@@ -6,7 +6,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,27 +15,40 @@ public class ContextRefreshedListener implements ApplicationListener<ContextRefr
     private final IUserService userService;
     private final IRoleService roleService;
     private final MongoTemplate mongoTemplate;
+    private final ITokenService tokenService;
+    private final ISequenceRepository sequenceRepository;
 
-    public ContextRefreshedListener(IUserService userService, IRoleService roleService, MongoTemplate mongoTemplate) {
+    public ContextRefreshedListener(IUserService userService, IRoleService roleService, MongoTemplate mongoTemplate, ITokenService tokenService, ISequenceRepository sequenceRepository) {
         this.userService = userService;
         this.roleService = roleService;
         this.mongoTemplate = mongoTemplate;
+        this.tokenService = tokenService;
+        this.sequenceRepository = sequenceRepository;
     }
 
     @Override
     @SuppressWarnings("all")
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        mongoTemplate.dropCollection(User.class);
-        mongoTemplate.dropCollection(Role.class);
+
+        userService.deleteAll();
+        roleService.deleteAll();
+        tokenService.deleteAll();
+        sequenceRepository.deleteAll();
+        sequenceRepository.insert(Sequence.getUserSequenceInitialValue());
+
+
         try{
-            userService.createAll(users);
+            for (User user:
+                users ) {
+                userService.create(user);
+            }
         }catch (DuplicateKeyException ex){
 
 
         }
 
         try{
-            roleService.createAll(roles);
+           roleService.createAll(roles);
         }catch (DuplicateKeyException ex1){
 
         }
@@ -48,9 +60,9 @@ public class ContextRefreshedListener implements ApplicationListener<ContextRefr
 
 
     static {
-        users.add(User.getInstance().id(BigInteger.TWO).firstName("Ankur").lastName("Pathak").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("ankurpathak@live.in")).password("password"));
-        users.add(User.getInstance().id(BigInteger.TWO.add(BigInteger.ONE)).firstName("Amar").lastName("Mule").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("amarmule@live.in")).password("password"));
-       // users.add(User.getInstance().id(BigInteger.TWO.add(BigInteger.TWO)).firstName("Pradeep").lastName("Negi").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("ankurpathak.ap@gmail.com")).password("password"));
+        users.add(User.getInstance().firstName("Ankur").lastName("Pathak").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("ankurpathak@live.in")).password(Password.getInstance().value("password")));
+        users.add(User.getInstance().firstName("Amar").lastName("Mule").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("amarmule@live.in")).password(Password.getInstance().value("password")));
+        users.add(User.getInstance().firstName("Pradeep").lastName("Negi").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("ankurpathak.ap@gmail.com")).password(Password.getInstance().value("password")));
 
 
         roles.add(Role.getInstance().id("1").name(Role.ROLE_ADMIN).addPrivilege(Role.Privilege.PRIV_ADMIN));

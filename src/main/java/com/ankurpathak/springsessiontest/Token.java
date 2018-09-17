@@ -2,17 +2,29 @@ package com.ankurpathak.springsessiontest;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.passay.entropy.RandomPasswordEntropy;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
 @JsonInclude(Include.NON_EMPTY)
+@Document(collection = DocumentCollections.TOKEN)
+public class Token extends Domain<String> implements Serializable {
 
-public  class Token implements Serializable {
+    @Indexed(name = DocumentCollections.Index.TOKEN_VALUE_IDX, unique = true, sparse = true)
     private String value;
-    private Date expiryDate;
-    private static final int EXPIRATION_IN_MINUTES = 24 * 60;
+
+    @Indexed(name = DocumentCollections.Index.TOKEN_EXPIRY_IDX, expireAfterSeconds= EXPIRATION_IN_SECONDS)
+    private Instant expiry;
+    private static final int EXPIRATION_IN_MINUTES = 30;
+
+    private static final int EXPIRATION_IN_SECONDS = 30 * 60;
 
     public String getValue() {
         return value;
@@ -22,37 +34,34 @@ public  class Token implements Serializable {
         this.value = value;
     }
 
-    public Date getExpiryDate() {
-        return expiryDate;
+    public Instant getExpiry() {
+        return expiry;
     }
 
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
+    public void setExpiry(Instant expiry) {
+        this.expiry = expiry;
     }
 
-    private final Date calculateExpiryDate(int expirationInMinutes) {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MINUTE, expirationInMinutes);
-        return cal.getTime();
+    private final Instant calculateExpiryDate(int expirationInMinutes) {
+        return Instant.now().plus(expirationInMinutes,ChronoUnit.MINUTES);
+    }
+
+
+    public  static Token getInstance(){
+        return new Token();
     }
 
     public final void updateToken(String token) {
         this.value = token;
-        this.expiryDate = this.calculateExpiryDate(EXPIRATION_IN_MINUTES);
+        this.expiry = this.calculateExpiryDate(EXPIRATION_IN_MINUTES);
     }
+
 
     public Token() {
+        this.value = RandomStringUtils.randomAlphanumeric(8, 8).toLowerCase();
+        this.expiry = this.calculateExpiryDate(EXPIRATION_IN_MINUTES);
     }
 
-    public Token(String value) {
-        this.value = value;
-        this.expiryDate = this.calculateExpiryDate(EXPIRATION_IN_MINUTES);
-    }
-
-    public Token(String value, User user) {
-        this(value);
-        user.setPasswordResetToken(this);
-    }
 
 
     public enum TokenStatus {

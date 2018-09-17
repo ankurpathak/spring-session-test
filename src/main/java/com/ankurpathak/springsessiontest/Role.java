@@ -9,10 +9,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@Document(collection = DocumentCollections.ROLES)
+@Document(collection = DocumentCollections.ROLE)
 public class Role extends Domain<String> implements Serializable {
 
-    @Indexed(name = DocumentCollections.Index.ROLES_NAME_IDX, unique = true, sparse = true)
+    @Indexed(name = DocumentCollections.Index.ROLE_NAME_IDX, unique = true, sparse = true)
     private String name;
     private Set<String> privileges;
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
@@ -92,6 +92,12 @@ public class Role extends Domain<String> implements Serializable {
         String PRIV_USER = "PRIV_USER";
         String PRIV_ADMIN = "PRIV_ADMIN";
         String PRIV_REGISTER = "PRIV_REGISTER";
+        String PRIV_REGISTER_EMAIL = "PRIV_REGISTER_EMAIL";
+        String PRIV_ACCOUNT_ENABLE = "PRIV_ACCOUNT_ENABLE";
+        String PRIV_FORGET_PASSWORD_EMAIL = "PRIV_FORGET_PASSWORD_EMAIL";
+        String PRIV_FORGET_PASSWORD_ENABLE = "PRIV_FORGET_PASSWORD_ENABLE";
+        String PRIV_FORGET_PASSWORD = "PRIV_FORGET_PASSWORD";
+
     }
 
 
@@ -106,7 +112,11 @@ public class Role extends Domain<String> implements Serializable {
 
     static {
         ANONYMOUS_ROLE.privileges = Set.of(
-                Privilege.PRIV_REGISTER
+                Privilege.PRIV_REGISTER,
+                Privilege.PRIV_REGISTER_EMAIL,
+                Privilege.PRIV_ACCOUNT_ENABLE,
+                Privilege.PRIV_FORGET_PASSWORD_EMAIL,
+                Privilege.PRIV_FORGET_PASSWORD_ENABLE
         );
     }
 }

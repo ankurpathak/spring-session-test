@@ -37,4 +37,9 @@ public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
     Page<T> search(String field, String value, Pageable pageable, Class<T> type);
     Page<String> listField(String field, String value, Pageable pageable, Class<T> type);
 
+
+    void deleteAll(Iterable<T> domains);
+
+    void deleteAll();
+
 }
