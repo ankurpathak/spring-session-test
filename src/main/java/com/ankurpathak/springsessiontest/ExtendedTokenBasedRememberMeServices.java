@@ -9,26 +9,25 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ExtendedTokenBasedRememberMeServices extends TokenBasedRememberMeServices {
     private boolean alwaysRemember;
+
     public ExtendedTokenBasedRememberMeServices(String key, UserDetailsService userDetailsService) {
         super(key, userDetailsService);
     }
 
-    public static final String X_REMEMBER_ME_HEADER = "X-Remember-Me";
-    public static final String X_REMEMBER_ME_TOKEN_HEADER = "X-Remember-Me-Token";
 
 
     @Override
     protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
-        if(WebUtil.isAjax(request))
-            setHeader(tokens, request, response);
+        if (WebUtil.isAjax(request))
+            setHeader(tokens, response);
         else
             super.setCookie(tokens, maxAge, request, response);
     }
 
-    public void setHeader(String[] tokens, HttpServletRequest request, HttpServletResponse response){
+    public void setHeader(String[] tokens, HttpServletResponse response) {
         String cookieValue = this.encodeCookie(tokens);
-        if(!StringUtils.isEmpty(cookieValue))
-            response.setHeader(X_REMEMBER_ME_TOKEN_HEADER, cookieValue);
+        if (!StringUtils.isEmpty(cookieValue))
+            WebUtil.setRememberMeToken(response, cookieValue);
     }
 
     @Override
@@ -42,23 +41,19 @@ public class ExtendedTokenBasedRememberMeServices extends TokenBasedRememberMeSe
         if (this.alwaysRemember) {
             return true;
         } else {
-            if(WebUtil.isAjax(request))
-                return Boolean.parseBoolean(request.getHeader(X_REMEMBER_ME_HEADER));
-            else
-               return super.rememberMeRequested(request, parameter);
+            return WebUtil.isRememberMeRequested(request);
         }
     }
 
 
     @Override
     protected String extractRememberMeCookie(HttpServletRequest request) {
-        if(WebUtil.isAjax(request)){
-            return request.getHeader(X_REMEMBER_ME_HEADER);
-        }else {
+        if (WebUtil.isAjax(request)) {
+            return WebUtil.getRememberMeToken(request);
+        } else {
             return super.extractRememberMeCookie(request);
         }
     }
-
 
 
 }

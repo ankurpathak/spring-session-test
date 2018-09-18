@@ -61,7 +61,7 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
 
     private static AggregationOperation search(String value) {
         return context -> new Document(MATCH, new Document("field", new Document(
-                REGEX, String.format(".*%s.*", value))
+                REGEX, value)
                 .append(OPTIONS, "i")
         ));
     }
@@ -94,20 +94,16 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
 
 
     public long getCount(String field, String value, Class<T> type) {
-        if (Objects.equals("**", value))
-            return getCount(getCountAggregation(field, "", type), type);
         return getCount(getCountAggregation(field, value, type), type);
     }
 
     public long getFieldCount(String field, String value, Class<T> type) {
-        if (Objects.equals("**", value))
-            return getCount(getCountAggregation(field, "", type, true), type);
         return getCount(getCountAggregation(field, value, type, true), type);
     }
 
 
     public Page<T> getPage(String field, String value, Pageable pageable, Class<T> type) {
-        List<T> list = Objects.equals("**", value) ? getList(getListAggreagation(field, "", pageable, type), type) : getList(getListAggreagation(field, value, pageable, type), type);
+        List<T> list = getList(getListAggreagation(field, value, pageable, type), type);
         long count = getCount(field, value, type);
         return new PageImpl<>(list, pageable, count);
 
@@ -115,7 +111,7 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
 
 
     public Page<String> getFieldPage(String field, String value, Pageable pageable, Class<T> type) {
-        List<String> list = Objects.equals("**", value) ? getFieldList(getListAggreagation(field, "", pageable, type, true), type): getFieldList(getListAggreagation(field, value, pageable, type, true), type);
+        List<String> list = getFieldList(getListAggreagation(field, value, pageable, type, true), type);
         long count = getFieldCount(field, value, type);
         return new PageImpl<>(list, pageable, count);
     }

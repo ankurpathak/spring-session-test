@@ -80,7 +80,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         Page<T> page = getService().findPaginated(request);
         if (block > page.getTotalPages())
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
-        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<Page<T>, T, ID>(page, response));
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
         return ResponseEntity.ok(page.getContent());
     }
 
@@ -99,7 +99,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     public T tryCreateOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, Class<?> type) {
         ControllerUtil.processValidation(result, messageSource, request);
         T t = getService().create(dto.toDomain(type));
-        applicationEventPublisher.publishEvent(new DomainCreatedEvent<T, ID>(t, response));
+        applicationEventPublisher.publishEvent(new DomainCreatedEvent<>(t, response));
         return t;
     }
 
@@ -159,21 +159,37 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
         Pageable pageable = getPageable(block, size, sort);
-        Page<T> page = getService().search(field, value, pageable, type);
+        String parsedValue = parseValue(value);
+        Page<T> page = getService().search(field, parsedValue, pageable, type);
         if (block > page.getTotalPages())
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
-        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<Page<T>, T, ID>(page, response));
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
         return page.getContent();
     }
 
-    public List<String> listField(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
+    public List<String> listField(String field, String value, int block, int size, String sort, Class<T> type) {
         if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
         Pageable pageable = getPageable(block, size, sort);
-        Page<String> page = getService().listField(field, value, pageable, type);
+        String parsedValue = parseValue(value);
+        Page<String> page = getService().listField(field, parsedValue, pageable, type);
         if (block > page.getTotalPages())
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
         return page.getContent();
+    }
+
+    protected String parseValue(String value){
+        if(!StringUtils.isEmpty(value)){
+            if(value.startsWith("*") && value.endsWith("*"))
+                return value.replace("*", ".*");
+            if(value.startsWith("*") && value.length() > 1)
+                return String.format("^%s",value.substring(1));
+            else if(value.endsWith("*") && value.length() > 1)
+                return String.format("%s$", value.substring(0, value.length()-2));
+            else if(!value.contains("*"))
+                return String.format("\b%s\b",value);
+        }
+        return value;
     }
 
 }
