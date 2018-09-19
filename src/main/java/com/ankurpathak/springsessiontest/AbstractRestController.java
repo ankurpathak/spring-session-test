@@ -45,38 +45,12 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    private Pageable getPageable(int block, int size, String sort) {
-        Pageable request = null;
-        int indexOfSort = -1;
-        if (!StringUtils.isEmpty(sort) && (indexOfSort = sort.indexOf(",")) != -1) {
-            sort = sort.trim();
-            String field = sort.substring(0, indexOfSort);
-            String order = sort.substring(indexOfSort);
-            if (!StringUtils.isEmpty(field) && !StringUtils.isEmpty(order)) {
-                field = field.trim();
-                order = order.trim();
-                if (Objects.equals(order, "asc")) {
-                    request = PageRequest.of(block, size, Sort.by(Sort.Order.asc(field)));
-                } else if (Objects.equals(order, "desc")) {
-                    request = PageRequest.of(block, size, Sort.by(Sort.Order.desc(field)));
-                }
-            }
-
-        }
-        if (size > 200)
-            size = 200;
-        else if (size <= 0)
-            size = 20;
-        if (request == null)
-            request = PageRequest.of(block - 1, size);
-        return request;
-    }
 
 
     public ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
         if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
-        Pageable request = getPageable(block, size, sort);
+        Pageable request = ControllerUtil.getPageable(block, size, sort);
         Page<T> page = getService().findPaginated(request);
         if (block > page.getTotalPages())
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
@@ -158,8 +132,8 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     public List<T> search(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
         if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
-        Pageable pageable = getPageable(block, size, sort);
-        String parsedValue = parseValue(value);
+        Pageable pageable = ControllerUtil.getPageable(block, size, sort);
+        String parsedValue = ControllerUtil.parseFieldValue(value);
         Page<T> page = getService().search(field, parsedValue, pageable, type);
         if (block > page.getTotalPages())
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
@@ -170,26 +144,14 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     public List<String> listField(String field, String value, int block, int size, String sort, Class<T> type) {
         if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
-        Pageable pageable = getPageable(block, size, sort);
-        String parsedValue = parseValue(value);
+        Pageable pageable = ControllerUtil.getPageable(block, size, sort);
+        String parsedValue = ControllerUtil.parseFieldValue(value);
         Page<String> page = getService().listField(field, parsedValue, pageable, type);
         if (block > page.getTotalPages())
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
         return page.getContent();
     }
 
-    protected String parseValue(String value){
-        if(!StringUtils.isEmpty(value)){
-            if(value.startsWith("*") && value.endsWith("*"))
-                return value.replace("*", ".*");
-            if(value.startsWith("*") && value.length() > 1)
-                return String.format("^%s",value.substring(1));
-            else if(value.endsWith("*") && value.length() > 1)
-                return String.format("%s$", value.substring(0, value.length()-2));
-            else if(!value.contains("*"))
-                return String.format("\b%s\b",value);
-        }
-        return value;
-    }
+
 
 }

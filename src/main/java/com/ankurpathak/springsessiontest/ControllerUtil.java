@@ -1,14 +1,22 @@
 package com.ankurpathak.springsessiontest;
 
 import com.ankurpathak.springsessiontest.controller.InvalidTokenException;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.connection.SortParameters;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
+
+import static com.ankurpathak.springsessiontest.Params.*;
 
 public class ControllerUtil {
 
@@ -32,7 +40,7 @@ public class ControllerUtil {
         if (result.hasErrors()) {
             throw new ValidationException(
                     result,
-                    MessageUtil.getMessage(messageSource,ApiMessages.FOUND, ex.getEntity(), ex.getProperty(), ex.getId()),
+                    MessageUtil.getMessage(messageSource, ApiMessages.FOUND, ex.getEntity(), ex.getProperty(), ex.getId()),
                     ex.getCode()
             );
         }
@@ -61,14 +69,10 @@ public class ControllerUtil {
     }
 
 
-    public static ResponseEntity<?> processSuccessNoContent(){
+    public static ResponseEntity<?> processSuccessNoContent() {
         return ResponseEntity.noContent().build();
     }
 
-
-    private static ResponseEntity<?> processSuccess(MessageSource messageSource, HttpServletRequest request, HttpStatus code) {
-        return processSuccess(messageSource, request, code, Collections.emptyMap());
-    }
 
     public static ResponseEntity<?> processSuccess(MessageSource messageSource, HttpServletRequest request) {
         return processSuccess(messageSource, request, HttpStatus.OK, Collections.emptyMap());
@@ -87,7 +91,7 @@ public class ControllerUtil {
     }
 
 
-    public static ResponseEntity<?> processTokenStatus(Token.TokenStatus status, String token, MessageSource messageSource, HttpServletRequest request){
+    public static ResponseEntity<?> processTokenStatus(Token.TokenStatus status, String token, MessageSource messageSource, HttpServletRequest request) {
         switch (status) {
             case VALID:
                 return ControllerUtil.processSuccess(messageSource, request);
@@ -105,4 +109,68 @@ public class ControllerUtil {
                 );
         }
     }
+
+
+    public static Pageable getPageable(int block, int size, String sort) {
+        if (size > 200)
+            size = 200;
+        else if (size <= 0)
+            size = 20;
+            return PageRequest.of(block - 1, size, parseSort(sort));
+    }
+
+    private static Sort parseSort(String sort) {
+        if (sort == null)
+            sort = "";
+
+        Iterable<String> tokens = Splitter.on(",")
+                .trimResults()
+                .omitEmptyStrings()
+                .split(sort);
+
+        if (Iterables.size(tokens) > 2) {
+            Iterator<String> it = tokens.iterator();
+            String tokenField = Strings.EMPTY;
+            String tokenOrder = Strings.EMPTY;
+            List<Sort.Order> orders = new ArrayList<>();
+            while (it.hasNext()) {
+                tokenField = it.next();
+                if (it.hasNext())
+                    tokenOrder = it.next();
+                switch (tokenOrder) {
+                    case ASC:
+                    case DESC:
+                        break;
+                    case ASC_UPPERCASE:
+                    case DESC_UPPERCASE:
+                        tokenOrder = tokenOrder.toLowerCase();
+                        break;
+                    default:
+                        tokenOrder = ASC;
+                        break;
+                }
+                orders.add(Objects.equals(tokenOrder, ASC) ? Sort.Order.asc(tokenField) : Sort.Order.desc(tokenField));
+            }
+            return Sort.by(orders);
+        } else {
+            return Sort.unsorted();
+        }
+
+    }
+
+
+    public static String parseFieldValue(String value) {
+        if (!StringUtils.isEmpty(value)) {
+            if (value.startsWith("*") && value.endsWith("*"))
+                return value.replace("*", ".*");
+            if (value.startsWith("*") && value.length() > 1)
+                return String.format("^%s", value.substring(1));
+            else if (value.endsWith("*") && value.length() > 1)
+                return String.format("%s$", value.substring(0, value.length() - 2));
+            else if (!value.contains("*"))
+                return String.format("\b%s\b", value);
+        }
+        return value;
+    }
+
 }
