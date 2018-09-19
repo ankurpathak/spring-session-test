@@ -45,8 +45,6 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-
-
     public ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
         if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
@@ -116,7 +114,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
 
     public ResponseEntity<?> update(TDto dto, T t, Class<?> type, HttpServletRequest request) {
-        return update(dto, t, t.getId(),type, request);
+        return update(dto, t, t.getId(), type, request);
     }
 
 
@@ -130,28 +128,23 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
     public List<T> search(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
-        if (block < 1)
-            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+        ControllerUtil.pagePrecheck(block);
         Pageable pageable = ControllerUtil.getPageable(block, size, sort);
         String parsedValue = ControllerUtil.parseFieldValue(value);
         Page<T> page = getService().search(field, parsedValue, pageable, type);
-        if (block > page.getTotalPages())
-            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+        ControllerUtil.pagePostCheck(block, page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
         return page.getContent();
     }
 
     public List<String> listField(String field, String value, int block, int size, String sort, Class<T> type) {
-        if (block < 1)
-            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+        ControllerUtil.pagePrecheck(block);
         Pageable pageable = ControllerUtil.getPageable(block, size, sort);
         String parsedValue = ControllerUtil.parseFieldValue(value);
         Page<String> page = getService().listField(field, parsedValue, pageable, type);
-        if (block > page.getTotalPages())
-            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+        ControllerUtil.pagePostCheck(block, page);
         return page.getContent();
     }
-
 
 
 }

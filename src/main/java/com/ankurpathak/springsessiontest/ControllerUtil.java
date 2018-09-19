@@ -4,6 +4,7 @@ import com.ankurpathak.springsessiontest.controller.InvalidTokenException;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -171,6 +172,18 @@ public class ControllerUtil {
                 return String.format("\b%s\b", value);
         }
         return value;
+    }
+
+    public static<T> void pagePostCheck(int block, Page<T> page){
+        if (block > page.getTotalPages())
+            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+    }
+
+
+    public static void pagePrecheck(int block){
+        if (block < 1)
+            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+
     }
 
 }
