@@ -2,6 +2,7 @@ package com.ankurpathak.springsessiontest;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,6 +20,8 @@ public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
 
     Page<T> findPaginated(Pageable pageable);
 
+    Page<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
+
     // write
 
     T create(T entity);
@@ -34,7 +37,7 @@ public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
 
     String domainName();
 
-    Page<T> search(String field, String value, Pageable pageable, Class<T> type);
+    Page<T> findByField(String field, String value, Pageable pageable, Class<T> type);
     Page<String> listField(String field, String value, Pageable pageable, Class<T> type);
 
 

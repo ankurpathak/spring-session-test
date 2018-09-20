@@ -3,11 +3,14 @@ package com.ankurpathak.springsessiontest;
 import com.ankurpathak.springsessiontest.controller.InvalidTokenException;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+import cz.jirutka.rsql.parser.RSQLParser;
+import cz.jirutka.rsql.parser.ast.Node;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -179,10 +182,16 @@ public class ControllerUtil {
     }
 
 
-    public static void pagePrecheck(int block){
+    public static void pagePreCheck(int block){
         if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
 
+    }
+
+
+    public static <T> Criteria parseRSQL(String rsql, Class<T> type){
+        Node rootNode = new RSQLParser().parse(rsql);
+        return rootNode.accept(new CustomRSQLVisitor(type.getSimpleName()));
     }
 
 }

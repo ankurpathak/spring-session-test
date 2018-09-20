@@ -35,7 +35,7 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
 
 
     @PutMapping(PATH_FORGET_PASSWORD_EMAIL)
-    public ResponseEntity<?> forgetPasswordEmail(HttpServletRequest request, @RequestParam(EMAIL) String email){
+    public ResponseEntity<?> forgetPasswordEmail(HttpServletRequest request, @PathVariable(EMAIL) String email){
         Optional<User> user = service.byEmail(email);
         if (user.isPresent()) {
             service.forgotPasswordEmail(user.get(), email);

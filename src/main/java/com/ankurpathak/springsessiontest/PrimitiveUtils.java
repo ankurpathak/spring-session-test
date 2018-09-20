@@ -1,6 +1,10 @@
 package com.ankurpathak.springsessiontest;
 
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class PrimitiveUtils {
 
@@ -25,4 +29,17 @@ public class PrimitiveUtils {
             return 0;
         }
     }
+
+
+
+
+    public static Date toDate(String value){
+        try{
+            SimpleDateFormat iso = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+            return iso.parse(value);
+        }catch (ParseException ex){
+            return Calendar.getInstance().getTime();
+        }
+    }
+
 }

@@ -4,12 +4,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
@@ -125,22 +123,33 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         }
     }
 
-    public List<T> search(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
-        ControllerUtil.pagePrecheck(block);
+    public List<T> searchByField(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
+        ControllerUtil.pagePreCheck(block);
         Pageable pageable = ControllerUtil.getPageable(block, size, sort);
         String parsedValue = ControllerUtil.parseFieldValue(value);
-        Page<T> page = getService().search(field, parsedValue, pageable, type);
+        Page<T> page = getService().findByField(field, parsedValue, pageable, type);
         ControllerUtil.pagePostCheck(block, page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
         return page.getContent();
     }
 
     public List<String> listField(String field, String value, int block, int size, String sort, Class<T> type) {
-        ControllerUtil.pagePrecheck(block);
+        ControllerUtil.pagePreCheck(block);
         Pageable pageable = ControllerUtil.getPageable(block, size, sort);
         String parsedValue = ControllerUtil.parseFieldValue(value);
         Page<String> page = getService().listField(field, parsedValue, pageable, type);
         ControllerUtil.pagePostCheck(block, page);
+        return page.getContent();
+    }
+
+
+    public List<T> search(String rsql, int block, int size, String sort, Class<T> type, HttpServletResponse response){
+        ControllerUtil.pagePreCheck(block);
+        Criteria criteria = ControllerUtil.parseRSQL(rsql, type);
+        Pageable pageable = ControllerUtil.getPageable(block, size, sort);
+        Page<T> page = getService().findByCriteria(criteria, pageable, type);
+        ControllerUtil.pagePostCheck(block, page);
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
         return page.getContent();
     }
 

@@ -1,6 +1,7 @@
 package com.ankurpathak.springsessiontest;
 
 import com.ankurpathak.springsessiontest.controller.InvalidTokenException;
+import cz.jirutka.rsql.parser.RSQLParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -18,14 +19,14 @@ import org.valid4j.errors.EnsureViolation;
 
 
 @RestControllerAdvice
-public class RuntimeExceptionHandler extends ResponseEntityExceptionHandler {
+public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(RuntimeExceptionHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(RuntimeRestExceptionHandler.class);
 
 
     private final MessageSource messageSource;
 
-    public RuntimeExceptionHandler(MessageSource messageSource) {
+    public RuntimeRestExceptionHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
@@ -109,6 +110,41 @@ public class RuntimeExceptionHandler extends ResponseEntityExceptionHandler {
                 request
         );
     }
+
+    @ExceptionHandler({RSQLParserException.class})
+    public ResponseEntity<?> handleRSQLParserException(RSQLParserException ex, WebRequest request) {
+        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        return handleExceptionInternal(
+                ex, ApiResponse.getInstance(
+                        ApiCode.INVALID_RSQL,
+                        MessageUtil.getMessage(messageSource, ApiMessages.INVALID_RSQL)
+                ),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+
+  /*  @ExceptionHandler({Exception.class})
+    public ResponseEntity<Object> handleUncaughtException(Exception ex, WebRequest request) {
+        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        try{
+            return handleException(ex, request);
+        }catch (Exception reEx){
+            return handleExceptionInternal(
+                    ex, ApiResponse.getInstance(
+                            ApiCode.UNKNOWN,
+                            MessageUtil.getMessage(messageSource,ApiMessages.UNKNOWN)
+                    ),
+                    new HttpHeaders(),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    request
+            );
+        }
+    } */
+
+
 
 
     @Override

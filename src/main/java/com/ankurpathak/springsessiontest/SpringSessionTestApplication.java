@@ -5,8 +5,12 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jsonb.JsonbAutoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @SpringBootApplication
 @EnableMongoAuditing(
@@ -28,10 +32,11 @@ public class SpringSessionTestApplication {
 class ApplicationRunnerImpl implements ApplicationRunner{
 
     @Autowired
-    private LinkedinService linkedinService;
-
+    private ICountryService countryService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        List<String> callingCodes = countryService.alphaCodeToCallingCodes("in");
+        callingCodes.stream().forEach(System.out::println);
     }
 }

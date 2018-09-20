@@ -18,17 +18,21 @@ public interface RequestMappingPaths {
     String PATH_ACCOUNT = "/account";
 
 
-    String PATH_SEARCH_USER = "/users/search/{field}/{value}";
+    String PATH_SEARCH_BY_FIEND_USER = "/users/search/{field}/{value}";
+
+
+    String PATH_SEARCH_USER = "/users/search";
+
 
 
     String PATH_LIST_FIELD_USER = "/users/list/{field}/{value}";
 
 
-    String PATH_ACCOUNT_EMAIL = "/account/email";
+    String PATH_ACCOUNT_EMAIL = "/account/email/{email}";
 
     String PATH_ACCOUNT_ENABLE = "/account/token/{token}";
 
-    String PATH_FORGET_PASSWORD_EMAIL = "/password/email";
+    String PATH_FORGET_PASSWORD_EMAIL = "/password/email/{email}";
 
 
     String PATH_FORGET_PASSWORD = "/password";

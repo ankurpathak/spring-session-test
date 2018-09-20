@@ -50,10 +50,10 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
     }
 
 
-    @GetMapping(PATH_SEARCH_USER)
+    @GetMapping(PATH_SEARCH_BY_FIEND_USER)
     @JsonView(View.Public.class)
     public List<User> search(HttpServletResponse response, @PathVariable("field") String field, @PathVariable("value") String value, @RequestParam(name = "size", required = false) String size, @RequestParam(value = "page", required = false, defaultValue = "1") String page, @RequestParam(value = "sort", required = false) String sort){
-        return search(field, value, PrimitiveUtils.toInteger(page), PrimitiveUtils.toInteger(size), sort, User.class, response);
+        return searchByField(field, value, PrimitiveUtils.toInteger(page), PrimitiveUtils.toInteger(size), sort, User.class, response);
     }
 
 
@@ -61,6 +61,14 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
     public List<String> listFields(@PathVariable("field") String field, @PathVariable("value") String value, @RequestParam(name = "size", required = false) String size, @RequestParam(value = "page", required = false, defaultValue = "1") String page, @RequestParam(value = "sort", required = false) String sort){
         return listField(field, value, PrimitiveUtils.toInteger(page), PrimitiveUtils.toInteger(size), sort, User.class);
     }
+
+
+    @GetMapping(PATH_SEARCH_USER)
+    @JsonView(View.Public.class)
+    public List<User> search(HttpServletResponse response,@RequestParam("rsql") String rsql, @RequestParam(name = "size", required = false) String size, @RequestParam(value = "page", required = false, defaultValue = "1") String page, @RequestParam(value = "sort", required = false) String sort){
+        return search(rsql, PrimitiveUtils.toInteger(page), PrimitiveUtils.toInteger(size), sort, User.class, response);
+    }
+
 
 
 

@@ -10,6 +10,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.inject.Named;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+
 @Configuration
 public class AppConfig {
 
@@ -64,6 +69,20 @@ public class AppConfig {
     }
 
 
+    @Bean
+    public Client client(){
+        return ClientBuilder.newClient();
+    }
+
+
+
+
+
 
 
 }
+
+
+
+
+
