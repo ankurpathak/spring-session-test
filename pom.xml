@@ -53,6 +53,7 @@
         <servlet-api.version>4.0.1</servlet-api.version>
         <jersey-client.version>2.27</jersey-client.version>
         <rsql-query-engine.version>0.7.1</rsql-query-engine.version>
+        <geoip2.version>2.12.0</geoip2.version>
     </properties>
 
     <dependencies>
@@ -272,6 +273,12 @@
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
             <version>${jersey-client.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.maxmind.geoip2</groupId>
+            <artifactId>geoip2</artifactId>
+            <version>${geoip2.version}</version>
         </dependency>
     </dependencies>
 
