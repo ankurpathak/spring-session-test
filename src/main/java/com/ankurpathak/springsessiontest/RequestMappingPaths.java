@@ -15,7 +15,7 @@ public interface RequestMappingPaths {
 
 
 
-    String PATH_REGISTER = "/register";
+    String PATH_ACCOUNT = "/account";
 
 
     String PATH_SEARCH_USER = "/users/search/{field}/{value}";
@@ -24,9 +24,9 @@ public interface RequestMappingPaths {
     String PATH_LIST_FIELD_USER = "/users/list/{field}/{value}";
 
 
-    String PATH_REGISTER_EMAIL = "/register/email";
+    String PATH_ACCOUNT_EMAIL = "/account/email";
 
-    String PATH_REGISTER_ENABLE = "/register/token/{token}";
+    String PATH_ACCOUNT_ENABLE = "/account/token/{token}";
 
     String PATH_FORGET_PASSWORD_EMAIL = "/password/email";
 

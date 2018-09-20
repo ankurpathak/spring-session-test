@@ -1,6 +1,7 @@
 package com.ankurpathak.springsessiontest;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.util.CollectionUtils;
@@ -15,10 +16,9 @@ import java.util.Set;
 
 abstract public class Domain<ID extends Serializable> implements Serializable {
 
-
     private  ID id;
 
-
+    @JsonView({View.Public.class, View.Me.class})
     public ID getId() {
         return id;
     }
@@ -54,10 +54,12 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
 
 
     @CreatedDate
+    @JsonView({View.Public.class, View.Me.class})
     private Instant created;
 
 
     @LastModifiedDate
+    @JsonView({View.Public.class, View.Me.class})
     private Instant updated;
 
     private Set<String> tags;

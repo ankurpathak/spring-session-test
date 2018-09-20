@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.redis.connection.SortParameters;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -129,7 +128,7 @@ public class ControllerUtil {
                 .omitEmptyStrings()
                 .split(sort);
 
-        if (Iterables.size(tokens) > 2) {
+        if (Iterables.size(tokens) >= 2) {
             Iterator<String> it = tokens.iterator();
             String tokenField = Strings.EMPTY;
             String tokenOrder = Strings.EMPTY;
@@ -169,7 +168,7 @@ public class ControllerUtil {
             else if (value.endsWith("*") && value.length() > 1)
                 return String.format("%s$", value.substring(0, value.length() - 2));
             else if (!value.contains("*"))
-                return String.format("\b%s\b", value);
+                return String.format("^%s$", value);
         }
         return value;
     }

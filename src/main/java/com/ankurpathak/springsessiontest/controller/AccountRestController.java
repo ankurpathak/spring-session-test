@@ -17,11 +17,9 @@ import java.util.Optional;
 
 import static com.ankurpathak.springsessiontest.Params.*;
 import static com.ankurpathak.springsessiontest.RequestMappingPaths.*;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.valid4j.Assertive.ensure;
 
 @ApiController
-public class RegisterRestController extends AbstractRestController<User, BigInteger, UserDto> {
+public class AccountRestController extends AbstractRestController<User, BigInteger, UserDto> {
     private final IUserService service;
     private final ITokenService tokenService;
     private final IEmailService emailService;
@@ -31,7 +29,7 @@ public class RegisterRestController extends AbstractRestController<User, BigInte
         return service;
     }
 
-    public RegisterRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service, ITokenService tokenService, IEmailService emailService) {
+    public AccountRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service, ITokenService tokenService, IEmailService emailService) {
         super(applicationEventPublisher, messageSource);
         this.service = service;
         this.tokenService = tokenService;
@@ -39,8 +37,8 @@ public class RegisterRestController extends AbstractRestController<User, BigInte
     }
 
 
-    @PostMapping(PATH_REGISTER)
-    public ResponseEntity<?> register(HttpServletRequest request, HttpServletResponse response, @Validated({UserDto.Default.class, UserDto.Register.class}) @RequestBody UserDto dto, BindingResult result) {
+    @PostMapping(PATH_ACCOUNT)
+    public ResponseEntity<?> account(HttpServletRequest request, HttpServletResponse response, @Validated({UserDto.Default.class, UserDto.Register.class}) @RequestBody UserDto dto, BindingResult result) {
         try {
             User user = tryCreateOne(dto, result, request, response, UserDto.Register.class);
             applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user));
@@ -52,8 +50,8 @@ public class RegisterRestController extends AbstractRestController<User, BigInte
     }
 
 
-    @PutMapping(PATH_REGISTER_EMAIL)
-    public ResponseEntity<?> registerEnableEmail(HttpServletRequest request, @RequestParam(EMAIL) String email) {
+    @PutMapping(PATH_ACCOUNT_EMAIL)
+    public ResponseEntity<?> accountEnableEmail(HttpServletRequest request, @RequestParam(EMAIL) String email) {
         Optional<User> user = service.byEmail(email);
         if (user.isPresent()) {
             service.accountEnableEmail(user.get(), email);
@@ -65,8 +63,8 @@ public class RegisterRestController extends AbstractRestController<User, BigInte
     }
 
 
-    @PutMapping(PATH_REGISTER_ENABLE)
-    public ResponseEntity<?> registerEnable(HttpServletRequest request, @PathVariable(TOKEN) String token) {
+    @PutMapping(PATH_ACCOUNT_ENABLE)
+    public ResponseEntity<?> accountEnable(HttpServletRequest request, @PathVariable(TOKEN) String token) {
         Token.TokenStatus status = service.accountEnable(token);
         return ControllerUtil.processTokenStatus(status, token, messageSource, request);
     }

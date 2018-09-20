@@ -61,9 +61,9 @@ public class AbstractAggregation<T extends Domain<ID>, ID extends Serializable> 
     }
 
 
-    public List<String> getFieldList(TypedAggregation<T> aggregation, Class<T> type){
+    public List<String> getFieldList(TypedAggregation<T> aggregation, Class<T> type, String field){
        List<Document> results =  mongoTemplate.aggregate(aggregation, type, Document.class).getMappedResults();
-       return results.stream().map(x -> x.getString("field")).collect(Collectors.toList());
+       return results.stream().map(x -> x.getString(field)).collect(Collectors.toList());
 
     }
 

@@ -23,7 +23,7 @@
             <dependency>
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-releasetrain</artifactId>
-                <version>Kay-RELEASE</version>
+                <version>Lovelace-RC2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -35,7 +35,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>10</java.version>
         <el.version>3.0.1-b08</el.version>
-        <spring-data-releasetrain.version>Kay-RELEASE</spring-data-releasetrain.version>
+        <spring-data-releasetrain.version>Lovelace-RC2</spring-data-releasetrain.version>
         <hamcrest-juit.version>1.0.0.1</hamcrest-juit.version>
         <auth0.jwt.version>3.4.0</auth0.jwt.version>
         <username-validation.version>1.2.1</username-validation.version>
@@ -56,6 +56,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>mongodb-driver</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -80,6 +86,13 @@
             <artifactId>json-path</artifactId>
             <version>${json-path.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>3.8.2</version>
+        </dependency>
+
 
         <dependency>
             <groupId>commons-io</groupId>
@@ -287,6 +300,14 @@
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
             <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-libs-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/libs-milestone</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>

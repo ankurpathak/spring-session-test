@@ -34,9 +34,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
     public ResponseEntity<?> byId(ID id) {
         Optional<T> t = getService().findById(id);
-        if (t.isPresent())
-            return ResponseEntity.ok(t.get());
-        else return ResponseEntity.notFound().build();
+        return t.<ResponseEntity<?>>map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 

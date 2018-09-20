@@ -4,7 +4,6 @@ import org.bson.Document;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
@@ -13,8 +12,6 @@ import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 
 public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Serializable> extends AbstractAggregation<T, ID> {
@@ -25,37 +22,32 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
     }
 
 
-    private TypedAggregation<T> getListAggreagation(String field, String value, Pageable pageable, Class<T> type, boolean project) {
+    private TypedAggregation<T> getListAggregation(String field, String value, Pageable pageable, Class<T> type, boolean project) {
         long skip = (long) pageable.getPageNumber() * (long) pageable.getPageSize();
         long limit = pageable.getPageSize();
-        Optional<Sort.Order> order = pageable.getSort().stream().findFirst();
-        List<AggregationOperation> operations = new ArrayList<>(getCombinedAggreagation(field, value, project));
-        order.ifPresent(x -> operations.add(sort(x.getProperty(), x.getDirection().isAscending() ? 1 : -1)));
+        List<AggregationOperation> operations = new ArrayList<>(getCombinedAggreagation(field, value));
+        if (!pageable.getSort().isEmpty())
+            operations.add(TypedAggregation.sort(pageable.getSort()));
         operations.add(Aggregation.skip(skip));
         operations.add(Aggregation.limit(limit));
+        if(project)
+            operations.add(Aggregation.project(field).andExclude("_id"));
+
         return Aggregation.newAggregation(type, operations);
     }
 
 
-    private TypedAggregation<T> getListAggreagation(String field, String value, Pageable pageable, Class<T> type) {
-        return getListAggreagation(field, value, pageable, type, false);
-    }
 
 
     private TypedAggregation<T> getCountAggregation(String field, String value, Class<T> type) {
-        return getCountAggregation(field, value, type, false);
-    }
-
-
-    private TypedAggregation<T> getCountAggregation(String field, String value, Class<T> type, boolean project) {
-        List<AggregationOperation> operations = new ArrayList<>(getCombinedAggreagation(field, value, project));
+        List<AggregationOperation> operations = new ArrayList<>(getCombinedAggreagation(field, value));
         operations.add(Aggregation.count().as("count"));
         return Aggregation.newAggregation(type, operations);
     }
 
 
-    public static List<AggregationOperation> getCombinedAggreagation(String field, String value, boolean project) {
-        return List.of(anyFieldToString(field, project), search(value));
+    public static List<AggregationOperation> getCombinedAggreagation(String field, String value) {
+        return List.of(anyFieldToString(field), search(value));
     }
 
 
@@ -66,17 +58,10 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
         ));
     }
 
-
-    private static AggregationOperation anyFieldToString(String field, boolean project) {
-        if (!project)
-            return context -> new Document(ADD_FIELDS, new Document(
-                    "field", new Document(
-                    CONCAT, List.of("", referField(field)))));
-        else
-            return context -> new Document(PROJECT, new Document(
-                    "field", new Document(
-                    CONCAT, List.of("", referField(field)))).append("_id", false));
-
+    private static AggregationOperation anyFieldToString(String field) {
+        return context -> new Document(ADD_FIELDS, new Document(
+                "field", new Document(
+                TO_STRING, referField(field))));
     }
 
 
@@ -86,6 +71,8 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
     public static final String ADD_FIELDS = "$addFields";
     public static final String REGEX = "$regex";
     public static final String OPTIONS = "$options";
+    public static final String CONVERT = "$convert";
+    public static final String TO_STRING = "$toString";
 
 
     private static String referField(String field) {
@@ -97,13 +84,10 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
         return getCount(getCountAggregation(field, value, type), type);
     }
 
-    public long getFieldCount(String field, String value, Class<T> type) {
-        return getCount(getCountAggregation(field, value, type, true), type);
-    }
 
 
     public Page<T> getPage(String field, String value, Pageable pageable, Class<T> type) {
-        List<T> list = getList(getListAggreagation(field, value, pageable, type), type);
+        List<T> list = getList(getListAggregation(field, value, pageable, type, false), type);
         long count = getCount(field, value, type);
         return new PageImpl<>(list, pageable, count);
 
@@ -111,8 +95,8 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
 
 
     public Page<String> getFieldPage(String field, String value, Pageable pageable, Class<T> type) {
-        List<String> list = getFieldList(getListAggreagation(field, value, pageable, type, true), type);
-        long count = getFieldCount(field, value, type);
+        List<String> list = getFieldList(getListAggregation(field, value, pageable, type, true), type, field);
+        long count = getCount(field, value, type);
         return new PageImpl<>(list, pageable, count);
     }
 

@@ -91,8 +91,8 @@ public class Role extends Domain<String> implements Serializable {
         String PRIV_ANONYMOUS = "PRIV_ANONYMOUS";
         String PRIV_USER = "PRIV_USER";
         String PRIV_ADMIN = "PRIV_ADMIN";
-        String PRIV_REGISTER = "PRIV_REGISTER";
-        String PRIV_REGISTER_EMAIL = "PRIV_REGISTER_EMAIL";
+        String PRIV_ACCOUNT = "PRIV_ACCOUNT";
+        String PRIV_ACCOUNT_EMAIL = "PRIV_ACCOUNT_EMAIL";
         String PRIV_ACCOUNT_ENABLE = "PRIV_ACCOUNT_ENABLE";
         String PRIV_FORGET_PASSWORD_EMAIL = "PRIV_FORGET_PASSWORD_EMAIL";
         String PRIV_FORGET_PASSWORD_ENABLE = "PRIV_FORGET_PASSWORD_ENABLE";
@@ -112,8 +112,8 @@ public class Role extends Domain<String> implements Serializable {
 
     static {
         ANONYMOUS_ROLE.privileges = Set.of(
-                Privilege.PRIV_REGISTER,
-                Privilege.PRIV_REGISTER_EMAIL,
+                Privilege.PRIV_ACCOUNT,
+                Privilege.PRIV_ACCOUNT_EMAIL,
                 Privilege.PRIV_ACCOUNT_ENABLE,
                 Privilege.PRIV_FORGET_PASSWORD_EMAIL,
                 Privilege.PRIV_FORGET_PASSWORD_ENABLE

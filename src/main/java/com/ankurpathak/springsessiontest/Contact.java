@@ -8,7 +8,7 @@ public class Contact implements Serializable {
 
     public static final String TAG_PRIMARY = "primary";
 
-    @JsonView({User.View.Me.class})
+    @JsonView({View.Me.class})
     private String value;
     private String tag;
     private boolean checked;

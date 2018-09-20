@@ -37,7 +37,7 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
     }
 
     @GetMapping(PATH_GET_ME)
-    @JsonView(User.View.Me.class)
+    @JsonView(View.Me.class)
     public User get(@CurrentUser User user){
         return user;
     }
@@ -51,7 +51,7 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
 
 
     @GetMapping(PATH_SEARCH_USER)
-    @JsonView(User.View.Public.class)
+    @JsonView(View.Public.class)
     public List<User> search(HttpServletResponse response, @PathVariable("field") String field, @PathVariable("value") String value, @RequestParam(name = "size", required = false) String size, @RequestParam(value = "page", required = false, defaultValue = "1") String page, @RequestParam(value = "sort", required = false) String sort){
         return search(field, value, PrimitiveUtils.toInteger(page), PrimitiveUtils.toInteger(size), sort, User.class, response);
     }

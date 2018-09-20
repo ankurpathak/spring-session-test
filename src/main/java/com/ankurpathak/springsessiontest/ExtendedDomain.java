@@ -1,6 +1,7 @@
 package com.ankurpathak.springsessiontest;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 
@@ -10,9 +11,11 @@ import java.math.BigInteger;
 public class ExtendedDomain<ID extends Serializable> extends Domain<ID> {
 
     @CreatedBy
+    @JsonView({View.Public.class, View.Me.class})
     private BigInteger createdBy;
 
     @LastModifiedBy
+    @JsonView({View.Public.class, View.Me.class})
     private BigInteger updatedBy;
 
 

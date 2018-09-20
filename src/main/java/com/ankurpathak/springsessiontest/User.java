@@ -236,19 +236,6 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     }
 
 
-
-
-    public interface View {
-
-        interface Public {
-
-        }
-
-        public class Me {
-        }
-    }
-
-
     public String getUsername() {
         return username;
     }
