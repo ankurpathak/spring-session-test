@@ -256,14 +256,11 @@
             <artifactId>rest-query-engine</artifactId>
             <version>${rsql-query-engine.version}</version>
         </dependency>
-
-
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
             <version>${jersey-client.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
@@ -274,7 +271,6 @@
             <artifactId>jersey-hk2</artifactId>
             <version>${jersey-client.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.maxmind.geoip2</groupId>
             <artifactId>geoip2</artifactId>

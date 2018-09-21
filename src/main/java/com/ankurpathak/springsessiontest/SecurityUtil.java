@@ -50,18 +50,9 @@ public class SecurityUtil {
 
 
     public static Optional<DomainContext> getDomainContext() {
-        return getDomainContext(getAuthentication().orElse(null));
+        return getSecurityContext().map(SecurityContextCompositeImpl::getDomainContext);
     }
 
-    public static Optional<DomainContext> getDomainContext(Authentication authentication) {
-        if(authentication!= null){
-            if(authentication.getDetails() != null && authentication.getDetails() instanceof DomainContext){
-                DomainContext domainContext = (DomainContext) authentication.getDetails();
-                return Optional.of(domainContext);
-            }
-        }
-        return Optional.empty();
-    }
 
 
 

@@ -19,7 +19,7 @@ public class CustomRSQLVisitor extends AbstractRSQLNodeVisitor<Criteria>{
     public Criteria visit(final AndNode node) {
         Criteria criteria = new Criteria();
         List<Criteria> children = node.getChildren().stream().map(this::visitAny).collect(Collectors.toList());
-        return criteria.andOperator((Criteria[])children.toArray(new Criteria[children.size()]));
+        return criteria.andOperator((Criteria[])children.toArray(new Criteria[]{}));
 
     }
 
@@ -27,7 +27,7 @@ public class CustomRSQLVisitor extends AbstractRSQLNodeVisitor<Criteria>{
     public Criteria visit(final OrNode node) {
         Criteria criteria = new Criteria();
         List<Criteria> children = node.getChildren().stream().map(this::visitAny).collect(Collectors.toList());
-        return criteria.orOperator((Criteria[])children.toArray(new Criteria[children.size()]));
+        return criteria.orOperator((Criteria[])children.toArray(new Criteria[]{}));
     }
 
     @Override

@@ -1,15 +1,16 @@
 package com.ankurpathak.springsessiontest;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -19,40 +20,61 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final IRoleService roleService;
     private final IUserService userService;
+    private final IpService ipService;
+    private final ICountryService countryService;
 
-    public CustomUserDetailsService(IRoleService roleService, IUserService userService) {
+    public CustomUserDetailsService(IRoleService roleService, IUserService userService, IpService ipService, ICountryService countryService) {
         this.roleService = roleService;
         this.userService = userService;
+        this.ipService = ipService;
+        this.countryService = countryService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userService.byCandidateKey(username);
-        if(user.isPresent()){
+        List<Criteria> criteriaList = new ArrayList<>();
+        if (!StringUtils.isNumeric(username)) {
+            criteriaList.add(Criteria.where("email.value").is(username));
+            criteriaList.add(Criteria.where("username").is(username));
+        } else {
+            criteriaList.add(Criteria.where("_id").is(PrimitiveUtils.toBigInteger(username)));
+            criteriaList.add(Criteria.where("contact.value").is(username));
+            SecurityUtil.getDomainContext()
+                    .map(DomainContext::getRemoteAddress)
+                    .flatMap(ipService::ipToCountryAlphaCode)
+                    .map(countryService::alphaCodeToCallingCodes)
+                    .ifPresent(callingCodes -> {
+                        callingCodes.stream()
+                                .map(callingCode->String.format("+%s%s",callingCode, username))
+                                .forEach(contact -> criteriaList.add(Criteria.where("contact.value").is(contact)));
+                    });
+        }
+
+        Criteria criteria = new Criteria().orOperator(criteriaList.toArray(new Criteria[]{}));
+        Optional<User> user = userService.findByCriteria(criteria, PageRequest.of(0, 1), User.class)
+                .stream()
+                .findFirst();
+        if (user.isPresent()) {
             return CustomUserDetails.getInstance(user.get(), getPrivileges(user.get().getRoles()));
-        }else{
+        } else {
             throw new UsernameNotFoundException(String.format(USERNAME_NOT_FOUND_MESSAGE, username));
         }
     }
 
 
-    private Set<String> getPrivileges(Set<String> roles){
+    private Set<String> getPrivileges(Set<String> roles) {
         Set<String> privileges;
-        if(!CollectionUtils.isEmpty(roles)){
+        if (!CollectionUtils.isEmpty(roles)) {
             privileges = new HashSet<>();
-            for(String roleName: roles){
+            for (String roleName : roles) {
                 Optional<Role> role = roleService.findByName(roleName);
                 role.ifPresent(x -> privileges.addAll(x.getPrivileges()));
             }
-        }else {
+        } else {
             privileges = Collections.emptySet();
         }
         return privileges;
     }
-
-
-
-
 
 
 }

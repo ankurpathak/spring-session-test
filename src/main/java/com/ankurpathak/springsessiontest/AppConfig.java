@@ -1,7 +1,10 @@
 package com.ankurpathak.springsessiontest;
 
+import com.maxmind.db.CHMCache;
+import com.maxmind.geoip2.DatabaseReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;
@@ -73,6 +76,14 @@ public class AppConfig {
     public Client client(){
         return ClientBuilder.newClient();
     }
+
+
+    @Bean
+    public DatabaseReader databaseReader() throws Exception{
+        ClassPathResource resource =  new ClassPathResource("GeoLite2-City.mmdb");
+        return new DatabaseReader.Builder(resource.getInputStream()).withCache(new CHMCache()).build();
+    }
+
 
 
 

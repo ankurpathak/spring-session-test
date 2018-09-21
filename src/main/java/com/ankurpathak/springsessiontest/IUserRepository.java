@@ -10,7 +10,7 @@ import static com.ankurpathak.springsessiontest.Params.*;
 
 public interface IUserRepository extends ExtendedRepository<User, BigInteger>, CustomizedUserRepository {
 
-    @Query("{ $or: [ { id: ?0 }, { 'email.value' : ?1 }] }")
+    @Query("{ $or: [ { _id: ?0 }, { 'email.value' : ?1 }] }")
     Optional<User> byCandidateKey(@Param(ID) BigInteger id, @Param("candidateKey") String candidateKey);
 
     @Query("{ 'email.value' : ?0 }")
