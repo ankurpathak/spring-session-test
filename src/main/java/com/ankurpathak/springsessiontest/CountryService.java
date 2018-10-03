@@ -2,6 +2,10 @@ package com.ankurpathak.springsessiontest;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.TypeRef;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Named;
@@ -14,8 +18,6 @@ import static org.valid4j.Assertive.ensure;
 
 @Service
 public class CountryService implements ICountryService {
-
-
     public static final String BASE_URL = "https://restcountries.eu/rest/v2";
 
 
@@ -29,14 +31,22 @@ public class CountryService implements ICountryService {
 
 
     @Override
+    @Cacheable(key = "#alphaCode")
     public List<String> alphaCodeToCallingCodes(String alphaCode) {
         //throws  javax.ws.rs.ProcessingException
         ensure(alphaCode, not(isEmptyString()));
         String json = countryByAlphaTarget.queryParam("codes", alphaCode).request().get(String.class);
         DocumentContext context = JsonPathUtil.stringToDoc(json);
-        return context.read("$[0].callingCodes", new TypeRef<List<String>>() {
+        return context.read("$[0].callingCodes", new TypeRef<>() {
         });
     }
+
+
+
+
+
+
+
 
 
 }

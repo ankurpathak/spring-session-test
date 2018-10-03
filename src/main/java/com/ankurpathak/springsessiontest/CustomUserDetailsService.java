@@ -21,9 +21,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final IRoleService roleService;
     private final IUserService userService;
     private final IpService ipService;
-    private final ICountryService countryService;
+    private final CountryCacheService countryService;
 
-    public CustomUserDetailsService(IRoleService roleService, IUserService userService, IpService ipService, ICountryService countryService) {
+    public CustomUserDetailsService(IRoleService roleService, IUserService userService, IpService ipService, CountryCacheService countryService) {
         this.roleService = roleService;
         this.userService = userService;
         this.ipService = ipService;
