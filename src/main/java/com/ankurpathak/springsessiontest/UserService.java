@@ -30,7 +30,7 @@ public class UserService extends AbstractDomainService<User,BigInteger> implemen
     }
 
     @Override
-    protected ExtendedRepository<User,BigInteger> getDao() {
+    protected ExtendedMongoRepository<User,BigInteger> getDao() {
         return dao;
     }
 

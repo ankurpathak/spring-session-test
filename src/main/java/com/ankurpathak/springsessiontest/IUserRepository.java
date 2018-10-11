@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static com.ankurpathak.springsessiontest.Params.*;
 
-public interface IUserRepository extends ExtendedRepository<User, BigInteger>, CustomizedUserRepository {
+public interface IUserRepository extends ExtendedMongoRepository<User, BigInteger>, CustomizedUserRepository {
 
     @Query("{ $or: [ { _id: ?0 }, { 'email.value' : ?1 }] }")
     Optional<User> byCandidateKey(@Param(ID) BigInteger id, @Param("candidateKey") String candidateKey);

@@ -30,18 +30,18 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         this.messageSource = messageSource;
     }
 
-    public ResponseEntity<?> byId(ID id) {
+    protected  ResponseEntity<?> byId(ID id) {
         Optional<T> t = getService().findById(id);
         return t.<ResponseEntity<?>>map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 
-    public ResponseEntity<?> all() {
+    protected ResponseEntity<?> all() {
         return ResponseEntity.ok().body(getService().findAll());
     }
 
 
-    public ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
+    protected ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
         if (block < 1)
             throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
         Pageable request = ControllerUtil.getPageable(block, size, sort);
@@ -52,11 +52,11 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return ResponseEntity.ok(page.getContent());
     }
 
-    public ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request) {
+    protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request) {
         return createMany(dtoList, result, request, DomainDto.Default.class);
     }
 
-    public ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request, Class<?> type) {
+    protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request, Class<?> type) {
         ControllerUtil.processValidation(result, messageSource, request);
         Iterable<T> domains = getService().createAll(dtoList.getDtos().stream().map(dto -> dto.toDomain(type)).collect(Collectors.toList()));
         List<ID> ids = new ArrayList<>();
@@ -64,18 +64,18 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of("ids", ids));
     }
 
-    public T tryCreateOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, Class<?> type) {
+    protected T tryCreateOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, Class<?> type) {
         ControllerUtil.processValidation(result, messageSource, request);
         T t = getService().create(dto.toDomain(type));
         applicationEventPublisher.publishEvent(new DomainCreatedEvent<>(t, response));
         return t;
     }
 
-    public ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response) {
+    protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response) {
         return createOne(dto, result, request, response, DomainDto.Default.class);
     }
 
-    public ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, Class<?> type) {
+    protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, Class<?> type) {
         try {
             T t = tryCreateOne(dto, result, request, response, type);
             return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of("id", t.getId()));
@@ -85,7 +85,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         }
     }
 
-    public void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
+    protected void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
         FoundException foundEx = ApplicationExceptionProcessor.processDuplicateKeyException(ex, dto, result);
         if (foundEx != null) {
             ControllerUtil.processValidationForFound(result, messageSource, request, foundEx);
@@ -93,7 +93,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    public ResponseEntity<?> delete(ID id, HttpServletRequest request) {
+    protected ResponseEntity<?> delete(ID id, HttpServletRequest request) {
         Optional<T> domain = getService().findById(id);
         if (domain.isPresent()) {
             getService().delete(domain.get());
@@ -103,18 +103,18 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         }
     }
 
-    public ResponseEntity<?> update(TDto dto, ID id, Class<?> type, HttpServletRequest request) {
+    protected ResponseEntity<?> update(TDto dto, ID id, Class<?> type, HttpServletRequest request) {
         Optional<T> domain = getService().findById(id);
         return update(dto, domain.orElse(null), id, type, request);
     }
 
 
-    public ResponseEntity<?> update(TDto dto, T t, Class<?> type, HttpServletRequest request) {
+    protected ResponseEntity<?> update(TDto dto, T t, Class<?> type, HttpServletRequest request) {
         return update(dto, t, t.getId(), type, request);
     }
 
 
-    public ResponseEntity<?> update(TDto dto, T t, ID id, Class<?> type, HttpServletRequest request) {
+    protected ResponseEntity<?> update(TDto dto, T t, ID id, Class<?> type, HttpServletRequest request) {
         if (t != null) {
             getService().update(dto.updateDomain(t, type));
             return ControllerUtil.processSuccess(messageSource, request);
@@ -123,7 +123,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         }
     }
 
-    public List<T> searchByField(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
+    protected List<T> searchByField(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
         ControllerUtil.pagePreCheck(block);
         Pageable pageable = ControllerUtil.getPageable(block, size, sort);
         String parsedValue = ControllerUtil.parseFieldValue(value);
@@ -133,7 +133,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return page.getContent();
     }
 
-    public List<String> listField(String field, String value, int block, int size, String sort, Class<T> type) {
+    protected List<String> listField(String field, String value, int block, int size, String sort, Class<T> type) {
         ControllerUtil.pagePreCheck(block);
         Pageable pageable = ControllerUtil.getPageable(block, size, sort);
         String parsedValue = ControllerUtil.parseFieldValue(value);
@@ -143,7 +143,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    public List<T> search(String rsql, int block, int size, String sort, Class<T> type, HttpServletResponse response){
+    protected List<T> search(String rsql, int block, int size, String sort, Class<T> type, HttpServletResponse response){
         ControllerUtil.pagePreCheck(block);
         Criteria criteria = ControllerUtil.parseRSQL(rsql, type);
         Pageable pageable = ControllerUtil.getPageable(block, size, sort);

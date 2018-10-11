@@ -22,7 +22,6 @@ import org.springframework.session.web.http.HeaderHttpSessionIdResolver;
 import org.springframework.session.web.http.HttpSessionIdResolver;
 
 @Configuration
-//@EnableRedisHttpSession
 public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
 
     @Bean

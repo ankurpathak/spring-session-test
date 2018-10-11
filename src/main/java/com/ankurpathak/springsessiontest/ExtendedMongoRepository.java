@@ -6,5 +6,5 @@ import org.springframework.data.repository.NoRepositoryBean;
 import java.io.Serializable;
 
 @NoRepositoryBean
-public interface ExtendedRepository<T extends Domain<ID>, ID extends Serializable> extends MongoRepository<T, ID> , IDomainCustomizedRepository<T, ID> {
+public interface ExtendedMongoRepository<T extends Domain<ID>, ID extends Serializable> extends MongoRepository<T, ID> , IDomainCustomizedRepository<T, ID> {
 }

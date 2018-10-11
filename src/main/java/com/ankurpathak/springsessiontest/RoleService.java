@@ -10,7 +10,7 @@ public class RoleService extends AbstractDomainService<Role, String> implements 
     private final IRoleRepository dao;
 
     @Override
-    protected ExtendedRepository<Role, String> getDao() {
+    protected ExtendedMongoRepository<Role, String> getDao() {
         return dao;
     }
 

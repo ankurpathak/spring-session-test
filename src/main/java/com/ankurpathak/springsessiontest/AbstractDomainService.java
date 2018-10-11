@@ -65,7 +65,7 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
         getDao().deleteById(id);
     }
 
-    protected abstract ExtendedRepository<T, ID> getDao();
+    protected abstract ExtendedMongoRepository<T, ID> getDao();
 
     @Override
     public String domainName(){

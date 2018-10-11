@@ -20,7 +20,7 @@ public class TokenService extends AbstractDomainService<Token, String> implement
 
 
     @Override
-    protected ExtendedRepository<Token, String> getDao() {
+    protected ExtendedMongoRepository<Token, String> getDao() {
         return dao;
     }
 
