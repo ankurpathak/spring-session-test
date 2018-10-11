@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class AbstractDomainCustomizedRepository<T extends Domain<ID>, ID extends Serializable> implements IDomainCustomizedRepository<T, ID> {
+public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, ID extends Serializable> implements ICustomizedDomainRepository<T, ID> {
 
 
     abstract public MongoTemplate getTemplate();

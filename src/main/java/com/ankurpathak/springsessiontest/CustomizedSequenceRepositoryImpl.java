@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigInteger;
 
 @Repository
-public class CustomizedSequenceRepositoryImpl extends AbstractDomainCustomizedRepository<Sequence, String> implements CustomizedSequenceRepository {
+public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRepository<Sequence, String> implements CustomizedSequenceRepository {
     public static final String MESSAGE_SEQUENCE_PROBLEM = "Unable to get next for sequence %s";
 
     private final MongoTemplate template;

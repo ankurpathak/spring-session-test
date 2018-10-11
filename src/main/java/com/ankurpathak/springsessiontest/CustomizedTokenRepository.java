@@ -1,6 +1,4 @@
 package com.ankurpathak.springsessiontest;
 
-import org.springframework.stereotype.Repository;
-
-public interface CustomizedTokenRepository extends IDomainCustomizedRepository<Token, String> {
+public interface CustomizedTokenRepository extends ICustomizedDomainRepository<Token, String> {
 }

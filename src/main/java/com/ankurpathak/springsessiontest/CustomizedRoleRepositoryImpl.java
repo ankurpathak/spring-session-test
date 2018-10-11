@@ -4,7 +4,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CustomizedRoleRepositoryImpl extends AbstractDomainCustomizedRepository<Role, String> implements CustomizedRoleRepository {
+public class CustomizedRoleRepositoryImpl extends AbstractCustomizedDomainRepository<Role, String> implements CustomizedRoleRepository {
     private MongoTemplate template;
 
     public CustomizedRoleRepositoryImpl(MongoTemplate template) {

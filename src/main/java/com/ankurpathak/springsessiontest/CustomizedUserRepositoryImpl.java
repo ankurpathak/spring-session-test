@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigInteger;
 
 @Repository
-public class CustomizedUserRepositoryImpl extends AbstractDomainCustomizedRepository<User, BigInteger> implements CustomizedUserRepository {
+public class CustomizedUserRepositoryImpl extends AbstractCustomizedDomainRepository<User, BigInteger> implements CustomizedUserRepository {
     private final MongoTemplate template;
     private final ISequenceRepository sequenceRepository;
     public CustomizedUserRepositoryImpl(MongoTemplate template, ISequenceRepository sequenceRepository) {

@@ -1,4 +1,4 @@
 package com.ankurpathak.springsessiontest;
 
-public interface CustomizedRoleRepository extends IDomainCustomizedRepository<Role, String> {
+public interface CustomizedRoleRepository extends ICustomizedDomainRepository<Role, String> {
 }
