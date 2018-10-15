@@ -49,13 +49,14 @@ public class ControllerUtil {
         }
     }
 
-    public static ResponseEntity<?> processError(MessageSource messageSource, HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    public static ResponseEntity<?> processError(MessageSource messageSource, HttpServletRequest request, Map<String, Object> extras) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(
                         ApiResponse.getInstance(
                                 ApiCode.UNKNOWN,
                                 MessageUtil.getMessage(messageSource, ApiMessages.UNKNOWN)
                         )
+                        .addExtras(extras)
                 );
 
     }
