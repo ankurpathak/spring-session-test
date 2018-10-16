@@ -8,58 +8,89 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ExtendedPersistentTokenBasedRememberMeServices extends PersistentTokenBasedRememberMeServices {
+public class ExtendedPersistentTokenBasedRememberMeServices extends PersistentTokenBasedRememberMeServices implements RemeberMeTokenResolverDelegateBackServices {
     private boolean alwaysRemember;
 
 
-    public ExtendedPersistentTokenBasedRememberMeServices(String key, UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository) {
+    private final IRememberMeTokenResolver rememberMeTokenResolver;
+    private final IRememberMeRequestedResolver rememberMeRequestedResolver;
+
+
+    public ExtendedPersistentTokenBasedRememberMeServices(String key, UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository, IRememberMeTokenResolver rememberMeTokenResolver, IRememberMeRequestedResolver rememberMeRequestedResolver) {
         super(key, userDetailsService, tokenRepository);
+        this.rememberMeTokenResolver = rememberMeTokenResolver;
+        this.rememberMeRequestedResolver = rememberMeRequestedResolver;
     }
 
 
+
+
+    //Requested Me
     @Override
     public void setAlwaysRemember(boolean alwaysRemember) {
+        super.setAlwaysRemember(alwaysRemember);
         this.alwaysRemember = alwaysRemember;
     }
 
 
     @Override
     protected boolean rememberMeRequested(HttpServletRequest request, String parameter) {
-        if (this.alwaysRemember) {
-            return true;
-        } else {
-            return WebUtil.isRememberMeRequested(request);
-        }
+        return rememberMeRequestedResolver.rememberMeRequested(this, request, parameter);
     }
+    //Requested Me
 
 
 
 
 
+
+
+    //Token Resolver
     @Override
     protected void setCookie(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
-        if (WebUtil.isAjax(request))
-            setHeader(tokens, response);
-        else
-            super.setCookie(tokens, maxAge, request, response);
-    }
-
-
-    public void setHeader(String[] tokens, HttpServletResponse response) {
-        String cookieValue = this.encodeCookie(tokens);
-        if (!StringUtils.isEmpty(cookieValue))
-            WebUtil.setRememberMeToken(response, cookieValue);
+        rememberMeTokenResolver.setToken(this, tokens, maxAge, request, response);
     }
 
 
     @Override
     protected String extractRememberMeCookie(HttpServletRequest request) {
-        if (WebUtil.isAjax(request)) {
-            return WebUtil.getRememberMeToken(request);
-        } else {
-            return super.extractRememberMeCookie(request);
-        }
+        return rememberMeTokenResolver.getToken(this, request);
     }
+    //Token Resolver
+
+
+
+
+
+
+
+
+    //Delegate Back
+    @Override
+    public void setToken(String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
+        super.setCookie(tokens, maxAge, request, response);
+    }
+
+    @Override
+    public String getToken(HttpServletRequest request) {
+        return super.extractRememberMeCookie(request);
+    }
+
+    @Override
+    public String encodeToken(String[] tokens) {
+        return super.encodeCookie(tokens);
+    }
+
+    @Override
+    public boolean getAlwaysRemember() {
+        return alwaysRemember;
+    }
+
+    @Override
+    public boolean getRememberMeRequested(HttpServletRequest request, String parameter) {
+        return super.rememberMeRequested(request, parameter);
+    }
+    //Delegate Back
 
 
 }

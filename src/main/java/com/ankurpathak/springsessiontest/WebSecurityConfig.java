@@ -1,29 +1,19 @@
 package com.ankurpathak.springsessiontest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.RememberMeAuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.*;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 import static com.ankurpathak.springsessiontest.RequestMappingPaths.*;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.valid4j.Assertive.ensure;
 
 
 @Configuration
@@ -33,63 +23,54 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String SUCCESS_URL = "/";
 
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
-    @Autowired
-    private UserDetailsService userDetailsService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private DaoAuthenticationProvider daoAuthenticationProvider;
-    @Autowired
-    private RememberMeAuthenticationProvider rememberMeAuthenticationProvider;
-    @Autowired
+    private final AuthenticationSuccessHandler restAuthenticationSuccessHandler;
+    private final AuthenticationFailureHandler restAuthenticationFailureHandler;
+    private final AccessDeniedHandler restAccessDeniedHandler;
+    private final PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final FilterConfig filterConfig;
+
+
     private AuthenticationManager authenticationManager;
-    @Autowired
-    private RememberMeServices persistentTokenBasedRememberMeServices;
-    @Autowired
-    private SocialWebAuthenticationProvider socialWebAuthenticationProvider;
-    @Autowired
-    private SocialApplicationAuthenticationProvider socialApplicationAuthenticationProvider;
 
 
-    @Bean
-    @Lazy
-    protected RestUsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter() {
-        RestUsernamePasswordAuthenticationFilter filter = new RestUsernamePasswordAuthenticationFilter(objectMapper);
-        filter.setAuthenticationManager(authenticationManager);
-        filter.setRememberMeServices(persistentTokenBasedRememberMeServices);
-        filter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
-        filter.setAuthenticationSuccessHandler(restAuthenticationSuccessHandler);
-        return filter;
+    final public AuthenticationManager getAuthenticationManager(){
+        ensure(authenticationManager, notNullValue());
+        return authenticationManager;
     }
 
 
-    public static final String REMEMBER_ME_KEY = "3deb2240-b5d0-49b9-801c-a88d541e7ed1";
-    public static final String ANNONYMOUS_KEY = "18f618ee-fa0f-4147-920c-8659f672f4d2";
-
-
-    @Autowired
-    void globalConfigure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(daoAuthenticationProvider)
-                .authenticationProvider(rememberMeAuthenticationProvider)
-                .authenticationProvider(socialWebAuthenticationProvider)
-                .authenticationProvider(socialApplicationAuthenticationProvider);
+    public WebSecurityConfig(AuthenticationSuccessHandler restAuthenticationSuccessHandler, AuthenticationFailureHandler restAuthenticationFailureHandler, AccessDeniedHandler restAccessDeniedHandler, PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices, RestAuthenticationEntryPoint restAuthenticationEntryPoint, FilterConfig filterConfig) {
+        this.restAuthenticationSuccessHandler = restAuthenticationSuccessHandler;
+        this.restAuthenticationFailureHandler = restAuthenticationFailureHandler;
+        this.restAccessDeniedHandler = restAccessDeniedHandler;
+        this.persistentTokenBasedRememberMeServices = persistentTokenBasedRememberMeServices;
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+        this.filterConfig = filterConfig;
     }
 
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+        authenticationManager = super.authenticationManagerBean();
+        return authenticationManager;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .anonymous().authenticationFilter(anonymousAuthenticationFilter())
+
+
+                .oauth2Login()
+                .successHandler(restAuthenticationSuccessHandler)
+                .failureHandler(restAuthenticationFailureHandler)
+                .permitAll()
+
+                .and()
+
+
+                .anonymous().authenticationFilter(filterConfig.anonymousAuthenticationFilter())
 
                 .and()
 
@@ -116,76 +97,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .rememberMe()
-                .rememberMeServices(persistentTokenBasedRememberMeServices())
+                .rememberMeServices(persistentTokenBasedRememberMeServices)
 
                 .and()
 
-                .addFilterAt(usernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(socialApplicationAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(socialWebAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
+                .addFilterAt(filterConfig.usernamePasswordAuthenticationFilter(getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                //  .addFilterAfter(socialApplicationAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                //  .addFilterAfter(socialWebAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(filterConfig.securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
                 .exceptionHandling()
-                .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(accessDeniedHandler);
-    }
-
-
-    @Bean
-    @Lazy
-    public SocialWebAuthenticationFilter socialWebAuthenticationFilter() {
-        SocialWebAuthenticationFilter filter = new SocialWebAuthenticationFilter();
-        filter.setAuthenticationManager(authenticationManager);
-        filter.setRememberMeServices(persistentTokenBasedRememberMeServices);
-        filter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
-        filter.setAuthenticationSuccessHandler(restAuthenticationSuccessHandler);
-        return filter;
-    }
-
-    @Bean
-    @Lazy
-    public SocialApplicationAuthenticationFilter socialApplicationAuthenticationFilter() {
-        SocialApplicationAuthenticationFilter filter = new SocialApplicationAuthenticationFilter();
-        filter.setAuthenticationManager(authenticationManager);
-        filter.setRememberMeServices(persistentTokenBasedRememberMeServices);
-        filter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
-        filter.setAuthenticationSuccessHandler(restAuthenticationSuccessHandler);
-        return filter;
-    }
-
-    @Autowired
-    private AuthenticationEntryPoint restAuthenticationEntryPoint;
-
-    @Autowired
-    private AuthenticationSuccessHandler restAuthenticationSuccessHandler;
-
-    @Autowired
-    private AuthenticationFailureHandler restAuthenticationFailureHandler;
-
-    @Autowired
-    private AccessDeniedHandler accessDeniedHandler;
-
-
-    @Bean
-    public PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
-        return new ExtendedPersistentTokenBasedRememberMeServices(REMEMBER_ME_KEY, userDetailsService, persistentTokenRepository());
-    }
-
-
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository() {
-        MongoTokenRepositoryImpl tokenRepository = new MongoTokenRepositoryImpl(mongoTemplate);
-        return tokenRepository;
-    }
-
-    @Bean
-    @Lazy
-    public SecurityContextCompositeFilter securityContextCompositeFilter() {
-        return new SecurityContextCompositeFilter();
-    }
-
-    @Bean
-    @Lazy
-    public AnonymousAuthenticationFilter anonymousAuthenticationFilter() {
-        return new ExtendedAnonymousAuthenticationFilter(ANNONYMOUS_KEY);
+                .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(restAccessDeniedHandler);
     }
 
 

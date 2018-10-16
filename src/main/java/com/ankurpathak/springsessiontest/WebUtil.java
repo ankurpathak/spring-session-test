@@ -16,8 +16,9 @@ import java.util.Locale;
 public class WebUtil {
     private static final String XML_HTTP_REQUEST = "XMLHttpRequest";
     private static final String X_REQUESTED_WITH = "X-Requested-With";
-    public static final String X_REMEMBER_ME_HEADER = "X-Remember-Me";
     public static final String X_REMEMBER_ME_TOKEN_HEADER = "X-Remember-Me-Token";
+    public static final String X_REMEMBER_ME_HEADER = "X-Remember-Me";
+
 
 
 

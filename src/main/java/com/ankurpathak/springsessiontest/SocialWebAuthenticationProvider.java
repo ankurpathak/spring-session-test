@@ -24,11 +24,11 @@ public class SocialWebAuthenticationProvider extends AbstractUserDetailsAuthenti
     private volatile String userNotFoundEncodedPassword;
     protected final UserDetailsService userDetailsService;
     protected final PasswordEncoder passwordEncoder;
-    protected final GoogleService googleService;
-    protected final FacebookService facebookService;
-    protected final LinkedinService linkedinService;
+    protected final IGoogleService googleService;
+    protected final IFacebookService facebookService;
+    protected final ILinkedinService linkedinService;
 
-    public SocialWebAuthenticationProvider(UserDetailsService userDetailsService, GoogleService googleService, FacebookService facebookService, LinkedinService linkedinService) {
+    public SocialWebAuthenticationProvider(UserDetailsService userDetailsService, IGoogleService googleService, IFacebookService facebookService, ILinkedinService linkedinService) {
         this.googleService = googleService;
         this.userDetailsService  = userDetailsService;
         this.facebookService = facebookService;

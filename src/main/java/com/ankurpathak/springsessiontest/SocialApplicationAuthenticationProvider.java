@@ -24,7 +24,7 @@ public class SocialApplicationAuthenticationProvider extends SocialWebAuthentica
     final static Logger log = LoggerFactory.getLogger(SocialApplicationAuthenticationProvider.class);
 
 
-    public SocialApplicationAuthenticationProvider(UserDetailsService userDetailsService, GoogleService googleService, FacebookService facebookService, LinkedinService linkedinService) {
+    public SocialApplicationAuthenticationProvider(UserDetailsService userDetailsService, IGoogleService googleService, IFacebookService facebookService, ILinkedinService linkedinService) {
         super(userDetailsService,googleService,facebookService,linkedinService);
     }
 

@@ -24,44 +24,8 @@ import javax.ws.rs.client.WebTarget;
 public class AppConfig {
 
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
-    }
 
 
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder, UserDetailsService userDetailsService){
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder);
-        provider.setUserDetailsService(userDetailsService);
-        return provider;
-    }
-
-    @Bean
-    public RememberMeAuthenticationProvider rememberMeAuthenticationProvider(){
-        return new RememberMeAuthenticationProvider(WebSecurityConfig.REMEMBER_ME_KEY);
-    }
-
-
-    @Bean
-    public SocialWebAuthenticationProvider socialWebAuthenticationProvider(
-            UserDetailsService userDetailsService,
-            GoogleService googleService,
-            FacebookService facebookService,
-            LinkedinService linkedinService){
-        return new SocialWebAuthenticationProvider(userDetailsService, googleService, facebookService, linkedinService);
-    }
-
-
-    @Bean
-    public SocialApplicationAuthenticationProvider socialApplicationAuthenticationProvider(
-            UserDetailsService userDetailsService,
-            GoogleService googleService,
-            FacebookService facebookService,
-            LinkedinService linkedinService){
-        return new SocialApplicationAuthenticationProvider(userDetailsService, googleService, facebookService, linkedinService);
-    }
 
 
     @Bean
