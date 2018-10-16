@@ -46,7 +46,7 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
 
     @PostMapping(PATH_CREATE_USER)
     public ResponseEntity<?> createOne(HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({DomainDto.Default.class}) UserDto dto, BindingResult result){
-        return createOne(dto, result, request, response);
+        return createOne(dto, result, request, response, ToDomainConverters.userDtoCreateToDomain);
     }
 
 

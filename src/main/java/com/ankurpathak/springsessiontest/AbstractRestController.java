@@ -52,32 +52,27 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return ResponseEntity.ok(page.getContent());
     }
 
-    protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request) {
-        return createMany(dtoList, result, request, DomainDto.Default.class);
-    }
 
-    protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request, Class<?> type) {
+
+    protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
         ControllerUtil.processValidation(result, messageSource, request);
-        Iterable<T> domains = getService().createAll(dtoList.getDtos().stream().map(dto -> dto.toDomain(type)).collect(Collectors.toList()));
+        Iterable<T> domains = getService().createAll(dtoList.getDtos().stream().map(dto -> dto.toDomain(converter)).collect(Collectors.toList()));
         List<ID> ids = new ArrayList<>();
         domains.forEach(domain -> ids.add(domain.getId()));
         return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of("ids", ids));
     }
 
-    protected T tryCreateOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, Class<?> type) {
+    protected T tryCreateOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter) {
         ControllerUtil.processValidation(result, messageSource, request);
-        T t = getService().create(dto.toDomain(type));
+        T t = getService().create(dto.toDomain(converter));
         applicationEventPublisher.publishEvent(new DomainCreatedEvent<>(t, response));
         return t;
     }
 
-    protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response) {
-        return createOne(dto, result, request, response, DomainDto.Default.class);
-    }
 
-    protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, Class<?> type) {
+    protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter) {
         try {
-            T t = tryCreateOne(dto, result, request, response, type);
+            T t = tryCreateOne(dto, result, request, response, converter);
             return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of("id", t.getId()));
         } catch (DuplicateKeyException ex) {
             catchCreateOne(dto, ex, result, request);
@@ -103,20 +98,20 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         }
     }
 
-    protected ResponseEntity<?> update(TDto dto, ID id, Class<?> type, HttpServletRequest request) {
+    protected ResponseEntity<?> update(TDto dto, ID id, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request) {
         Optional<T> domain = getService().findById(id);
-        return update(dto, domain.orElse(null), id, type, request);
+        return update(dto, domain.orElse(null), id, updater, request);
     }
 
 
-    protected ResponseEntity<?> update(TDto dto, T t, Class<?> type, HttpServletRequest request) {
-        return update(dto, t, t.getId(), type, request);
+    protected ResponseEntity<?> update(TDto dto, T t, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request) {
+        return update(dto, t, t.getId(), updater, request);
     }
 
 
-    protected ResponseEntity<?> update(TDto dto, T t, ID id, Class<?> type, HttpServletRequest request) {
+    protected ResponseEntity<?> update(TDto dto, T t, ID id, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request) {
         if (t != null) {
-            getService().update(dto.updateDomain(t, type));
+            getService().update(dto.updateDomain(t, updater));
             return ControllerUtil.processSuccess(messageSource, request);
         } else {
             throw new NotFoundException(String.valueOf(id), "id", dto.domainName(), ApiCode.NOT_FOUND);

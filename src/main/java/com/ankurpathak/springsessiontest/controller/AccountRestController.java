@@ -40,7 +40,7 @@ public class AccountRestController extends AbstractRestController<User, BigInteg
     @PostMapping(PATH_ACCOUNT)
     public ResponseEntity<?> account(HttpServletRequest request, HttpServletResponse response, @Validated({UserDto.Default.class, UserDto.Register.class}) @RequestBody UserDto dto, BindingResult result) {
         try {
-            User user = tryCreateOne(dto, result, request, response, UserDto.Register.class);
+            User user = tryCreateOne(dto, result, request, response, ToDomainConverters.userDtoRegisterToDomain);
             applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user));
             return ControllerUtil.processSuccessCreated(messageSource, request, Map.of(ID, user.getId()));
         } catch (DuplicateKeyException ex) {

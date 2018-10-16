@@ -4,9 +4,17 @@ import java.io.Serializable;
 
 public abstract class DomainDto<T extends Domain<ID>, ID extends Serializable> implements  Serializable {
 
-    abstract public T toDomain(Class<?> type);
+    @SuppressWarnings("unchecked")
+    public  <TDto extends DomainDto<T, ID>> T toDomain(IToDomain<T, ID, TDto> converter){
+        TDto dto = (TDto) this;
+        return converter.toDomain(dto);
+    }
 
-    abstract public T updateDomain(T domain, Class<?> type);
+    @SuppressWarnings("unchecked")
+    public <TDto extends DomainDto<T, ID>> T updateDomain(T t, IUpdateDomain<T, ID, TDto> updater){
+        TDto dto = (TDto) this;
+        return updater.updateDomain(t, dto);
+    }
 
     public String domainName(){
         String name = this.getClass().getSimpleName();

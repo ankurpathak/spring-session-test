@@ -56,7 +56,7 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
     @PutMapping(PATH_FORGET_PASSWORD)
     public ResponseEntity<?> forgetPassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({DomainDto.PasswordReset.class}) UserDto dto, BindingResult result) {
         ControllerUtil.processValidation(result, messageSource, request);
-        return update(dto, user, DomainDto.PasswordReset.class, request);
+        return update(dto, user, UpdateDomainUpdaters.forgetPasswordUpdater, request);
     }
 
 
