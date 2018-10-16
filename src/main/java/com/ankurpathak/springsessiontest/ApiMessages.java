@@ -17,4 +17,5 @@ public interface ApiMessages {
     String INVALID_TOKEN = "api.message.invalid-token";
     String EXPIRED_TOKEN = "api.message.expired-token";
     String INVALID_RSQL = "api.message.invalid-rsql";
+    String INVALID_JSON = "api.message.invalid-json";
 }

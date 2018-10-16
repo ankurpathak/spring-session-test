@@ -1,6 +1,7 @@
 package com.ankurpathak.springsessiontest;
 
 import com.ankurpathak.springsessiontest.controller.InvalidTokenException;
+import com.mongodb.util.JSONParseException;
 import cz.jirutka.rsql.parser.RSQLParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -100,6 +102,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler({InvalidTokenException.class})
     public ResponseEntity<?> handleInvalidTokenException(InvalidTokenException ex, WebRequest request) {
         log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        ex.printStackTrace();
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ex.getCode(),
@@ -114,6 +117,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler({RSQLParserException.class})
     public ResponseEntity<?> handleRSQLParserException(RSQLParserException ex, WebRequest request) {
         log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        ex.printStackTrace();
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ApiCode.INVALID_RSQL,
@@ -126,23 +130,24 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     }
 
 
-  /*  @ExceptionHandler({Exception.class})
-    public ResponseEntity<Object> handleUncaughtException(Exception ex, WebRequest request) {
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
-        try{
-            return handleException(ex, request);
-        }catch (Exception reEx){
-            return handleExceptionInternal(
-                    ex, ApiResponse.getInstance(
-                            ApiCode.UNKNOWN,
-                            MessageUtil.getMessage(messageSource,ApiMessages.UNKNOWN)
-                    ),
-                    new HttpHeaders(),
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    request
-            );
-        }
-    } */
+        ex.printStackTrace();
+        return handleExceptionInternal(
+                ex, ApiResponse.getInstance(
+                        ApiCode.INVALID_JSON,
+                        MessageUtil.getMessage(messageSource, ApiMessages.INVALID_JSON)
+                ),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+    }
+
+
+
+
 
 
 

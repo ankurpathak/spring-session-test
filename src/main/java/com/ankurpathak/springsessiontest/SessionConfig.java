@@ -18,7 +18,7 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
 
     @Bean
     public IRememberMeTokenResolver rememberMeTokenResolver(){
-        return new RemberMeTokenResolver(RemberMeTokenResolver.Type.BOTH_HEADER_FIRST, HeaderRememberMeTokenResolver.xRememberMeToken());
+        return new RememberMeTokenResolver(RememberMeTokenResolver.Type.BOTH_HEADER_FIRST, HeaderRememberMeTokenResolver.xRememberMeToken());
     }
 
 

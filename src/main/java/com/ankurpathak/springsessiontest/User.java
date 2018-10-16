@@ -37,6 +37,9 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     private boolean enabled;
 
 
+
+
+
     public User password(Password password){
         this.password = password;
         return this;
@@ -236,6 +239,8 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     }
 
 
+
+
     public String getUsername() {
         return username;
     }
@@ -297,6 +302,9 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
         result = 31 * result + (email != null ? email.hashCode() : 0);
         return result;
     }
+
+
+
 }
 
 

@@ -40,8 +40,7 @@ public class AuthenticationConfig {
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
-        MongoTokenRepositoryImpl tokenRepository = new MongoTokenRepositoryImpl(mongoTemplate);
-        return tokenRepository;
+        return new MongoTokenRepositoryImpl(mongoTemplate);
     }
 
 }

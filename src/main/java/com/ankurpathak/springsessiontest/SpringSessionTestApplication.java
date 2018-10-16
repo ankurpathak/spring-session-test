@@ -18,7 +18,7 @@ public class SpringSessionTestApplication {
 
 
     public static void main(String[] args) {
-
+        System.setProperty("spring.security.strategy", "com.ankurpathak.springsessiontest.ExtendedInheritableThreadLocalSecurityContextHolderStrategy");
         SpringApplication.run(SpringSessionTestApplication.class, args);
         System.out.println();
     }

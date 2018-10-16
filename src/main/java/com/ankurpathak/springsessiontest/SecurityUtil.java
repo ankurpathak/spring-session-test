@@ -85,7 +85,7 @@ public class SecurityUtil {
 
     public static Optional<SecurityContextCompositeImpl> getSecurityContext() {
         SecurityContext context = SecurityContextHolder.getContext();
-        if(context!= null && context instanceof SecurityContextCompositeImpl){
+        if(context instanceof SecurityContextCompositeImpl){
             return Optional.of((SecurityContextCompositeImpl) context);
         }
         return Optional.empty();

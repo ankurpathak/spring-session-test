@@ -5,13 +5,13 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class RemberMeTokenResolver implements IRememberMeTokenResolver {
+public class RememberMeTokenResolver implements IRememberMeTokenResolver {
 
     private final CookieRememberMeTokenResover cookieRememberMeTokenResover;
     private final HeaderRememberMeTokenResolver headerRememberMeTokenResolver;
     private final Type type;
 
-    public RemberMeTokenResolver(Type type, HeaderRememberMeTokenResolver headerRememberMeTokenResolver) {
+    public RememberMeTokenResolver(Type type, HeaderRememberMeTokenResolver headerRememberMeTokenResolver) {
         this.type = type;
         this.cookieRememberMeTokenResover = new CookieRememberMeTokenResover();
         this.headerRememberMeTokenResolver = headerRememberMeTokenResolver;
