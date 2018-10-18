@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import static com.ankurpathak.springsessiontest.Params.*;
+import static com.ankurpathak.springsessiontest.Strings.ASTERISK;
+import static com.ankurpathak.springsessiontest.Strings.COMMA;
 
 public class ControllerUtil {
 
@@ -125,9 +127,9 @@ public class ControllerUtil {
 
     private static Sort parseSort(String sort) {
         if (sort == null)
-            sort = "";
+            sort = Strings.EMPTY;
 
-        Iterable<String> tokens = Splitter.on(",")
+        Iterable<String> tokens = Splitter.on(COMMA)
                 .trimResults()
                 .omitEmptyStrings()
                 .split(sort);
@@ -165,27 +167,32 @@ public class ControllerUtil {
 
     public static String parseFieldValue(String value) {
         if (!StringUtils.isEmpty(value)) {
-            if (value.startsWith("*") && value.endsWith("*"))
-                return value.replace("*", ".*");
-            if (value.startsWith("*") && value.length() > 1)
-                return String.format("^%s", value.substring(1));
-            else if (value.endsWith("*") && value.length() > 1)
-                return String.format("%s$", value.substring(0, value.length() - 2));
-            else if (!value.contains("*"))
-                return String.format("^%s$", value);
+            if (value.startsWith(ASTERISK) && value.endsWith(ASTERISK))
+                return value.replace(ASTERISK, REGEX_ASTERISK);
+            if (value.startsWith(ASTERISK) && value.length() > 1)
+                return String.format(PATTERN_START_WITH, value.substring(1));
+            else if (value.endsWith(ASTERISK) && value.length() > 1)
+                return String.format(PATTERN_END_WITH, value.substring(0, value.length() - 2));
+            else if (!value.contains(ASTERISK))
+                return String.format(PATTERN_EXACT, value);
         }
         return value;
     }
 
+    public static final String REGEX_ASTERISK = ".*";
+    public static final String PATTERN_START_WITH = "^%s";
+    public static final String PATTERN_END_WITH = "%s$";
+    public static final String PATTERN_EXACT = "^%s$";
+
     public static<T> void pagePostCheck(int block, Page<T> page){
         if (block > page.getTotalPages())
-            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+            throw new NotFoundException(String.valueOf(block), Params.BLOCK, Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
     }
 
 
     public static void pagePreCheck(int block){
         if (block < 1)
-            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
+            throw new NotFoundException(String.valueOf(block), Params.BLOCK, Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
 
     }
 

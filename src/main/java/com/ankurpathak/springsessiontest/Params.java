@@ -12,4 +12,6 @@ public interface Params {
     String DESC_UPPERCASE = "DESC";
     String BLOCK = "block";
     String IDS = "ids";
+    String RSQL = "rsql";
+    String FIELD = "field";
 }

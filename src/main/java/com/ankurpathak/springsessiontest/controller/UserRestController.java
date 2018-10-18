@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigInteger;
 import java.util.List;
 
+import static com.ankurpathak.springsessiontest.Params.FIELD;
+import static com.ankurpathak.springsessiontest.Params.RSQL;
+import static com.ankurpathak.springsessiontest.Params.VALUE;
 import static com.ankurpathak.springsessiontest.RequestMappingPaths.*;
 
 
@@ -74,20 +77,20 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
 
     @GetMapping(PATH_SEARCH_BY_FIEND_USER)
     @JsonView(View.Public.class)
-    public List<User> search(HttpServletResponse response, @PathVariable("field") String field, @PathVariable("value") String value, Pageable pageable){
+    public List<User> search(HttpServletResponse response, @PathVariable(FIELD) String field, @PathVariable(VALUE) String value, Pageable pageable){
         return searchByField(field, value, pageable, User.class, response);
     }
 
 
     @GetMapping(PATH_LIST_FIELD_USER)
-    public List<String> listFields(@PathVariable("field") String field, @PathVariable("value") String value, Pageable pageable){
+    public List<String> listFields(@PathVariable(FIELD) String field, @PathVariable(VALUE) String value, Pageable pageable){
         return listField(field, value, pageable, User.class);
     }
 
 
     @GetMapping(PATH_SEARCH_USER)
     @JsonView(View.Public.class)
-    public List<User> search(HttpServletResponse response,@RequestParam("rsql") String rsql, Pageable pageable){
+    public List<User> search(HttpServletResponse response,@RequestParam(RSQL) String rsql, Pageable pageable){
         return search(rsql, pageable, User.class, response);
     }
 
