@@ -118,4 +118,14 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
         this.tags = tags;
         return this;
     }
+
+
+
+
+    @SuppressWarnings("unchecked")
+    public  <T extends  Domain<ID>, TDto extends DomainDto<T, ID>> TDto toDto(IToDto <T, ID, TDto> converter){
+        T t = (T) this;
+        return converter.toDto(t);
+    }
+
 }

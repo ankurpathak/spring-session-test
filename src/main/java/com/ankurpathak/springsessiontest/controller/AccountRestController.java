@@ -1,12 +1,14 @@
 package com.ankurpathak.springsessiontest.controller;
 
 import com.ankurpathak.springsessiontest.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,8 +30,8 @@ public class AccountRestController extends AbstractRestController<User, BigInteg
         return service;
     }
 
-    public AccountRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service, ToDomainConverters converters) {
-        super(applicationEventPublisher, messageSource);
+    public AccountRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, ToDomainConverters converters) {
+        super(applicationEventPublisher, messageSource, objectMapper, validator);
         this.service = service;
 
         this.converters = converters;
@@ -39,9 +41,9 @@ public class AccountRestController extends AbstractRestController<User, BigInteg
     @PostMapping(PATH_ACCOUNT)
     public ResponseEntity<?> account(HttpServletRequest request, HttpServletResponse response, @Validated({UserDto.Default.class, UserDto.Register.class}) @RequestBody UserDto dto, BindingResult result) {
         try {
-            User user = tryCreateOne(dto, result, request, response, converters.userDtoRegisterToDomain());
+            User user = tryCreateOne(dto, result, response, converters.userDtoRegisterToDomain());
             applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user));
-            return ControllerUtil.processSuccessCreated(messageSource, request, Map.of(ID, user.getId()));
+            return ControllerUtil.processSuccessCreated(messageSource, Map.of(ID, user.getId()));
         } catch (DuplicateKeyException ex) {
             catchCreateOne(dto, ex, result, request);
             throw ex;
@@ -50,11 +52,11 @@ public class AccountRestController extends AbstractRestController<User, BigInteg
 
 
     @PutMapping(PATH_ACCOUNT_EMAIL)
-    public ResponseEntity<?> accountEnableEmail(HttpServletRequest request, @PathVariable(EMAIL) String email) {
+    public ResponseEntity<?> accountEnableEmail(@PathVariable(EMAIL) String email) {
         Optional<User> user = service.byEmail(email);
         if (user.isPresent()) {
             service.accountEnableEmail(user.get(), email);
-            return ControllerUtil.processSuccess(messageSource, request);
+            return ControllerUtil.processSuccess(messageSource);
         } else {
             throw new NotFoundException(email, EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);
         }

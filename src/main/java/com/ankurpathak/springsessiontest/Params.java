@@ -18,4 +18,6 @@ public interface Params {
     String MONGO_ID = "_id";
     String I ="i";
     String PASSWORD = "password";
+    String PATCH = "patch";
+    String JSON = "json";
 }

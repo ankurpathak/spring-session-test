@@ -20,7 +20,7 @@ public class RememberMeTokenResolver implements IRememberMeTokenResolver {
     @Override
     public void setToken(RemeberMeTokenResolverDelegateBackServices rememberMeServices, String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
         switch (type) {
-            case HEADER:
+            case HEADER_ONLY:
                 headerRememberMeTokenResolver.setToken(rememberMeServices, tokens, maxAge, request, response);
                 break;
             case BOTH_HEADER_FIRST:
@@ -31,7 +31,7 @@ public class RememberMeTokenResolver implements IRememberMeTokenResolver {
                 headerRememberMeTokenResolver.setToken(rememberMeServices, tokens, maxAge, request, response);
                 cookieRememberMeTokenResover.setToken(rememberMeServices, tokens, maxAge, request, response);
                 break;
-            case COOKIE:
+            case COOKIE_ONLY:
             default:
                 cookieRememberMeTokenResover.setToken(rememberMeServices, tokens, maxAge, request, response);
                 break;
@@ -43,7 +43,7 @@ public class RememberMeTokenResolver implements IRememberMeTokenResolver {
     public String getToken(RemeberMeTokenResolverDelegateBackServices rememberMeServices, HttpServletRequest request) {
         String tempToken = null;
         switch (type) {
-            case HEADER:
+            case HEADER_ONLY:
                 return headerRememberMeTokenResolver.getToken(rememberMeServices, request);
             case BOTH_HEADER_FIRST:
                 tempToken = headerRememberMeTokenResolver.getToken(rememberMeServices, request);
@@ -51,7 +51,7 @@ public class RememberMeTokenResolver implements IRememberMeTokenResolver {
             case BOTH_COOKIE_FIRST:
                 tempToken = cookieRememberMeTokenResover.getToken(rememberMeServices, request);
                 return StringUtils.isNotEmpty(tempToken) ? tempToken : headerRememberMeTokenResolver.getToken(rememberMeServices, request);
-            case COOKIE:
+            case COOKIE_ONLY:
             default:
                 return cookieRememberMeTokenResover.getToken(rememberMeServices, request);
         }
@@ -59,6 +59,6 @@ public class RememberMeTokenResolver implements IRememberMeTokenResolver {
 
 
     enum Type {
-        COOKIE, HEADER, BOTH_COOKIE_FIRST, BOTH_HEADER_FIRST
+        COOKIE_ONLY, HEADER_ONLY, BOTH_COOKIE_FIRST, BOTH_HEADER_FIRST
     }
 }

@@ -12,13 +12,13 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
 
     @Bean
     public HttpSessionIdResolver httpSessionStrategy() {
-        return new ExtendedHttpSessionIdResolver(ExtendedHttpSessionIdResolver.Type.BOTH_HEADER_FIRST, ExtendedHeaderHttpSessionIdResolver.xAuthToken());
+        return new ExtendedHttpSessionIdResolver(ExtendedHttpSessionIdResolver.Type.HEADER_ONLY, ExtendedHeaderHttpSessionIdResolver.xAuthToken());
     }
 
 
     @Bean
     public IRememberMeTokenResolver rememberMeTokenResolver(){
-        return new RememberMeTokenResolver(RememberMeTokenResolver.Type.BOTH_HEADER_FIRST, HeaderRememberMeTokenResolver.xRememberMeToken());
+        return new RememberMeTokenResolver(RememberMeTokenResolver.Type.HEADER_ONLY, HeaderRememberMeTokenResolver.xRememberMeToken());
     }
 
 

@@ -3,12 +3,15 @@ package com.ankurpathak.springsessiontest.controller;
 
 import com.ankurpathak.springsessiontest.*;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +31,8 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
 
     private final IUserService service;
     private final ToDomainConverters converters;
+    private final UpdateDomainUpdaters updaters;
+    private final ToDtoConverters dtoConverters;
 
 
     @Override
@@ -35,10 +40,12 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
         return service;
     }
 
-    public UserRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service, ToDomainConverters converters) {
-        super(applicationEventPublisher, messageSource);
+    public UserRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, ToDomainConverters converters, UpdateDomainUpdaters updaters, ToDtoConverters dtoConverters) {
+        super(applicationEventPublisher, messageSource, objectMapper, validator);
         this.service = service;
         this.converters = converters;
+        this.updaters = updaters;
+        this.dtoConverters = dtoConverters;
     }
 
     @GetMapping(PATH_GET_ME)
@@ -93,6 +100,21 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
     @JsonView(View.Public.class)
     public List<User> search(HttpServletResponse response,@RequestParam(RSQL) String rsql, Pageable pageable){
         return search(rsql, pageable, User.class, response);
+    }
+
+
+
+    @PutMapping(PATH_CHANGE_PROFILE)
+    public ResponseEntity<?> update(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({DomainDto.Default.class}) UserDto dto, BindingResult result){
+        ControllerUtil.processValidation(result, messageSource);
+        return update(dto, user, updaters.profileUpdater, request);
+    }
+
+
+    @PatchMapping(PATH_CHANGE_PROFILE)
+    public ResponseEntity<?> patch(HttpServletRequest request, @CurrentUser User user, @RequestBody JsonNode patch, BindingResult result){
+        ControllerUtil.processValidation(result, messageSource);
+        return patch(patch, user, dtoConverters.userToUserDto, updaters.profileUpdater, UserDto.class, DomainDto.Default.class);
     }
 
 

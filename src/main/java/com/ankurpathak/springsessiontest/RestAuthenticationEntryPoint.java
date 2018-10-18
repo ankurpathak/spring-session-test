@@ -1,6 +1,8 @@
 package com.ankurpathak.springsessiontest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.AuthenticationException;
@@ -14,6 +16,9 @@ import java.io.IOException;
 @Component
 public final class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    private static final Logger log = LoggerFactory.getLogger(RuntimeRestExceptionHandler.class);
+
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -22,7 +27,9 @@ public final class RestAuthenticationEntryPoint implements AuthenticationEntryPo
 
 
     @Override
-    public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException authException) throws IOException {
+    public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException ex) throws IOException {
+        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        ex.printStackTrace();
         FilterUtil.generateUnauthorized(request, response, objectMapper, messageSource);
     }
 

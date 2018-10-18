@@ -10,6 +10,7 @@ import java.math.BigInteger;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
+import static org.valid4j.Assertive.require;
 
 @PasswordMatches(groups = {UserDto.Register.class, UserDto.ForgetPassword.class, UserDto.ChangePassword.class})
 public class UserDto extends DomainDto<User, BigInteger> implements Serializable {
@@ -20,7 +21,7 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
     @NotContainWhitespace(groups = Default.class)
     @NotBlank(groups = Default.class)
     private String lastName;
-    @NotBlank(groups = Default.class)
+    @NotBlank(groups = Register.class)
     @com.github.ankurpathak.primitive.bean.constraints.string.Email(groups = {Register.class})
     private String email;
     private String username;
@@ -32,7 +33,7 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
     private String password;
     private String confirmPassword;
 
-    @Contact(groups = Default.class)
+    @Contact(groups = Register.class)
     private String contact;
 
 
@@ -113,9 +114,61 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
         this.currentPassword = currentPassword;
     }
 
+    public UserDto firstName(String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
+
+    public UserDto lastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public UserDto email(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public UserDto username(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public UserDto middleName(String middleName) {
+        this.middleName = middleName;
+        return this;
+    }
+
+    public UserDto password(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public UserDto confirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+        return this;
+    }
+
+    public UserDto contact(String contact) {
+        this.contact = contact;
+        return this;
+    }
+
+    public UserDto currentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
+        return this;
+    }
+
 
     public interface Register {}
     public interface ForgetPassword {}
     public interface ChangePassword {}
+
+
+    public static UserDto getInstance(){
+        return new UserDto();
+    }
+
+
 
 }

@@ -1,10 +1,12 @@
 package com.ankurpathak.springsessiontest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,8 +26,8 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
     private final IUserService service;
     private final UpdateDomainUpdaters updaters;
 
-    public PasswordController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service, UpdateDomainUpdaters updaters) {
-        super(applicationEventPublisher, messageSource);
+    public PasswordController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, UpdateDomainUpdaters updaters) {
+        super(applicationEventPublisher, messageSource, objectMapper, validator);
         this.service = service;
         this.updaters = updaters;
     }
@@ -37,11 +39,11 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
 
 
     @PutMapping(PATH_FORGET_PASSWORD_EMAIL)
-    public ResponseEntity<?> forgetPasswordEmail(HttpServletRequest request, @PathVariable(EMAIL) String email){
+    public ResponseEntity<?> forgetPasswordEmail(@PathVariable(EMAIL) String email){
         Optional<User> user = service.byEmail(email);
         if (user.isPresent()) {
             service.forgotPasswordEmail(user.get(), email);
-            return ControllerUtil.processSuccess(messageSource, request);
+            return ControllerUtil.processSuccess(messageSource);
         } else {
             throw new NotFoundException(email, EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);
         }
@@ -57,14 +59,14 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
 
     @PutMapping(PATH_FORGET_PASSWORD)
     public ResponseEntity<?> forgetPassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ForgetPassword.class}) UserDto dto, BindingResult result) {
-        ControllerUtil.processValidation(result, messageSource, request);
+        ControllerUtil.processValidation(result, messageSource);
         return update(dto, user, updaters.forgetPasswordUpdater(), request);
     }
 
 
     @PatchMapping(PATH_CHANGE_PASSWORD)
     public ResponseEntity<?> changePassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ChangePassword.class}) UserDto dto, BindingResult result){
-        ControllerUtil.processValidation(result, messageSource, request);
+        ControllerUtil.processValidation(result, messageSource);
         service.validateExistingPassword(user, dto);
         return update(dto, user, updaters.forgetPasswordUpdater(), request);
     }

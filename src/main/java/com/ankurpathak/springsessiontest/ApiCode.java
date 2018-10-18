@@ -22,7 +22,8 @@ public enum ApiCode {
     EXPIRED_TOKEN(13),
     INVALID_RSQL(14),
     INVALID_JSON(15),
-    INVALID_PASSWORD(16);
+    INVALID_PASSWORD(16),
+    INVALID_PATCH(20);
     int code;
 
     ApiCode(int code){

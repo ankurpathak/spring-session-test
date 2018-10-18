@@ -46,6 +46,7 @@ public class RestSimpleUrlAuthenticationFailureHandler implements Authentication
 
         if (defaultFailureUrl == null) {
             logger.info("Message: {}  Cause: {}", ex.getMessage(), ex.getCause());
+            ex.printStackTrace();
             generateResponse(request,response, ex);
         }
         else {

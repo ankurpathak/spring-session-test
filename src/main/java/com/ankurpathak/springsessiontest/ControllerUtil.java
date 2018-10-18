@@ -25,7 +25,7 @@ import static com.ankurpathak.springsessiontest.Strings.COMMA;
 
 public class ControllerUtil {
 
-    private static void processValidation(BindingResult result, MessageSource messageSource, HttpServletRequest request, ApiCode code, String message) {
+    private static void processValidation(BindingResult result, MessageSource messageSource, ApiCode code, String message) {
         if (result.hasErrors()) {
             throw new ValidationException(
                     result,
@@ -36,8 +36,8 @@ public class ControllerUtil {
     }
 
 
-    public static void processValidation(BindingResult result, MessageSource messageSource, HttpServletRequest request) {
-        processValidation(result, messageSource, request, ApiCode.VALIDATION, ApiMessages.VALIDATION);
+    public static void processValidation(BindingResult result, MessageSource messageSource) {
+        processValidation(result, messageSource, ApiCode.VALIDATION, ApiMessages.VALIDATION);
     }
 
 
@@ -64,7 +64,7 @@ public class ControllerUtil {
     }
 
 
-    public static ResponseEntity<?> processSuccess(MessageSource messageSource, HttpServletRequest request, HttpStatus code, Map<String, Object> extras) {
+    public static ResponseEntity<?> processSuccess(MessageSource messageSource, HttpStatus code, Map<String, Object> extras) {
         return ResponseEntity.status(code)
                 .body(
                         ApiResponse.getInstance(
@@ -80,27 +80,27 @@ public class ControllerUtil {
     }
 
 
-    public static ResponseEntity<?> processSuccess(MessageSource messageSource, HttpServletRequest request) {
-        return processSuccess(messageSource, request, HttpStatus.OK, Collections.emptyMap());
+    public static ResponseEntity<?> processSuccess(MessageSource messageSource) {
+        return processSuccess(messageSource, HttpStatus.OK, Collections.emptyMap());
     }
 
-    public static ResponseEntity<?> processSuccess(MessageSource messageSource, HttpServletRequest request, Map<String, Object> extras) {
-        return processSuccess(messageSource, request, HttpStatus.OK, extras);
+    public static ResponseEntity<?> processSuccess(MessageSource messageSource, Map<String, Object> extras) {
+        return processSuccess(messageSource, HttpStatus.OK, extras);
     }
 
-    public static ResponseEntity<?> processSuccessCreated(MessageSource messageSource, HttpServletRequest request) {
-        return processSuccess(messageSource, request, HttpStatus.CREATED, Collections.emptyMap());
+    public static ResponseEntity<?> processSuccessCreated(MessageSource messageSource) {
+        return processSuccess(messageSource, HttpStatus.CREATED, Collections.emptyMap());
     }
 
-    public static ResponseEntity<?> processSuccessCreated(MessageSource messageSource, HttpServletRequest request, Map<String, Object> extras) {
-        return processSuccess(messageSource, request, HttpStatus.CREATED, extras);
+    public static ResponseEntity<?> processSuccessCreated(MessageSource messageSource, Map<String, Object> extras) {
+        return processSuccess(messageSource, HttpStatus.CREATED, extras);
     }
 
 
     public static ResponseEntity<?> processTokenStatus(Token.TokenStatus status, String token, MessageSource messageSource, HttpServletRequest request) {
         switch (status) {
             case VALID:
-                return ControllerUtil.processSuccess(messageSource, request);
+                return ControllerUtil.processSuccess(messageSource);
 
             case EXPIRED:
                 return ControllerUtil.processExpiredToken(token, messageSource, request);

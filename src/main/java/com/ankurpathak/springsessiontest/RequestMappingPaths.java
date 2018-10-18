@@ -39,6 +39,7 @@ public interface RequestMappingPaths {
 
     String PATH_FORGET_PASSWORD_ENABLE = "/password/token/{token}";
     String PATH_CHANGE_PASSWORD = "/password";
+    String PATH_CHANGE_PROFILE = "/users";
 
 
     static String apiPath(String path){

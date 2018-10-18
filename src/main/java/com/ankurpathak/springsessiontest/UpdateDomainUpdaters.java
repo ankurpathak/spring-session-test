@@ -13,9 +13,15 @@ public class UpdateDomainUpdaters {
 
 
     public IUpdateDomain<User, BigInteger, UserDto> forgetPasswordUpdater() {
-        return (user, dto) -> User.getInstance()
+        return (user, dto) -> user
                 .password(Password.getInstance().value(passwordEncoder.encode(dto.getPassword())));
     }
+
+
+    public IUpdateDomain<User,BigInteger,UserDto> profileUpdater = (user, dto) -> user
+            .firstName(dto.getFirstName())
+            .lastName(dto.getLastName())
+            .middleName(dto.getMiddleName());
 
 
     public UpdateDomainUpdaters(PasswordEncoder passwordEncoder) {
