@@ -30,9 +30,9 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         this.messageSource = messageSource;
     }
 
-    protected  ResponseEntity<?> byId(ID id) {
+    protected  ResponseEntity<?> byId(ID id, Class<T> type) {
         Optional<T> t = getService().findById(id);
-        return t.<ResponseEntity<?>>map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return t.<ResponseEntity<?>>map(ResponseEntity::ok).orElseThrow(() -> new NotFoundException(String.valueOf(id), Params.ID, type.getSimpleName(), ApiCode.NOT_FOUND));
     }
 
 
@@ -41,25 +41,12 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    protected ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
-        if (block < 1)
-            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
-        Pageable request = ControllerUtil.getPageable(block, size, sort);
-        Page<T> page = getService().findPaginated(request);
-        if (block > page.getTotalPages())
-            throw new NotFoundException(String.valueOf(block), "block", Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
-        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
-        return ResponseEntity.ok(page.getContent());
-    }
-
-
-
     protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
         ControllerUtil.processValidation(result, messageSource, request);
         Iterable<T> domains = getService().createAll(dtoList.getDtos().stream().map(dto -> dto.toDomain(converter)).collect(Collectors.toList()));
         List<ID> ids = new ArrayList<>();
         domains.forEach(domain -> ids.add(domain.getId()));
-        return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of("ids", ids));
+        return ControllerUtil.processSuccess(messageSource, request, HttpStatus.CREATED, Map.of(Params.ID, ids));
     }
 
     protected T tryCreateOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter) {
@@ -88,13 +75,13 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    protected ResponseEntity<?> delete(ID id, HttpServletRequest request) {
+    protected ResponseEntity<?> delete(ID id) {
         Optional<T> domain = getService().findById(id);
         if (domain.isPresent()) {
             getService().delete(domain.get());
             return ControllerUtil.processSuccessNoContent();
         } else {
-            throw new NotFoundException(String.valueOf(id), "id", getService().domainName(), ApiCode.NOT_FOUND);
+            throw new NotFoundException(String.valueOf(id), Params.ID, getService().domainName(), ApiCode.NOT_FOUND);
         }
     }
 
@@ -114,9 +101,11 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
             getService().update(dto.updateDomain(t, updater));
             return ControllerUtil.processSuccess(messageSource, request);
         } else {
-            throw new NotFoundException(String.valueOf(id), "id", dto.domainName(), ApiCode.NOT_FOUND);
+            throw new NotFoundException(String.valueOf(id), Params.ID, dto.domainName(), ApiCode.NOT_FOUND);
         }
     }
+
+    /*
 
     protected List<T> searchByField(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
         ControllerUtil.pagePreCheck(block);
@@ -148,5 +137,54 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return page.getContent();
     }
 
+    protected ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
+        ControllerUtil.pagePreCheck(block);
+        Pageable request = ControllerUtil.getPageable(block, size, sort);
+        Page<T> page = getService().findPaginated(request);
+        ControllerUtil.pagePostCheck(block, page);
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
+        return ResponseEntity.ok(page.getContent());
+    }
+
+    */
+
+
+    protected List<T> searchByField(String field, String value, Pageable pageable, Class<T> type, HttpServletResponse response) {
+        ControllerUtil.pagePreCheck(pageable.getPageNumber());
+        String parsedValue = ControllerUtil.parseFieldValue(value);
+        Page<T> page = getService().findByField(field, parsedValue, pageable, type);
+        ControllerUtil.pagePostCheck(pageable.getPageNumber(), page);
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
+        return page.getContent();
+    }
+
+
+
+    protected List<String> listField(String field, String value, Pageable pageable, Class<T> type) {
+        ControllerUtil.pagePreCheck(pageable.getPageNumber());
+        String parsedValue = ControllerUtil.parseFieldValue(value);
+        Page<String> page = getService().listField(field, parsedValue, pageable, type);
+        ControllerUtil.pagePostCheck(pageable.getPageNumber(), page);
+        return page.getContent();
+    }
+
+
+    protected List<T> search(String rsql, Pageable pageable, Class<T> type, HttpServletResponse response){
+        ControllerUtil.pagePreCheck(pageable.getPageNumber());
+        Criteria criteria = ControllerUtil.parseRSQL(rsql, type);
+        Page<T> page = getService().findByCriteria(criteria, pageable, type);
+        ControllerUtil.pagePostCheck(pageable.getPageNumber(), page);
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
+        return page.getContent();
+    }
+
+
+    protected ResponseEntity<?> paginated(Pageable pageable, HttpServletResponse response) {
+        ControllerUtil.pagePreCheck(pageable.getPageNumber());
+        Page<T> page = getService().findPaginated(pageable);
+        ControllerUtil.pagePostCheck(pageable.getPageNumber(), page);
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
+        return ResponseEntity.ok(page.getContent());
+    }
 
 }

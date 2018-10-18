@@ -1,0 +1,52 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: @google.client-id@
+            client-secret: @google.client-secret@
+          facebook:
+            client-id: @facebook.client-id@
+            client-secret: @facebook.client-secret@
+          linkedin:
+            client-id: @linkedin.client-id@
+            client-secret: @linkedin.client-secret@
+            provider: linkedin
+            scope: r_basicprofile,r_emailaddress
+            client-authentication-method: post
+            authorization-grant-type: authorization_code
+            redirect-uri-template: http://localhost:8080/login/oauth2/code/linkedin
+            client-name: Linkedin
+
+
+
+
+
+        provider:
+          linkedin:
+            authorization-uri: https://www.linkedin.com/oauth/v2/authorization
+            token-uri: https://www.linkedin.com/oauth/v2/accessToken
+            user-info-uri: https://api.linkedin.com/v2/me
+
+
+
+
+
+
+social:
+  google:
+    clientId: @google.client-id@
+    clientSecret: @google.client-secret@
+    redirectUrl: http://localhost:8080/login/social/google
+    scope: profile email openid
+  facebook:
+    clientId: @facebook.client-id@
+    clientSecret: @facebook.client-secret@
+    redirectUrl: http://localhost:8080/login/social/facebook
+    scope: public_profile email
+  linkedin:
+    clientId: @linkedin.client-id@
+    clientSecret: @linkedin.client-secret@
+    redirectUrl: http://localhost:8080/login/social/linkedin
+    scope: r_basicprofile r_emailaddress

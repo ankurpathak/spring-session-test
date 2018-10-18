@@ -10,4 +10,6 @@ public interface Params {
     String ASC_UPPERCASE = "ASC";
     String DESC = "desc";
     String DESC_UPPERCASE = "DESC";
+    String BLOCK = "block";
+    String IDS = "ids";
 }

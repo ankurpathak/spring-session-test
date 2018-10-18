@@ -1,7 +1,6 @@
 package com.ankurpathak.springsessiontest;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.session.web.http.HeaderHttpSessionIdResolver;
 import org.springframework.session.web.http.HttpSessionIdResolver;
 
 import javax.servlet.http.HttpServletRequest;

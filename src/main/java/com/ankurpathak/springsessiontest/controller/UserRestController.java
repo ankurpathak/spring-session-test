@@ -5,6 +5,7 @@ import com.ankurpathak.springsessiontest.*;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -49,6 +50,7 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
         return createOne(dto, result, request, response, ToDomainConverters.userDtoCreateToDomain);
     }
 
+    /*
 
     @GetMapping(PATH_SEARCH_BY_FIEND_USER)
     @JsonView(View.Public.class)
@@ -67,6 +69,26 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
     @JsonView(View.Public.class)
     public List<User> search(HttpServletResponse response,@RequestParam("rsql") String rsql, @RequestParam(name = "size", required = false) String size, @RequestParam(value = "page", required = false, defaultValue = "1") String page, @RequestParam(value = "sort", required = false) String sort){
         return search(rsql, PrimitiveUtils.toInteger(page), PrimitiveUtils.toInteger(size), sort, User.class, response);
+    }
+    */
+
+    @GetMapping(PATH_SEARCH_BY_FIEND_USER)
+    @JsonView(View.Public.class)
+    public List<User> search(HttpServletResponse response, @PathVariable("field") String field, @PathVariable("value") String value, Pageable pageable){
+        return searchByField(field, value, pageable, User.class, response);
+    }
+
+
+    @GetMapping(PATH_LIST_FIELD_USER)
+    public List<String> listFields(@PathVariable("field") String field, @PathVariable("value") String value, Pageable pageable){
+        return listField(field, value, pageable, User.class);
+    }
+
+
+    @GetMapping(PATH_SEARCH_USER)
+    @JsonView(View.Public.class)
+    public List<User> search(HttpServletResponse response,@RequestParam("rsql") String rsql, Pageable pageable){
+        return search(rsql, pageable, User.class, response);
     }
 
 
