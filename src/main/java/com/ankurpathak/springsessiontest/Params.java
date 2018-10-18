@@ -14,4 +14,7 @@ public interface Params {
     String IDS = "ids";
     String RSQL = "rsql";
     String FIELD = "field";
+    String COUNT = "count";
+    String MONGO_ID = "_id";
+    String I ="i";
 }

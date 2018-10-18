@@ -31,7 +31,7 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
         operations.add(Aggregation.skip(skip));
         operations.add(Aggregation.limit(limit));
         if(project)
-            operations.add(Aggregation.project(field).andExclude("_id"));
+            operations.add(Aggregation.project(field).andExclude(Params.MONGO_ID));
 
         return Aggregation.newAggregation(type, operations);
     }
@@ -41,7 +41,7 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
 
     private TypedAggregation<T> getCountAggregation(String field, String value, Class<T> type) {
         List<AggregationOperation> operations = new ArrayList<>(getCombinedAggreagation(field, value));
-        operations.add(Aggregation.count().as("count"));
+        operations.add(Aggregation.count().as(Params.COUNT));
         return Aggregation.newAggregation(type, operations);
     }
 
@@ -52,31 +52,34 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
 
 
     private static AggregationOperation search(String value) {
-        return context -> new Document(MATCH, new Document("field", new Document(
-                REGEX, value)
-                .append(OPTIONS, "i")
+        return context -> new Document(OP_MATCH, new Document(Params.FIELD, new Document(
+                OP_REGEX, value)
+                .append(OP_OPTIONS, Params.I)
         ));
     }
 
     private static AggregationOperation anyFieldToString(String field) {
-        return context -> new Document(ADD_FIELDS, new Document(
-                "field", new Document(
-                TO_STRING, referField(field))));
+        return context -> new Document(OP_ADD_FIELDS, new Document(
+                Params.FIELD, new Document(
+                OP_TO_STRING, referField(field))));
     }
 
 
-    public static final String MATCH = "$match";
-    public static final String PROJECT = "$project";
-    public static final String CONCAT = "$concat";
-    public static final String ADD_FIELDS = "$addFields";
-    public static final String REGEX = "$regex";
-    public static final String OPTIONS = "$options";
-    public static final String CONVERT = "$convert";
-    public static final String TO_STRING = "$toString";
+    public static final String OP_MATCH = "$match";
+    public static final String OP_PROJECT = "$project";
+    public static final String OP_CONCAT = "$concat";
+    public static final String OP_ADD_FIELDS = "$addFields";
+    public static final String OP_REGEX = "$regex";
+    public static final String OP_OPTIONS = "$options";
+    public static final String OP_CONVERT = "$convert";
+    public static final String OP_TO_STRING = "$toString";
+
+
+    public static final String FORMAT_FIETD = "$%s";
 
 
     private static String referField(String field) {
-        return String.format("$%s", field);
+        return String.format(FORMAT_FIETD, field);
     }
 
 

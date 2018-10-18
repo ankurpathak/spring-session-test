@@ -25,8 +25,6 @@ public class AbstractAggregation<T extends Domain<ID>, ID extends Serializable> 
 
 
 
-
-
     public static final String SORT = "$sort";
 
 
@@ -49,7 +47,7 @@ public class AbstractAggregation<T extends Domain<ID>, ID extends Serializable> 
         List<Document> results = mongoTemplate.aggregate(aggregation, type, Document.class).getMappedResults();
         if(CollectionUtils.isNotEmpty(results)){
             Document result = results.get(0);
-            return  ((Integer)result.get("count")).longValue();
+            return  ((Integer)result.get(Params.COUNT)).longValue();
         }else {
             return 0L;
         }
