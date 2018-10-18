@@ -24,9 +24,9 @@ import static com.ankurpathak.springsessiontest.RequestMappingPaths.*;
 public class PasswordController extends AbstractRestController<User, BigInteger, UserDto> {
 
     private final IUserService service;
-    private final UpdateDomainUpdaters updaters;
+    private final DomainUpdaters updaters;
 
-    public PasswordController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, UpdateDomainUpdaters updaters) {
+    public PasswordController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainUpdaters updaters) {
         super(applicationEventPublisher, messageSource, objectMapper, validator);
         this.service = service;
         this.updaters = updaters;

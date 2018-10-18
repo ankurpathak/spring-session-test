@@ -30,9 +30,9 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
 
 
     private final IUserService service;
-    private final ToDomainConverters converters;
-    private final UpdateDomainUpdaters updaters;
-    private final ToDtoConverters dtoConverters;
+    private final DomainConverters converters;
+    private final DomainUpdaters updaters;
+    private final DtoConverters dtoConverters;
 
 
     @Override
@@ -40,7 +40,7 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
         return service;
     }
 
-    public UserRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, ToDomainConverters converters, UpdateDomainUpdaters updaters, ToDtoConverters dtoConverters) {
+    public UserRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainConverters converters, DomainUpdaters updaters, DtoConverters dtoConverters) {
         super(applicationEventPublisher, messageSource, objectMapper, validator);
         this.service = service;
         this.converters = converters;

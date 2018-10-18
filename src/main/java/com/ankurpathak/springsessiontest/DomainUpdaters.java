@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 
 @Component
-public class UpdateDomainUpdaters {
+public class DomainUpdaters {
 
 
     private final PasswordEncoder passwordEncoder;
@@ -24,7 +24,7 @@ public class UpdateDomainUpdaters {
             .middleName(dto.getMiddleName());
 
 
-    public UpdateDomainUpdaters(PasswordEncoder passwordEncoder) {
+    public DomainUpdaters(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 }

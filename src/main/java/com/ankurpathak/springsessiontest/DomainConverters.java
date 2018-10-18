@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import java.util.Set;
 
 @Component
-public class ToDomainConverters {
+public class DomainConverters {
 
 
     private final PasswordEncoder passwordEncoder;
@@ -32,7 +32,7 @@ public class ToDomainConverters {
 
 
 
-    public ToDomainConverters(PasswordEncoder passwordEncoder) {
+    public DomainConverters(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 }

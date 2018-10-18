@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 
 @Component
-public class ToDtoConverters {
+public class DtoConverters {
 
     public IToDto<User, BigInteger, UserDto> userToUserDto = domain -> UserDto.getInstance()
             .firstName(domain.getFirstName())

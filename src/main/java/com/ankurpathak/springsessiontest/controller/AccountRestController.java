@@ -23,14 +23,14 @@ import static com.ankurpathak.springsessiontest.RequestMappingPaths.*;
 @ApiController
 public class AccountRestController extends AbstractRestController<User, BigInteger, UserDto> {
     private final IUserService service;
-    private final ToDomainConverters converters;
+    private final DomainConverters converters;
 
     @Override
     public IDomainService<User, BigInteger> getService() {
         return service;
     }
 
-    public AccountRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, ToDomainConverters converters) {
+    public AccountRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainConverters converters) {
         super(applicationEventPublisher, messageSource, objectMapper, validator);
         this.service = service;
 

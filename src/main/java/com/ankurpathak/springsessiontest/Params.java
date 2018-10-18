@@ -20,4 +20,5 @@ public interface Params {
     String PASSWORD = "password";
     String PATCH = "patch";
     String JSON = "json";
+    String USER = "user";
 }

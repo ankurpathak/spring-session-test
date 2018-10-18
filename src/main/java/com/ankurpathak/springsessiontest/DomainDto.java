@@ -13,7 +13,7 @@ public abstract class DomainDto<T extends Domain<ID>, ID extends Serializable> i
     @SuppressWarnings("unchecked")
     public <TDto extends DomainDto<T, ID>> T updateDomain(T t, IUpdateDomain<T, ID, TDto> updater){
         TDto dto = (TDto) this;
-        return updater.updateDomain(t, dto);
+        return updater.doUpdate(t, dto);
     }
 
     public String domainName(){
