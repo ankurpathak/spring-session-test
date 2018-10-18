@@ -97,6 +97,7 @@ public class Role extends Domain<String> implements Serializable {
         String PRIV_FORGET_PASSWORD_EMAIL = "PRIV_FORGET_PASSWORD_EMAIL";
         String PRIV_FORGET_PASSWORD_ENABLE = "PRIV_FORGET_PASSWORD_ENABLE";
         String PRIV_FORGET_PASSWORD = "PRIV_FORGET_PASSWORD";
+        String PRIV_CHANGE_PASSWORD = "CHANGE_PASSWORD";
 
     }
 

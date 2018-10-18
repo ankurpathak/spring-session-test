@@ -1,11 +1,18 @@
 package com.ankurpathak.springsessiontest;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
 import java.math.BigInteger;
 import java.util.Set;
 
+@Component
 public class ToDomainConverters {
 
-    public static IToDomain<User, BigInteger, UserDto> userDtoCreateToDomain = dto -> User.getInstance()
+
+    private final PasswordEncoder passwordEncoder;
+
+    public IToDomain<User, BigInteger, UserDto> userDtoCreateToDomain = dto -> User.getInstance()
             .firstName(dto.getFirstName())
             .lastName(dto.getLastName())
             .middleName(dto.getMiddleName())
@@ -13,12 +20,19 @@ public class ToDomainConverters {
             .roles(Set.of(Role.ROLE_ADMIN));
 
 
-    public static IToDomain<User, BigInteger, UserDto> userDtoRegisterToDomain = dto -> User.getInstance()
-            .firstName(dto.getFirstName())
-            .lastName(dto.getLastName())
-            .middleName(dto.getMiddleName())
-            .email(Contact.getInstance(dto.getEmail()))
-            .roles(Set.of(Role.ROLE_ADMIN))
-            .password(Password.getInstance().value(dto.getPassword()));
+    public IToDomain<User, BigInteger, UserDto> userDtoRegisterToDomain() {
+        return dto -> User.getInstance()
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
+                .middleName(dto.getMiddleName())
+                .email(Contact.getInstance(dto.getEmail()))
+                .roles(Set.of(Role.ROLE_ADMIN))
+                .password(Password.getInstance().value(this.passwordEncoder.encode(dto.getPassword())));
+    }
 
+
+
+    public ToDomainConverters(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 }

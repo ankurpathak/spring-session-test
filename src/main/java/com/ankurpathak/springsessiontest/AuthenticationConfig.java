@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
@@ -30,12 +31,6 @@ public class AuthenticationConfig {
     public PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices() {
         return new ExtendedPersistentTokenBasedRememberMeServices(AuthenticationProviderConfig.REMEMBER_ME_KEY, userDetailsService, persistentTokenRepository(), rememberMeTokenResolver, rememberMeRequestedResolver);
     }
-
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
-    }
-
 
 
     @Bean

@@ -9,11 +9,6 @@ import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.stereotype.Component;
 
 @SpringBootApplication
-@EnableMongoAuditing(
-        auditorAwareRef = "userIdAuditorAware",
-        dateTimeProviderRef = "instantDateTimeProvider"
-)
-@EnableCaching
 public class SpringSessionTestApplication {
 
 

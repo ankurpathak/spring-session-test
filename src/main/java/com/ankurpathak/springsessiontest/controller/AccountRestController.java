@@ -21,26 +21,25 @@ import static com.ankurpathak.springsessiontest.RequestMappingPaths.*;
 @ApiController
 public class AccountRestController extends AbstractRestController<User, BigInteger, UserDto> {
     private final IUserService service;
-    private final ITokenService tokenService;
-    private final IEmailService emailService;
+    private final ToDomainConverters converters;
 
     @Override
     public IDomainService<User, BigInteger> getService() {
         return service;
     }
 
-    public AccountRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service, ITokenService tokenService, IEmailService emailService) {
+    public AccountRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service, ToDomainConverters converters) {
         super(applicationEventPublisher, messageSource);
         this.service = service;
-        this.tokenService = tokenService;
-        this.emailService = emailService;
+
+        this.converters = converters;
     }
 
 
     @PostMapping(PATH_ACCOUNT)
     public ResponseEntity<?> account(HttpServletRequest request, HttpServletResponse response, @Validated({UserDto.Default.class, UserDto.Register.class}) @RequestBody UserDto dto, BindingResult result) {
         try {
-            User user = tryCreateOne(dto, result, request, response, ToDomainConverters.userDtoRegisterToDomain);
+            User user = tryCreateOne(dto, result, request, response, converters.userDtoRegisterToDomain());
             applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user));
             return ControllerUtil.processSuccessCreated(messageSource, request, Map.of(ID, user.getId()));
         } catch (DuplicateKeyException ex) {

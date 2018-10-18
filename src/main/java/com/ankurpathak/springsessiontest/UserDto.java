@@ -2,16 +2,16 @@ package com.ankurpathak.springsessiontest;
 
 import com.github.ankurpathak.password.bean.constraints.NotContainWhitespace;
 import com.github.ankurpathak.password.bean.constraints.PasswordMatches;
+import com.github.ankurpathak.primitive.bean.constraints.string.Contact;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Set;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
 
-@PasswordMatches(groups = {DomainDto.Register.class, DomainDto.PasswordReset.class})
+@PasswordMatches(groups = {UserDto.Register.class, UserDto.ForgetPassword.class, UserDto.ChangePassword.class})
 public class UserDto extends DomainDto<User, BigInteger> implements Serializable {
 
     @NotBlank(groups = Default.class)
@@ -27,10 +27,19 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
     @NotContainWhitespace(groups = Default.class)
     private String middleName;
 
-    @NotBlank(groups = {Register.class, PasswordReset.class})
+    @NotBlank(groups = {Register.class, ForgetPassword.class, ChangePassword.class})
+    @NotContainWhitespace(groups = {Register.class, ForgetPassword.class, ChangePassword.class})
     private String password;
     private String confirmPassword;
+
+    @Contact(groups = Default.class)
     private String contact;
+
+
+    @NotBlank(groups = ChangePassword.class)
+    @NotContainWhitespace(groups = ChangePassword.class)
+    private String currentPassword;
+
 
     public String getContact() {
         return contact;
@@ -96,5 +105,17 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
+    }
+
+
+    public interface Register {}
+    public interface ForgetPassword {}
+    public interface ChangePassword {}
 
 }

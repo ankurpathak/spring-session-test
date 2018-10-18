@@ -1,6 +1,6 @@
 package com.ankurpathak.springsessiontest;
 
-import com.ankurpathak.springsessiontest.controller.InvalidTokenException;
+import com.ankurpathak.springsessiontest.controller.InvalidException;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import cz.jirutka.rsql.parser.RSQLParser;
@@ -58,7 +58,7 @@ public class ControllerUtil {
                                 ApiCode.UNKNOWN,
                                 MessageUtil.getMessage(messageSource, ApiMessages.UNKNOWN)
                         )
-                        .addExtras(extras)
+                                .addExtras(extras)
                 );
 
     }
@@ -103,17 +103,20 @@ public class ControllerUtil {
                 return ControllerUtil.processSuccess(messageSource, request);
 
             case EXPIRED:
-                throw new InvalidTokenException(
-                        MessageUtil.getMessage(messageSource, ApiMessages.EXPIRED_TOKEN, token),
-                        ApiCode.EXPIRED_TOKEN
-                );
+                return ControllerUtil.processExpiredToken(token, messageSource, request);
             case INVALID:
             default:
-                throw new InvalidTokenException(
-                        MessageUtil.getMessage(messageSource, ApiMessages.INVALID_TOKEN, token),
-                        ApiCode.INVALID_TOKEN
-                );
+                throw new InvalidException(ApiCode.INVALID_TOKEN, Params.TOKEN, token);
         }
+    }
+
+    public static ResponseEntity<?> processExpiredToken(String token, MessageSource messageSource, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponse.getInstance(
+                        ApiCode.EXPIRED_TOKEN,
+                        MessageUtil.getMessage(messageSource, ApiMessages.EXPIRED_TOKEN, token)
+                )
+        );
     }
 
 
@@ -122,7 +125,7 @@ public class ControllerUtil {
             size = 200;
         else if (size <= 0)
             size = 20;
-            return PageRequest.of(block - 1, size, parseSort(sort));
+        return PageRequest.of(block - 1, size, parseSort(sort));
     }
 
     private static Sort parseSort(String sort) {
@@ -184,20 +187,20 @@ public class ControllerUtil {
     public static final String PATTERN_END_WITH = "%s$";
     public static final String PATTERN_EXACT = "^%s$";
 
-    public static<T> void pagePostCheck(int block, Page<T> page){
+    public static <T> void pagePostCheck(int block, Page<T> page) {
         if (block > page.getTotalPages())
             throw new NotFoundException(String.valueOf(block), Params.BLOCK, Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
     }
 
 
-    public static void pagePreCheck(int block){
+    public static void pagePreCheck(int block) {
         if (block < 1)
             throw new NotFoundException(String.valueOf(block), Params.BLOCK, Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
 
     }
 
 
-    public static <T> Criteria parseRSQL(String rsql, Class<T> type){
+    public static <T> Criteria parseRSQL(String rsql, Class<T> type) {
         Node rootNode = new RSQLParser().parse(rsql);
         return rootNode.accept(new CustomRSQLVisitor(type.getSimpleName()));
     }

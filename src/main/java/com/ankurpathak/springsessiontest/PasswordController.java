@@ -5,10 +5,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
@@ -22,10 +22,12 @@ import static com.ankurpathak.springsessiontest.RequestMappingPaths.*;
 public class PasswordController extends AbstractRestController<User, BigInteger, UserDto> {
 
     private final IUserService service;
+    private final UpdateDomainUpdaters updaters;
 
-    public PasswordController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service) {
+    public PasswordController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service, UpdateDomainUpdaters updaters) {
         super(applicationEventPublisher, messageSource);
         this.service = service;
+        this.updaters = updaters;
     }
 
     @Override
@@ -54,9 +56,17 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
 
 
     @PutMapping(PATH_FORGET_PASSWORD)
-    public ResponseEntity<?> forgetPassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({DomainDto.PasswordReset.class}) UserDto dto, BindingResult result) {
+    public ResponseEntity<?> forgetPassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ForgetPassword.class}) UserDto dto, BindingResult result) {
         ControllerUtil.processValidation(result, messageSource, request);
-        return update(dto, user, UpdateDomainUpdaters.forgetPasswordUpdater, request);
+        return update(dto, user, updaters.forgetPasswordUpdater(), request);
+    }
+
+
+    @PatchMapping(PATH_CHANGE_PASSWORD)
+    public ResponseEntity<?> changePassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ChangePassword.class}) UserDto dto, BindingResult result){
+        ControllerUtil.processValidation(result, messageSource, request);
+        service.validateExistingPassword(user, dto);
+        return update(dto, user, updaters.forgetPasswordUpdater(), request);
     }
 
 

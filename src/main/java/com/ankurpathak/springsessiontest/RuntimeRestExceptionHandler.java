@@ -1,7 +1,6 @@
 package com.ankurpathak.springsessiontest;
 
-import com.ankurpathak.springsessiontest.controller.InvalidTokenException;
-import com.mongodb.util.JSONParseException;
+import com.ankurpathak.springsessiontest.controller.InvalidException;
 import cz.jirutka.rsql.parser.RSQLParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,14 +98,14 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
         );
     }
 
-    @ExceptionHandler({InvalidTokenException.class})
-    public ResponseEntity<?> handleInvalidTokenException(InvalidTokenException ex, WebRequest request) {
+    @ExceptionHandler({InvalidException.class})
+    public ResponseEntity<?> handleInvalidTokenException(InvalidException ex, WebRequest request) {
         log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ex.getCode(),
-                        ex.getMessage()
+                        MessageUtil.getMessage(messageSource, ApiMessages.INVALID, ex.getProperty(), ex.getValue())
                 ),
                 new HttpHeaders(),
                 HttpStatus.CONFLICT,

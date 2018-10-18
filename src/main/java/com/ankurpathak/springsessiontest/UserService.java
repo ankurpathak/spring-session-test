@@ -1,8 +1,10 @@
 package com.ankurpathak.springsessiontest;
 
+import com.ankurpathak.springsessiontest.controller.InvalidException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,11 +24,13 @@ public class UserService extends AbstractDomainService<User,BigInteger> implemen
     private final IUserRepository dao;
     private final ITokenService tokenService;
     private final IEmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(IUserRepository dao, ITokenService tokenService, IEmailService emailService) {
+    public UserService(IUserRepository dao, ITokenService tokenService, IEmailService emailService, PasswordEncoder passwordEncoder) {
         this.dao = dao;
         this.tokenService = tokenService;
         this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -72,7 +76,6 @@ public class UserService extends AbstractDomainService<User,BigInteger> implemen
         Token token = tokenService.generateToken();
         saveEmailToken(user, token);
         emailService.sendForAccountEnable(user, token);
-
     }
 
     @Override
@@ -137,6 +140,15 @@ public class UserService extends AbstractDomainService<User,BigInteger> implemen
             user.getPassword().setTokenId(token.getId());
             update(user);
         }
+    }
+
+    @Override
+    public void validateExistingPassword(User user, UserDto dto) {
+        ensure(user, notNullValue());
+        ensure(dto, notNullValue());
+        ensure(user.getPassword(), notNullValue());
+        if(!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword().getValue()))
+            throw new InvalidException( ApiCode.INVALID_PASSWORD, Params.PASSWORD, dto.getCurrentPassword());
     }
 
 

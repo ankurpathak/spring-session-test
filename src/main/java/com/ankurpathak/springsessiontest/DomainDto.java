@@ -30,10 +30,5 @@ public abstract class DomainDto<T extends Domain<ID>, ID extends Serializable> i
     }
 
 
-    public interface Register {
 
-    }
-
-    public interface PasswordReset {
-    }
 }

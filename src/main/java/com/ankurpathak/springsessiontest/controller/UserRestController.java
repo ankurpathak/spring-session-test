@@ -27,6 +27,7 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
 
 
     private final IUserService service;
+    private final ToDomainConverters converters;
 
 
     @Override
@@ -34,10 +35,10 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
         return service;
     }
 
-    public UserRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service) {
+    public UserRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, IUserService service, ToDomainConverters converters) {
         super(applicationEventPublisher, messageSource);
         this.service = service;
-
+        this.converters = converters;
     }
 
     @GetMapping(PATH_GET_ME)
@@ -50,7 +51,7 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
 
     @PostMapping(PATH_CREATE_USER)
     public ResponseEntity<?> createOne(HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({DomainDto.Default.class}) UserDto dto, BindingResult result){
-        return createOne(dto, result, request, response, ToDomainConverters.userDtoCreateToDomain);
+        return createOne(dto, result, request, response, converters.userDtoCreateToDomain);
     }
 
     /*

@@ -14,7 +14,7 @@ public interface ApiMessages {
     String INCORRECT_STATE = "api.message.incorrect-state";
     String ACCOUNT_DISABLED = "api.message.account-disabled";
     String BAD_REQUEST = "api.message.bad-request";
-    String INVALID_TOKEN = "api.message.invalid-token";
+    String INVALID = "api.message.invalid";
     String EXPIRED_TOKEN = "api.message.expired-token";
     String INVALID_RSQL = "api.message.invalid-rsql";
     String INVALID_JSON = "api.message.invalid-json";

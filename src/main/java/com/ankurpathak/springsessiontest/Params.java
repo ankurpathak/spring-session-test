@@ -17,4 +17,5 @@ public interface Params {
     String COUNT = "count";
     String MONGO_ID = "_id";
     String I ="i";
+    String PASSWORD = "password";
 }

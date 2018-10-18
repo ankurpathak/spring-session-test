@@ -22,4 +22,6 @@ public interface IUserService  extends IDomainService<User, BigInteger> {
     void forgotPasswordEmail(User user, String email);
 
     void savePasswordToken(User user, Token token);
+
+    void validateExistingPassword(User user, UserDto dto);
 }
