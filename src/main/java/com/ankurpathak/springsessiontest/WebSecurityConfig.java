@@ -6,8 +6,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.*;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
@@ -22,12 +24,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String SUCCESS_URL = "/";
 
 
+
+
     private final AuthenticationSuccessHandler restAuthenticationSuccessHandler;
     private final AuthenticationFailureHandler restAuthenticationFailureHandler;
     private final AccessDeniedHandler restAccessDeniedHandler;
     private final PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
     private final FilterConfig filterConfig;
+    private final SessionRegistry sessionRegistry;
+    private final LogoutSuccessHandler restLogoutSuccessHandler;
 
 
     private AuthenticationManager authenticationManager;
@@ -39,13 +45,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-    public WebSecurityConfig(AuthenticationSuccessHandler restAuthenticationSuccessHandler, AuthenticationFailureHandler restAuthenticationFailureHandler, AccessDeniedHandler restAccessDeniedHandler, PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices, RestAuthenticationEntryPoint restAuthenticationEntryPoint, FilterConfig filterConfig) {
+    public WebSecurityConfig(AuthenticationSuccessHandler restAuthenticationSuccessHandler, AuthenticationFailureHandler restAuthenticationFailureHandler, AccessDeniedHandler restAccessDeniedHandler, PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices, RestAuthenticationEntryPoint restAuthenticationEntryPoint, FilterConfig filterConfig, SessionRegistry sessionRegistry, LogoutSuccessHandler restLogoutSuccessHandler) {
         this.restAuthenticationSuccessHandler = restAuthenticationSuccessHandler;
         this.restAuthenticationFailureHandler = restAuthenticationFailureHandler;
         this.restAccessDeniedHandler = restAccessDeniedHandler;
         this.persistentTokenBasedRememberMeServices = persistentTokenBasedRememberMeServices;
         this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
         this.filterConfig = filterConfig;
+        this.sessionRegistry = sessionRegistry;
+        this.restLogoutSuccessHandler = restLogoutSuccessHandler;
     }
 
 
@@ -59,8 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-
-
                 .oauth2Login()
                 .successHandler(restAuthenticationSuccessHandler)
                 .failureHandler(restAuthenticationFailureHandler)
@@ -94,8 +100,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .logout()
+                .logoutUrl("/api/logout")
                 .deleteCookies("JSESSIONID", "SESSION")
-
+                .logoutSuccessHandler(restLogoutSuccessHandler)
                 .and()
 
                 .rememberMe()
@@ -108,7 +115,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //  .addFilterAfter(socialWebAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(filterConfig.securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
                 .exceptionHandling()
-                .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(restAccessDeniedHandler);
+                .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(restAccessDeniedHandler)
+                .and().sessionManagement().maximumSessions(2).maxSessionsPreventsLogin(true).sessionRegistry(sessionRegistry)
+        ;
     }
 
 

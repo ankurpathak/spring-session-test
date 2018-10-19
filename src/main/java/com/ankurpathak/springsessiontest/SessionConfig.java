@@ -2,13 +2,14 @@ package com.ankurpathak.springsessiontest;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.web.http.HttpSessionIdResolver;
 
 
 
 @Configuration
-public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
+public class SessionConfig {
+
 
     @Bean
     public HttpSessionIdResolver httpSessionStrategy() {
@@ -26,6 +27,17 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     public IRememberMeRequestedResolver rememberMeRequestedResolver(){
         return HeaderRememberMeRequestedResolver.xRememberMe();
     }
+
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+
+
+    //config set notify-keyspace-events KEA
+    //config get notify-keyspace-events
+
 
 
 }

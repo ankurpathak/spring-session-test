@@ -63,6 +63,6 @@ public class RestSavedRequestAwareAuthenticationSuccessHandler extends SimpleUrl
 
 
     private void generateResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        FilterUtil.generateSuccess(request, response, objectMapper, messageSource);
+        FilterUtil.generateSuccess(response, objectMapper, messageSource);
     }
 }

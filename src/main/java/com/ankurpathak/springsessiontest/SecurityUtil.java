@@ -14,11 +14,8 @@ public class SecurityUtil {
 
 
     public static Optional<User> getMe(Authentication authentication){
-        Optional<CustomUserDetails> userContext = getCustomUserDetails(authentication);
-        if (userContext.isPresent() && userContext.get().getUser() != null) {
-            return Optional.of(userContext.get().getUser());
-        }
-        return Optional.empty();
+        return getCustomUserDetails(authentication)
+                .map(CustomUserDetails::getUser);
     }
 
 
@@ -50,7 +47,7 @@ public class SecurityUtil {
 
 
     public static Optional<DomainContext> getDomainContext() {
-        return getSecurityContext().map(SecurityContextCompositeImpl::getDomainContext);
+        return getSecurityContext().map(ExtendedSecurityContextImpl::getDomainContext);
     }
 
 
@@ -61,10 +58,7 @@ public class SecurityUtil {
     }
 
     public static Optional<Authentication> getAuthentication(Authentication authentication){
-        if (authentication!= null) {
-            return Optional.of(authentication);
-        }
-        return Optional.empty();
+        return Optional.ofNullable(authentication);
     }
 
     public static Optional<CustomUserDetails> getCustomUserDetails() {
@@ -74,13 +68,14 @@ public class SecurityUtil {
 
 
     public static Optional<CustomUserDetails> getCustomUserDetails(Authentication authentication) {
-        if(authentication!= null){
-            if(authentication.getPrincipal() != null && authentication.getPrincipal() instanceof CustomUserDetails){
-                return Optional.of((CustomUserDetails)authentication.getPrincipal());
-            }
-        }
-        return Optional.empty();
+        return Optional.ofNullable(authentication)
+                .map(Authentication::getPrincipal)
+                .filter(CustomUserDetails.class::isInstance)
+                .map(CustomUserDetails.class::cast);
     }
+
+
+    /*
 
 
     public static Optional<SecurityContextCompositeImpl> getSecurityContext() {
@@ -89,6 +84,16 @@ public class SecurityUtil {
             return Optional.of((SecurityContextCompositeImpl) context);
         }
         return Optional.empty();
+    }
+
+    */
+
+
+    public static Optional<ExtendedSecurityContextImpl> getSecurityContext() {
+        return Optional.ofNullable(SecurityContextHolder.getContext())
+                .filter(ExtendedSecurityContextImpl.class::isInstance)
+                .map(ExtendedSecurityContextImpl.class::cast);
+
     }
 
 

@@ -66,7 +66,7 @@ public class FilterUtil {
     }
 
 
-    public static void generateSuccess(HttpServletRequest request, HttpServletResponse response, ObjectMapper objectMapper, MessageSource messageSource) throws IOException{
+    public static void generateSuccess(HttpServletResponse response, ObjectMapper objectMapper, MessageSource messageSource) throws IOException{
         if(!response.isCommitted()){
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);

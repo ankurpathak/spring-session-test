@@ -2,29 +2,28 @@ package com.ankurpathak.springsessiontest;
 
 import com.maxmind.db.CHMCache;
 import com.maxmind.geoip2.DatabaseReader;
-import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.security.authentication.RememberMeAuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.session.data.redis.RedisOperationsSessionRepository;
+import org.springframework.session.security.SpringSessionBackedSessionRegistry;
 
-import javax.inject.Named;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 
 @Configuration
 public class AppConfig {
 
 
+    private final  RedisOperationsSessionRepository sessionRepository;
+
+    public AppConfig(RedisOperationsSessionRepository sessionRepository) {
+        this.sessionRepository = sessionRepository;
+    }
 
 
     @Bean
@@ -55,6 +54,12 @@ public class AppConfig {
     public DatabaseReader databaseReader() throws Exception{
         ClassPathResource resource =  new ClassPathResource("GeoLite2-City.mmdb");
         return new DatabaseReader.Builder(resource.getInputStream()).withCache(new CHMCache()).build();
+    }
+
+
+    @Bean
+    public SpringSessionBackedSessionRegistry sessionRegistry() {
+        return new SpringSessionBackedSessionRegistry<>(this.sessionRepository);
     }
 
 
