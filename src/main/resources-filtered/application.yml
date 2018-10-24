@@ -16,7 +16,7 @@ spring:
             scope: r_basicprofile,r_emailaddress
             client-authentication-method: post
             authorization-grant-type: authorization_code
-            redirect-uri-template: http://localhost:8080/login/oauth2/code/linkedin
+            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
             client-name: Linkedin
 
 
@@ -27,7 +27,9 @@ spring:
           linkedin:
             authorization-uri: https://www.linkedin.com/oauth/v2/authorization
             token-uri: https://www.linkedin.com/oauth/v2/accessToken
-            user-info-uri: https://api.linkedin.com/v2/me
+            #user-info-uri: https://api.linkedin.com/v1/people/~?format=json
+            user-info-uri: https://api.linkedin.com/v1/people/~:(id,email-address,first-name,last-name,picture-url)?format=json
+            user-name-attribute: id
 
 
 
