@@ -30,8 +30,7 @@ public class CountryService implements ICountryService {
     }
 
 
-    @Override
-    @Cacheable(key = "#alphaCode")
+
     public List<String> alphaCodeToCallingCodes(String alphaCode) {
         //throws  javax.ws.rs.ProcessingException
         ensure(alphaCode, not(isEmptyString()));
