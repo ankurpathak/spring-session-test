@@ -4,17 +4,18 @@ package com.ankurpathak.springsessiontest;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.github.ankurpathak.primitive.bean.constraints.string.StringValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
+
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Document(collection = DocumentCollections.USER)
