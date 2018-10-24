@@ -1,7 +1,9 @@
 package com.ankurpathak.springsessiontest;
 
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public interface IUserService  extends IDomainService<User, BigInteger> {
 
@@ -24,4 +26,8 @@ public interface IUserService  extends IDomainService<User, BigInteger> {
     void savePasswordToken(User user, Token token);
 
     void validateExistingPassword(User user, UserDto dto);
+
+    Map<String, Object> possibleCandidateKeys(String username);
+
+    Set<String> possibleContacts(String username);
 }
