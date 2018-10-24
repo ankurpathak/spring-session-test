@@ -21,4 +21,7 @@ public interface Params {
     String PATCH = "patch";
     String JSON = "json";
     String USER = "user";
+    String USERNAME = "username";
+    String CONTACT = "contact";
+    String SUB = "sub";
 }
