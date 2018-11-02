@@ -32,16 +32,20 @@ public class PagingUtil {
     }
 
     public static int fixSize(String size) {
+        return fixSizeUpper(fixSizeLower(size));
+    }
+
+    public static int fixSizeLower(String size) {
         int value = PrimitiveUtils.toInteger(size);
-        return value >= 0 ? value : 0;
+        return value >= 1 ? value : 20;
+    }
+
+    public static int fixSizeUpper(int size) {
+        return size <= 200 ? size : 200;
     }
 
 
     public static Pageable getPageable(int block, int size, String sort) {
-        if (size > 200)
-            size = 200;
-        else if (size <= 0)
-            size = 20;
         return PageRequest.of(block - 1, size, parseSort(sort));
     }
 
