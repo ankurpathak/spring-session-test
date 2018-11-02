@@ -25,6 +25,18 @@ public class PagingUtil {
     public static final String PATTERN_START_WITH = "^%s";
     public static final String PATTERN_END_WITH = "%s$";
 
+
+    public static int fixPage(String page) {
+        int value = PrimitiveUtils.toInteger(page);
+        return value >= 0 ? value : 0;
+    }
+
+    public static int fixSize(String size) {
+        int value = PrimitiveUtils.toInteger(size);
+        return value >= 0 ? value : 0;
+    }
+
+
     public static Pageable getPageable(int block, int size, String sort) {
         if (size > 200)
             size = 200;
