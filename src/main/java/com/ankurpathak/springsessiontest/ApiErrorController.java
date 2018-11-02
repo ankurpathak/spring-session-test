@@ -2,8 +2,6 @@ package com.ankurpathak.springsessiontest;
 
 import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
-import org.springframework.context.MessageSource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -18,12 +16,13 @@ import static com.ankurpathak.springsessiontest.RequestMappingPaths.apiPath;
 @ApiController
 public class ApiErrorController extends AbstractErrorController {
 
-    private final MessageSource messageSource;
+    private final IMessageService messageService;
 
 
-    public ApiErrorController(ErrorAttributes errorAttributes, MessageSource messageSource) {
+    public ApiErrorController(ErrorAttributes errorAttributes, IMessageService messageService) {
         super(errorAttributes);
-        this.messageSource = messageSource;
+
+        this.messageService = messageService;
     }
 
     @Override
@@ -35,7 +34,7 @@ public class ApiErrorController extends AbstractErrorController {
     @GetMapping(PATH_GET_ERROR)
     public ResponseEntity<?> error(HttpServletRequest request) {
         Map<String, Object> errorAttributes = this.getErrorAttributes(request, false);
-        return ControllerUtil.processError(messageSource, request, errorAttributes);
+        return ControllerUtil.processError(messageService, errorAttributes);
     }
 
 }

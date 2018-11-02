@@ -1,6 +1,5 @@
 package com.ankurpathak.springsessiontest;
 
-import com.ankurpathak.springsessiontest.controller.InvalidException;
 import cz.jirutka.rsql.parser.RSQLParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

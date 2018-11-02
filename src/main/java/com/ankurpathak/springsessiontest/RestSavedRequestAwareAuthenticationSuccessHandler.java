@@ -1,8 +1,5 @@
 package com.ankurpathak.springsessiontest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.context.MessageSource;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -15,7 +12,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Objects;
 
 
 @Component
@@ -25,17 +21,14 @@ public class RestSavedRequestAwareAuthenticationSuccessHandler extends SimpleUrl
     private RequestCache requestCache = new HttpSessionRequestCache();
 
 
-    private final ObjectMapper objectMapper;
-
-    private final MessageSource messageSource;
-
-    public RestSavedRequestAwareAuthenticationSuccessHandler(ObjectMapper objectMapper, MessageSource messageSource) {
-        this.objectMapper = objectMapper;
-        this.messageSource = messageSource;
+    private final IFilterService filterService;
+    public RestSavedRequestAwareAuthenticationSuccessHandler(IFilterService filterService) {
         setRedirectStrategy(new DispatcherRedirectStrategy());
         setAlwaysUseDefaultTargetUrl(true);
         setDefaultTargetUrl(DEFAULT_TARGET);
         setTargetUrlParameter(DEFAULT_TARGET_PARAMETER);
+        this.filterService = filterService;
+
     }
 
 
@@ -78,7 +71,7 @@ public class RestSavedRequestAwareAuthenticationSuccessHandler extends SimpleUrl
 
 
     private void generateResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        FilterUtil.generateSuccess(response, objectMapper, messageSource);
+        filterService.generateSuccess(response);
     }
 
 

@@ -1,10 +1,8 @@
 package com.ankurpathak.springsessiontest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -29,15 +27,15 @@ public class RestSimpleUrlAuthenticationFailureHandler implements Authentication
     private boolean allowSessionCreation = true;
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private MessageSource messageSource;
+    private final IFilterService filterService;
 
-    public RestSimpleUrlAuthenticationFailureHandler() {
+    @Autowired
+    public RestSimpleUrlAuthenticationFailureHandler(IFilterService filterService) {
+        this.filterService = filterService;
     }
 
-    public RestSimpleUrlAuthenticationFailureHandler(String defaultFailureUrl) {
+    public RestSimpleUrlAuthenticationFailureHandler(String defaultFailureUrl, IFilterService filterService) {
+        this.filterService = filterService;
         setDefaultFailureUrl(defaultFailureUrl);
     }
   public void onAuthenticationFailure(HttpServletRequest request,
@@ -110,6 +108,6 @@ public class RestSimpleUrlAuthenticationFailureHandler implements Authentication
     }
 
     private void generateResponse(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex) throws IOException {
-        FilterUtil.generateUnauthorized(request, response, objectMapper, messageSource, ex);
+        filterService.generateUnauthorized(response, ex);
     }
 }

@@ -1,6 +1,4 @@
-package com.ankurpathak.springsessiontest.controller;
-
-import com.ankurpathak.springsessiontest.ApiCode;
+package com.ankurpathak.springsessiontest;
 
 public class InvalidException extends RuntimeException {
     private final ApiCode code;

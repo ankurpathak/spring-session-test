@@ -40,8 +40,8 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
         return service;
     }
 
-    public UserRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainConverters converters, DomainUpdaters updaters, DtoConverters dtoConverters) {
-        super(applicationEventPublisher, messageSource, objectMapper, validator);
+    public UserRestController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainConverters converters, DomainUpdaters updaters, DtoConverters dtoConverters) {
+        super(applicationEventPublisher, messageService, objectMapper, validator);
         this.service = service;
         this.converters = converters;
         this.updaters = updaters;
@@ -106,14 +106,14 @@ public class UserRestController extends AbstractRestController<User,BigInteger,U
 
     @PutMapping(PATH_CHANGE_PROFILE)
     public ResponseEntity<?> update(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({DomainDto.Default.class}) UserDto dto, BindingResult result){
-        ControllerUtil.processValidation(result, messageSource);
+        ControllerUtil.processValidation(result, messageService);
         return update(dto, user, updaters.profileUpdater, request);
     }
 
 
     @PatchMapping(PATH_CHANGE_PROFILE)
     public ResponseEntity<?> patch(HttpServletRequest request, @CurrentUser User user, @RequestBody JsonNode patch, BindingResult result){
-        ControllerUtil.processValidation(result, messageSource);
+        ControllerUtil.processValidation(result, messageService);
         return patch(patch, user, dtoConverters.userToUserDto, updaters.profileUpdater, UserDto.class, DomainDto.Default.class);
     }
 

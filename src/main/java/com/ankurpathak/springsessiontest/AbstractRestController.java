@@ -1,12 +1,10 @@
 package com.ankurpathak.springsessiontest;
 
-import com.ankurpathak.springsessiontest.controller.InvalidException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.zjsonpatch.*;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.MessageSource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,38 +28,37 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
 
     protected final ApplicationEventPublisher applicationEventPublisher;
-    protected final MessageSource messageSource;
+    protected final IMessageService messageService;
     protected final ObjectMapper objectMapper;
     protected final LocalValidatorFactoryBean validator;
 
-    public AbstractRestController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator) {
+    public AbstractRestController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator) {
         this.applicationEventPublisher = applicationEventPublisher;
-        this.messageSource = messageSource;
+        this.messageService = messageService;
         this.objectMapper = objectMapper;
         this.validator = validator;
     }
 
-    protected ResponseEntity<?> byId(ID id, Class<T> type) {
-        Optional<T> t = getService().findById(id);
-        return t.<ResponseEntity<?>>map(ResponseEntity::ok).orElseThrow(() -> new NotFoundException(String.valueOf(id), Params.ID, type.getSimpleName(), ApiCode.NOT_FOUND));
+    protected ResponseEntity<T> byId(ID id, Class<T> type) {
+        return getService().findById(id).map(ResponseEntity::ok).orElseThrow(() -> new NotFoundException(String.valueOf(id), Params.ID, type.getSimpleName(), ApiCode.NOT_FOUND));
     }
 
 
-    protected ResponseEntity<?> all() {
+    protected ResponseEntity<List<T>> all() {
         return ResponseEntity.ok().body(getService().findAll());
     }
 
 
     protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
-        ControllerUtil.processValidation(result, messageSource);
+        ControllerUtil.processValidation(result, messageService);
         Iterable<T> domains = getService().createAll(dtoList.getDtos().stream().map(dto -> dto.toDomain(converter)).collect(Collectors.toList()));
         List<ID> ids = new ArrayList<>();
         domains.forEach(domain -> ids.add(domain.getId()));
-        return ControllerUtil.processSuccess(messageSource, HttpStatus.CREATED, Map.of(Params.ID, ids));
+        return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of(Params.ID, ids));
     }
 
     protected T tryCreateOne(TDto dto, BindingResult result, HttpServletResponse response, IToDomain<T, ID, TDto> converter) {
-        ControllerUtil.processValidation(result, messageSource);
+        ControllerUtil.processValidation(result, messageService);
         T t = getService().create(dto.toDomain(converter));
         applicationEventPublisher.publishEvent(new DomainCreatedEvent<>(t, response));
         return t;
@@ -71,7 +68,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter) {
         try {
             T t = tryCreateOne(dto, result, response, converter);
-            return ControllerUtil.processSuccess(messageSource, HttpStatus.CREATED, Map.of(Params.ID, t.getId()));
+            return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of(Params.ID, t.getId()));
         } catch (DuplicateKeyException ex) {
             catchCreateOne(dto, ex, result, request);
             throw ex;
@@ -81,7 +78,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     protected void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
         FoundException foundEx = ApplicationExceptionProcessor.processDuplicateKeyException(ex, dto, result);
         if (foundEx != null) {
-            ControllerUtil.processValidationForFound(result, messageSource, request, foundEx);
+            ControllerUtil.processValidationForFound(result, messageService, foundEx);
         }
     }
 
@@ -110,7 +107,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     protected ResponseEntity<?> update(TDto dto, T t, ID id, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request) {
         if (t != null) {
             getService().update(dto.updateDomain(t, updater));
-            return ControllerUtil.processSuccess(messageSource);
+            return ControllerUtil.processSuccess(messageService);
         } else {
             throw new NotFoundException(String.valueOf(id), Params.ID, dto.domainName(), ApiCode.NOT_FOUND);
         }
@@ -161,38 +158,38 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
 
     protected List<T> searchByField(String field, String value, Pageable pageable, Class<T> type, HttpServletResponse response) {
-        ControllerUtil.pagePreCheck(pageable.getPageNumber());
-        String parsedValue = ControllerUtil.parseFieldValue(value);
+        PagingUtil.pagePreCheck(pageable.getPageNumber());
+        String parsedValue = PagingUtil.parseFieldValue(value);
         Page<T> page = getService().findByField(field, parsedValue, pageable, type);
-        ControllerUtil.pagePostCheck(pageable.getPageNumber(), page);
+        PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
         return page.getContent();
     }
 
 
     protected List<String> listField(String field, String value, Pageable pageable, Class<T> type) {
-        ControllerUtil.pagePreCheck(pageable.getPageNumber());
-        String parsedValue = ControllerUtil.parseFieldValue(value);
+        PagingUtil.pagePreCheck(pageable.getPageNumber());
+        String parsedValue = PagingUtil.parseFieldValue(value);
         Page<String> page = getService().listField(field, parsedValue, pageable, type);
-        ControllerUtil.pagePostCheck(pageable.getPageNumber(), page);
+        PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
         return page.getContent();
     }
 
 
     protected List<T> search(String rsql, Pageable pageable, Class<T> type, HttpServletResponse response) {
-        ControllerUtil.pagePreCheck(pageable.getPageNumber());
-        Criteria criteria = ControllerUtil.parseRSQL(rsql, type);
+        PagingUtil.pagePreCheck(pageable.getPageNumber());
+        Criteria criteria = PagingUtil.parseRSQL(rsql, type);
         Page<T> page = getService().findByCriteria(criteria, pageable, type);
-        ControllerUtil.pagePostCheck(pageable.getPageNumber(), page);
+        PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
         return page.getContent();
     }
 
 
     protected ResponseEntity<?> paginated(Pageable pageable, HttpServletResponse response) {
-        ControllerUtil.pagePreCheck(pageable.getPageNumber());
+        PagingUtil.pagePreCheck(pageable.getPageNumber());
         Page<T> page = getService().findPaginated(pageable);
-        ControllerUtil.pagePostCheck(pageable.getPageNumber(), page);
+        PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
         return ResponseEntity.ok(page.getContent());
     }
@@ -211,10 +208,10 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
                 TDto dtoDiff = objectMapper.treeToValue(source, dtoType);
                 BindException bindResult = new BindException(dtoDiff, dtoDiff.getClass().getSimpleName());
                 validator.validate(dtoDiff, bindResult, (Object[]) hints);
-                ControllerUtil.processValidation(bindResult, messageSource);
+                ControllerUtil.processValidation(bindResult, messageService);
                 T updatedT = dtoDiff.updateDomain(t, updater);
                 getService().update(updatedT);
-                return ControllerUtil.processSuccess(messageSource);
+                return ControllerUtil.processSuccess(messageService);
             } catch (JsonProcessingException | InvalidJsonPatchException e) {
                 throw new InvalidException(ApiCode.INVALID_PATCH, Params.PATCH, Params.JSON.toUpperCase());
             }

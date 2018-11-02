@@ -2,7 +2,6 @@ package com.ankurpathak.springsessiontest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -26,8 +25,8 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
     private final IUserService service;
     private final DomainUpdaters updaters;
 
-    public PasswordController(ApplicationEventPublisher applicationEventPublisher, MessageSource messageSource, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainUpdaters updaters) {
-        super(applicationEventPublisher, messageSource, objectMapper, validator);
+    public PasswordController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainUpdaters updaters) {
+        super(applicationEventPublisher, messageService, objectMapper, validator);
         this.service = service;
         this.updaters = updaters;
     }
@@ -43,7 +42,7 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
         Optional<User> user = service.byEmail(email);
         if (user.isPresent()) {
             service.forgotPasswordEmail(user.get(), email);
-            return ControllerUtil.processSuccess(messageSource);
+            return ControllerUtil.processSuccess(messageService);
         } else {
             throw new NotFoundException(email, EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);
         }
@@ -51,22 +50,22 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
 
 
     @PutMapping(PATH_FORGET_PASSWORD_ENABLE)
-    public ResponseEntity<?> forgetPasswordEnable(HttpServletRequest request, @PathVariable(TOKEN) String token) {
+    public ResponseEntity<?> forgetPasswordEnable(@PathVariable(TOKEN) String token) {
         Token.TokenStatus status = service.forgetPasswordEnable(token);
-        return ControllerUtil.processTokenStatus(status, token, messageSource, request);
+        return ControllerUtil.processTokenStatus(status, token, messageService);
     }
 
 
     @PutMapping(PATH_FORGET_PASSWORD)
     public ResponseEntity<?> forgetPassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ForgetPassword.class}) UserDto dto, BindingResult result) {
-        ControllerUtil.processValidation(result, messageSource);
+        ControllerUtil.processValidation(result, messageService);
         return update(dto, user, updaters.forgetPasswordUpdater(), request);
     }
 
 
     @PatchMapping(PATH_CHANGE_PASSWORD)
     public ResponseEntity<?> changePassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ChangePassword.class}) UserDto dto, BindingResult result){
-        ControllerUtil.processValidation(result, messageSource);
+        ControllerUtil.processValidation(result, messageService);
         service.validateExistingPassword(user, dto);
         return update(dto, user, updaters.forgetPasswordUpdater(), request);
     }

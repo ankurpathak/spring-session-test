@@ -1,10 +1,7 @@
 package com.ankurpathak.springsessiontest;
 
-import com.ankurpathak.springsessiontest.controller.InvalidException;
 import com.github.ankurpathak.primitive.bean.constraints.string.StringValidator;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

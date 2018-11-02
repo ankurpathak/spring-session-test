@@ -1,7 +1,5 @@
 package com.ankurpathak.springsessiontest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -14,15 +12,14 @@ import java.io.IOException;
 public class RestLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
 
 
-    private final MessageSource messageSource;
-    private final ObjectMapper objectMapper;
-    public RestLogoutSuccessHandler(MessageSource messageSource, ObjectMapper objectMapper) {
-        this.messageSource = messageSource;
-        this.objectMapper = objectMapper;
+    private final IFilterService filterService;
+
+    public RestLogoutSuccessHandler(IFilterService filterService) {
+        this.filterService = filterService;
     }
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        FilterUtil.generateSuccess(response, objectMapper, messageSource);
+        filterService.generateSuccess(response);
     }
 }
