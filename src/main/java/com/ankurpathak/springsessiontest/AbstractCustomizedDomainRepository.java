@@ -12,32 +12,35 @@ import java.util.List;
 
 public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, ID extends Serializable> implements ICustomizedDomainRepository<T, ID> {
 
+    protected final MongoTemplate template;
 
-    abstract public MongoTemplate getTemplate();
+    protected AbstractCustomizedDomainRepository(MongoTemplate template) {
+        this.template = template;
+    }
 
 
     @Override
     public Page<T> findByField(String field, String value, Pageable pageable, Class<T> type) {
-        SingleFieldSearchAggregation<T, ID> aggregation = new SingleFieldSearchAggregation<>(getTemplate());
+        SingleFieldSearchAggregation<T, ID> aggregation = new SingleFieldSearchAggregation<>(template);
         return aggregation.getPage(field, value, pageable, type);
     }
 
     @Override
     public Page<String> listField(String field, String value, Pageable pageable, Class<T> type) {
-        SingleFieldSearchAggregation<T, ID> aggregation = new SingleFieldSearchAggregation<>(getTemplate());
+        SingleFieldSearchAggregation<T, ID> aggregation = new SingleFieldSearchAggregation<>(template);
         return aggregation.getFieldPage(field, value, pageable, type);
     }
 
     @Override
     public Page<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type) {
-        List<T> list = getTemplate().find(
+        List<T> list = template.find(
                 new Query().with(pageable).addCriteria(criteria),
                 type
         );
         return new PageImpl<>(
                 list,
                 pageable,
-                getTemplate().count(new Query().addCriteria(criteria), type)
+                template.count(new Query().addCriteria(criteria), type)
         );
     }
 }

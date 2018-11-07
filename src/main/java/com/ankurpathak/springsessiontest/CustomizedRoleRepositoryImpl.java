@@ -5,16 +5,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class CustomizedRoleRepositoryImpl extends AbstractCustomizedDomainRepository<Role, String> implements CustomizedRoleRepository {
-    private MongoTemplate template;
 
     public CustomizedRoleRepositoryImpl(MongoTemplate template) {
-        this.template = template;
+        super(template);
     }
 
-
-
-    @Override
-    public MongoTemplate getTemplate() {
-        return template;
-    }
 }

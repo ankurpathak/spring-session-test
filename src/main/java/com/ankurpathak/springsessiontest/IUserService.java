@@ -13,7 +13,7 @@ public interface IUserService  extends IDomainService<User, BigInteger> {
     Optional<User> byEmailTokenId(String tokenId);
 
 
-    void accountEnableEmail(User user, String email);
+    void accountEnableEmail(User user);
 
     Token.TokenStatus accountEnable(String token);
 
@@ -21,7 +21,7 @@ public interface IUserService  extends IDomainService<User, BigInteger> {
 
     Optional<User> byPasswordTokenId(String tokenId);
 
-    void forgotPasswordEmail(User user, String email);
+    void forgotPasswordEmail(User user);
 
     void savePasswordToken(User user, Token token);
 

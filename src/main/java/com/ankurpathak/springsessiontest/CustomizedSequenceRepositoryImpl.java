@@ -12,11 +12,8 @@ import java.math.BigInteger;
 @Repository
 public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRepository<Sequence, String> implements CustomizedSequenceRepository {
     public static final String MESSAGE_SEQUENCE_PROBLEM = "Unable to get next for sequence %s";
-
-    private final MongoTemplate template;
-
     public CustomizedSequenceRepositoryImpl(MongoTemplate template) {
-        this.template = template;
+        super(template);
     }
 
 
@@ -50,10 +47,5 @@ public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRe
 
         return seq.getCurr();
 
-    }
-
-    @Override
-    public MongoTemplate getTemplate() {
-        return template;
     }
 }

@@ -42,7 +42,8 @@
         <java.version>10</java.version>
         <el.version>3.0.1-b08</el.version>
         <spring-data-releasetrain.version>Lovelace-RELEASE</spring-data-releasetrain.version>
-        <hamcrest-juit.version>1.0.0.1</hamcrest-juit.version>
+        <!--<hamcrest-junit.version>1.0.0.1</hamcrest-junit.version>-->
+        <hamcrest-junit.version>2.0.0.0</hamcrest-junit.version>
         <auth0.jwt.version>3.4.0</auth0.jwt.version>
         <username-validation.version>1.2.1</username-validation.version>
         <password-validaton.version>1.0.3-SNAPSHOT</password-validaton.version>
@@ -154,7 +155,7 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-junit</artifactId>
-            <version>${hamcrest-juit.version}</version>
+            <version>${hamcrest-junit.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>

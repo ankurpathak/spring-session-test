@@ -15,27 +15,26 @@ public class TokenService extends AbstractDomainService<Token, String> implement
     private final ITokenRepository dao;
 
     public TokenService(ITokenRepository dao) {
+        super(dao);
         this.dao = dao;
     }
 
 
-    @Override
-    protected ExtendedMongoRepository<Token, String> getDao() {
-        return dao;
-    }
 
     @Override
-    public Token generateToken() {
+    public Optional<Token> generateToken() {
         Token token = Token.getInstance();
+        int i = 1;
         do{
             try{
-                return dao.insert(token);
+                return Optional.of(dao.insert(token));
             }catch (DuplicateKeyException ex){
                 token = Token.getInstance();
             }
+            i++;
+        }while (i <= 10);
 
-        }while (true);
-
+        return Optional.empty();
     }
 
     @Override

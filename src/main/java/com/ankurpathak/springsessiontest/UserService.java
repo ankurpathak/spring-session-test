@@ -8,14 +8,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.*;
 
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.valid4j.Assertive.ensure;
-import static org.hamcrest.Matchers.*;
+
 
 @Service
 public class UserService extends AbstractDomainService<User, BigInteger> implements IUserService {
@@ -28,6 +29,7 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
     private final CountryCacheService countryService;
 
     public UserService(IUserRepository dao, ITokenService tokenService, IEmailService emailService, PasswordEncoder passwordEncoder, IpService ipService, CountryCacheService countryService) {
+        super(dao);
         this.dao = dao;
         this.tokenService = tokenService;
         this.emailService = emailService;
@@ -37,22 +39,16 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
     }
 
     @Override
-    protected ExtendedMongoRepository<User, BigInteger> getDao() {
-        return dao;
-    }
-
-    @Override
     public Optional<User> byCandidateKey(String candidateKey) {
-        ensure(candidateKey, not(isEmptyString()));
+        ensure(candidateKey, not(emptyString()));
         return dao.byCandidateKey(PrimitiveUtils.toBigInteger(candidateKey), candidateKey);
     }
 
     @Override
     public void saveEmailToken(User user, Token token) {
         ensure(user, notNullValue());
-        ensure(user.getEmail(), notNullValue());
         ensure(token, notNullValue());
-        if (!StringUtils.isEmpty(token.getId())) {
+        if (user.getEmail() != null && !StringUtils.isEmpty(token.getId())) {
             user.getEmail().setTokenId(token.getId());
             update(user);
         }
@@ -60,34 +56,37 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
     @Override
     public Optional<User> byEmail(String email) {
-        ensure(email, not(isEmptyString()));
+        ensure(email, not(emptyString()));
         return dao.byEmail(email);
     }
 
     @Override
     public Optional<User> byEmailTokenId(String tokenId) {
-        ensure(tokenId, not(isEmptyString()));
+        ensure(tokenId, not(emptyString()));
         return dao.byEmailTokenId(tokenId);
     }
 
     @Override
-    public void accountEnableEmail(User user, String email) {
+    public void accountEnableEmail(User user) {
         ensure(user, notNullValue());
-        ensure(user.getEmail(), notNullValue());
-        if (!StringUtils.isEmpty(user.getEmail().getValue()))
+        if (user.getEmail() != null && !StringUtils.isEmpty(user.getEmail().getTokenId()))
             tokenService.deleteById(user.getEmail().getTokenId());
-        Token token = tokenService.generateToken();
-        saveEmailToken(user, token);
-        emailService.sendForAccountEnable(user, token);
+        tokenService.generateToken()
+                .ifPresent(token -> {
+                    saveEmailToken(user, token);
+                    emailService.sendForAccountEnable(user, token);
+                });
     }
 
     @Override
     public Token.TokenStatus accountEnable(String token) {
+        ensure(token, not(emptyString()));
         return verifyEmailToken(token);
     }
 
     @Override
     public Token.TokenStatus forgetPasswordEnable(String token) {
+        ensure(token, not(emptyString()));
         return verifyPasswordToken(token);
     }
 
@@ -118,28 +117,28 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
     @Override
     public Optional<User> byPasswordTokenId(String tokenId) {
-        ensure(tokenId, not(is(isEmptyString())));
+        ensure(tokenId, not(emptyString()));
         return dao.byPasswordTokenId(tokenId);
     }
 
     @Override
-    public void forgotPasswordEmail(User user, String email) {
+    public void forgotPasswordEmail(User user) {
         ensure(user, notNullValue());
-        ensure(user.getEmail(), notNullValue());
-        ensure(user.getPassword(), notNullValue());
-        if (!StringUtils.isEmpty(user.getPassword().getTokenId()))
+        if (user.getPassword() != null && !StringUtils.isEmpty(user.getPassword().getTokenId()))
             tokenService.deleteById(user.getPassword().getTokenId());
-        Token token = tokenService.generateToken();
-        savePasswordToken(user, token);
-        emailService.sendForForgetPassword(user, token);
+        tokenService.generateToken()
+                .ifPresent(token -> {
+                    savePasswordToken(user, token);
+                    emailService.sendForForgetPassword(user, token);
+                });
+
     }
 
     @Override
     public void savePasswordToken(User user, Token token) {
         ensure(user, notNullValue());
-        ensure(user.getPassword(), notNullValue());
         ensure(token, notNullValue());
-        if (!StringUtils.isEmpty(token.getId())) {
+        if (user.getPassword() != null && !StringUtils.isEmpty(token.getId())) {
             user.getPassword().setTokenId(token.getId());
             update(user);
         }
@@ -149,9 +148,15 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
     public void validateExistingPassword(User user, UserDto dto) {
         ensure(user, notNullValue());
         ensure(dto, notNullValue());
-        ensure(user.getPassword(), notNullValue());
-        if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword().getValue()))
-            throw new InvalidException(ApiCode.INVALID_PASSWORD, Params.PASSWORD, dto.getCurrentPassword());
+        Optional.ofNullable(user.getPassword())
+                .ifPresentOrElse(password -> {
+                    if (!passwordEncoder.matches(dto.getCurrentPassword(), password.getValue()))
+                        throw new InvalidException(ApiCode.INVALID_PASSWORD, Params.PASSWORD, dto.getCurrentPassword());
+
+                }, () -> {
+                    throw new InvalidException(ApiCode.INVALID_PASSWORD, Params.PASSWORD, dto.getCurrentPassword());
+                });
+
     }
 
 
@@ -200,8 +205,9 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
     }
 
     @Override
-    public Set<String> possibleContacts(String username){
-        if(StringUtils.isNumeric(username))
+    public Set<String> possibleContacts(String username) {
+        ensure(username, not(emptyString()));
+        if (StringUtils.isNumeric(username))
             return Collections.emptySet();
         Set<String> possibleContacts = new LinkedHashSet<>();
         SecurityUtil.getDomainContext()
@@ -210,14 +216,11 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
                 .map(countryService::alphaCodeToCallingCodes)
                 .ifPresent(callingCodes -> {
                     callingCodes.stream()
-                            .map(callingCode->String.format("+%s%s",callingCode, username))
+                            .map(callingCode -> String.format("+%s%s", callingCode, username))
                             .forEach(possibleContacts::add);
                 });
         return possibleContacts;
     }
-
-
-
 
 
     @Override
