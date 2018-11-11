@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.*;
@@ -79,7 +80,7 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
     }
 
     @Override
-    public Token.TokenStatus accountEnable(String token) {
+    public Token.TokenStatus accountEnable(@Nonnull String token) {
         ensure(token, not(emptyString()));
         return verifyEmailToken(token);
     }

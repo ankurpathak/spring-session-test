@@ -4,6 +4,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 import static org.valid4j.Assertive.*;
 
 
@@ -32,13 +34,20 @@ public class RegistrationCompleteListener implements ApplicationListener<Registr
     }
 
     private void confirmRegistration(final RegistrationCompleteEvent event) {
-        ensure(event, notNullValue());
-        ensure(event.getUser(), notNullValue());
-        ensure(event.getUser().getEmail(), notNullValue());
-        Token token = tokenService.generateToken();
-        event.getUser().getEmail().setTokenId(token.getId());
-        service.update(event.getUser());
-        emailService.sendForAccountEnable(event.getUser(), token);
+        require(event, notNullValue());
+        tokenService.generateToken()
+                .ifPresent(token -> {
+                    Optional.ofNullable(event.getUser())
+                            .ifPresent(user -> {
+                                Optional.ofNullable(user.getEmail())
+                                        .ifPresent(email -> {
+                                            email.setTokenId(token.getId());
+                                            service.update(user);
+                                            emailService.sendForAccountEnable(user, token);
+                                        });
+                            });
+
+                });
     }
 
 }

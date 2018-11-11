@@ -57,7 +57,7 @@ public class AccountRestController extends AbstractRestController<User, BigInteg
     public ResponseEntity<?> accountEnableEmail(@PathVariable(EMAIL) String email) {
         Optional<User> user = service.byEmail(email);
         if (user.isPresent()) {
-            service.accountEnableEmail(user.get(), email);
+            service.accountEnableEmail(user.get());
             return ControllerUtil.processSuccess(messageService);
         } else {
             throw new NotFoundException(email, EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);

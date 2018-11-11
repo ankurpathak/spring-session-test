@@ -41,7 +41,7 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
     public ResponseEntity<?> forgetPasswordEmail(@PathVariable(EMAIL) String email){
         Optional<User> user = service.byEmail(email);
         if (user.isPresent()) {
-            service.forgotPasswordEmail(user.get(), email);
+            service.forgotPasswordEmail(user.get());
             return ControllerUtil.processSuccess(messageService);
         } else {
             throw new NotFoundException(email, EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);
