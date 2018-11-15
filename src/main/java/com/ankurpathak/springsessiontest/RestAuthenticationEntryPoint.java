@@ -13,7 +13,7 @@ import java.io.IOException;
 @Component
 public final class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private static final Logger log = LoggerFactory.getLogger(RuntimeRestExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
 
     private final IFilterService filterService;
@@ -24,7 +24,7 @@ public final class RestAuthenticationEntryPoint implements AuthenticationEntryPo
 
     @Override
     public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException ex) throws IOException {
-        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        logger.error("message: {} cause: {} path: {}", ex.getMessage(), ex.getCause(), request.getRequestURI());
         ex.printStackTrace();
         filterService.generateUnauthorized(response);
     }

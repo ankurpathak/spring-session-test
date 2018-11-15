@@ -41,6 +41,10 @@ public interface RequestMappingPaths {
     String PATH_CHANGE_PASSWORD = "/password";
     String PATH_CHANGE_PROFILE = "/users";
 
+    String PATH_LOGOUT = "/logout";
+
+    String PATH_FAVICON = "/favicon.ico";
+
 
     static String apiPath(String path){
         return Paths.get(PATH_API, path).toString();

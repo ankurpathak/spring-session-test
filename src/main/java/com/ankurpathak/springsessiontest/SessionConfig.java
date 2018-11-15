@@ -13,7 +13,7 @@ public class SessionConfig {
 
     @Bean
     public HttpSessionIdResolver httpSessionStrategy() {
-        return new ExtendedHttpSessionIdResolver(ExtendedHttpSessionIdResolver.Type.COOKIE_ONLY, ExtendedHeaderHttpSessionIdResolver.xAuthToken());
+        return new ExtendedHttpSessionIdResolver(ExtendedHttpSessionIdResolver.Type.BOTH_HEADER_FIRST, ExtendedHeaderHttpSessionIdResolver.xAuthToken());
     }
 
 

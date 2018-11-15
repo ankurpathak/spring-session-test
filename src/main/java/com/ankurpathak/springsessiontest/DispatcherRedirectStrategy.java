@@ -24,7 +24,7 @@ public class DispatcherRedirectStrategy extends DefaultRedirectStrategy {
         RequestDispatcher dispatcher = getRequest.getRequestDispatcher(redirectUrl);
 
         try {
-            dispatcher.forward(getRequest, response);
+            dispatcher.include(getRequest, response);
         } catch (ServletException ex) {
             ex.printStackTrace();
             throw new IOException(ex.getMessage(), ex);

@@ -1,12 +1,18 @@
 package com.ankurpathak.springsessiontest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.*;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -34,18 +40,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final FilterConfig filterConfig;
     private final SessionRegistry sessionRegistry;
     private final LogoutSuccessHandler restLogoutSuccessHandler;
+    private final OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService;
+    private final OidcUserService customOidcUserService;
 
 
+    @Autowired
     private AuthenticationManager authenticationManager;
 
 
-    final public AuthenticationManager getAuthenticationManager(){
-        ensure(authenticationManager, notNullValue());
-        return authenticationManager;
-    }
 
 
-    public WebSecurityConfig(AuthenticationSuccessHandler restAuthenticationSuccessHandler, AuthenticationFailureHandler restAuthenticationFailureHandler, AccessDeniedHandler restAccessDeniedHandler, PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices, RestAuthenticationEntryPoint restAuthenticationEntryPoint, FilterConfig filterConfig, SessionRegistry sessionRegistry, LogoutSuccessHandler restLogoutSuccessHandler) {
+
+    public WebSecurityConfig(AuthenticationSuccessHandler restAuthenticationSuccessHandler, AuthenticationFailureHandler restAuthenticationFailureHandler, AccessDeniedHandler restAccessDeniedHandler, PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices, RestAuthenticationEntryPoint restAuthenticationEntryPoint, FilterConfig filterConfig, SessionRegistry sessionRegistry, LogoutSuccessHandler restLogoutSuccessHandler, OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService, OidcUserService customOidcUserService) {
         this.restAuthenticationSuccessHandler = restAuthenticationSuccessHandler;
         this.restAuthenticationFailureHandler = restAuthenticationFailureHandler;
         this.restAccessDeniedHandler = restAccessDeniedHandler;
@@ -54,27 +60,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.filterConfig = filterConfig;
         this.sessionRegistry = sessionRegistry;
         this.restLogoutSuccessHandler = restLogoutSuccessHandler;
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.customOidcUserService = customOidcUserService;
     }
 
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
-        authenticationManager = super.authenticationManagerBean();
-        return authenticationManager;
+        return super.authenticationManagerBean();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .oauth2Login()
-                .successHandler(restAuthenticationSuccessHandler)
-                .failureHandler(restAuthenticationFailureHandler)
-                .permitAll()
-
-                .and()
-
-
                 .anonymous().authenticationFilter(filterConfig.anonymousAuthenticationFilter())
 
                 .and()
@@ -94,13 +93,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PATCH, apiPath(PATH_CHANGE_PASSWORD)).hasAuthority(Role.Privilege.PRIV_CHANGE_PASSWORD)
                 .antMatchers(HttpMethod.PUT, apiPath(PATH_CHANGE_PROFILE)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
                 .antMatchers(HttpMethod.PATCH, apiPath(PATH_CHANGE_PROFILE)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
+                .mvcMatchers(HttpMethod.GET, PATH_FAVICON).permitAll()
                 .anyRequest()
                 .denyAll()
 
                 .and()
 
+                .oauth2Login()
+                .tokenEndpoint()
+                .accessTokenResponseClient(OAuthConfig.authorizationCodeTokenResponseClient())
+                .and()
+                .userInfoEndpoint().userService(customOAuth2UserService).oidcUserService(customOidcUserService)
+                .and()
+                .successHandler(restAuthenticationSuccessHandler)
+                .failureHandler(restAuthenticationFailureHandler)
+                .permitAll()
+                .and()
                 .logout()
-                .logoutUrl("/api/logout")
+                .logoutUrl(PATH_LOGOUT)
+                .permitAll()
                 .deleteCookies("JSESSIONID", "SESSION")
                 .logoutSuccessHandler(restLogoutSuccessHandler)
                 .and()
@@ -110,15 +121,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
 
-                .addFilterAt(filterConfig.usernamePasswordAuthenticationFilter(getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(filterConfig.usernamePasswordAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 //  .addFilterAfter(socialApplicationAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 //  .addFilterAfter(socialWebAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(filterConfig.securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(restAccessDeniedHandler)
-                .and().sessionManagement().maximumSessions(2).maxSessionsPreventsLogin(true).sessionRegistry(sessionRegistry)
+                .and()
+                .sessionManagement()
+                .maximumSessions(2)
+                .maxSessionsPreventsLogin(true)
+                .sessionRegistry(sessionRegistry)
         ;
     }
+
 
 
 }

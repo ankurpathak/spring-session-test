@@ -23,8 +23,9 @@ public enum ApiCode {
     INVALID_RSQL(14),
     INVALID_JSON(15),
     INVALID_PASSWORD(16),
-    INVALID_PATCH(20);
-    int code;
+    INVALID_PATCH(20),
+    OAUTH_LOGIN_ERROR(21);
+    private int code;
 
     ApiCode(int code){
         this.code = code;

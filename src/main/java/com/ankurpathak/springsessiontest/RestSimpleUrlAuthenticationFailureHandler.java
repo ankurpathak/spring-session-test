@@ -43,7 +43,7 @@ public class RestSimpleUrlAuthenticationFailureHandler implements Authentication
             throws IOException, ServletException {
 
         if (defaultFailureUrl == null) {
-            logger.info("Message: {}  Cause: {}", ex.getMessage(), ex.getCause());
+            logger.error("message: {} cause: {} path: {}", ex.getMessage(), ex.getCause(), request.getRequestURI());
             ex.printStackTrace();
             generateResponse(request,response, ex);
         }

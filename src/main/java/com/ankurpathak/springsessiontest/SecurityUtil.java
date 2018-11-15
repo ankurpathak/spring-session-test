@@ -3,7 +3,12 @@ package com.ankurpathak.springsessiontest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.util.Assert;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class SecurityUtil {
@@ -155,4 +160,15 @@ public class SecurityUtil {
     }
 
     */
+
+    static Map<String, Object> collectClaims(OidcIdToken idToken, OidcUserInfo userInfo) {
+        Assert.notNull(idToken, "idToken cannot be null");
+        Map<String, Object> claims = new HashMap();
+        if (userInfo != null) {
+            claims.putAll(userInfo.getClaims());
+        }
+
+        claims.putAll(idToken.getClaims());
+        return claims;
+    }
 }
