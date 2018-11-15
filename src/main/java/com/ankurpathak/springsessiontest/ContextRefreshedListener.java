@@ -67,7 +67,7 @@ public class ContextRefreshedListener implements ApplicationListener<ContextRefr
     private void addUsers(){
         users.add(User.getInstance().firstName("Ankur").lastName("Pathak").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("ankurpathak@live.in")).password(Password.getInstance().value(passwordEncoder.encode("password"))).enabled(true));
         users.add(User.getInstance().firstName("Amar").lastName("Mule").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("amarmule@live.in")).password(Password.getInstance().value(passwordEncoder.encode("password"))));
-        users.add(User.getInstance().firstName("Pradeep").lastName("Negi").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("ankurpathak.ap@gmail.com")).password(Password.getInstance().value(passwordEncoder.encode("password"))));
+        users.add(User.getInstance().firstName("Pradeep").lastName("Negi").addRole(Role.ROLE_ADMIN).email(Contact.getInstance("ankurpathak.ap@gmail.com")).password(Password.getInstance().value(passwordEncoder.encode("password"))).enabled(true));
         roles.add(Role.getInstance().id("1").name(Role.ROLE_ADMIN).addPrivilege(Role.Privilege.PRIV_ADMIN).addPrivilege(Role.Privilege.PRIV_CHANGE_PASSWORD).addPrivilege(Role.Privilege.PRIV_CHANGE_PROFILE));
         roles.add(Role.getInstance().id("2").name(Role.ROLE_ANONYMOUS).addPrivilege(Role.Privilege.PRIV_ANONYMOUS));
         roles.add(Role.getInstance().id("3").name(Role.ROLE_USER).addPrivilege(Role.Privilege.PRIV_USER));

@@ -7,75 +7,54 @@ import org.springframework.security.core.AuthenticationException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
 public class FilterUtil {
 
 
     public static void generateForbidden(HttpServletResponse response, ObjectMapper objectMapper, IMessageService messageService) throws IOException {
-        generateUnauthorized(response, objectMapper, messageService, null);
+        generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_FORBIDDEN, ApiCode.FORBIDDEN, ApiMessages.FORBIDDEN);
     }
 
     public static void generateUnauthorized(HttpServletResponse response, ObjectMapper objectMapper, IMessageService messageService, AuthenticationException ex) throws IOException {
-        if (!response.isCommitted()) {
-            if (ex instanceof SocialProfileNotFoundException) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                objectMapper.writeValue(
-                        response.getWriter(),
-                        ApiResponse.getInstance(
-                                ApiCode.UNAUTHORIZED,
-                                messageService.getMessage(ApiMessages.NOT_FOUND, SocialProfile.class.getSimpleName(), "email", ((SocialProfileNotFoundException) ex).getProfile().getEmail())
-                        ).addExtra("profile", ((SocialProfileNotFoundException) ex).getProfile())
-                );
-            } else if (ex instanceof DisabledException) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                objectMapper.writeValue(
-                        response.getWriter(),
-                        ApiResponse.getInstance(
-                                ApiCode.ACCOUNT_DISABLED,
-                                messageService.getMessage(ApiMessages.ACCOUNT_DISABLED)
-                        )
-                );
-            } else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                objectMapper.writeValue(
-                        response.getWriter(),
-                        ApiResponse.getInstance(
-                                ApiCode.UNAUTHORIZED,
-                                messageService.getMessage(ApiMessages.UNAUTHORIZED)
-                        )
-                );
-            }
+        if (ex instanceof SocialProfileNotFoundException) {
+            generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_UNAUTHORIZED, ApiCode.NOT_FOUND, ApiMessages.NOT_FOUND,
+                    Map.of(Params.PROFILE, ((SocialProfileNotFoundException) ex).getProfile()),
+                    SocialProfile.class.getSimpleName(), Params.EMAIL, ((SocialProfileNotFoundException) ex).getProfile().getEmail()
+            );
+        } else if (ex instanceof DisabledException) {
+            generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_UNAUTHORIZED, ApiCode.ACCOUNT_DISABLED, ApiMessages.ACCOUNT_DISABLED);
+        } else {
+            generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_UNAUTHORIZED, ApiCode.UNAUTHORIZED, ApiMessages.UNAUTHORIZED);
         }
+
     }
 
     public static void generateUnauthorized(HttpServletResponse response, ObjectMapper objectMapper, IMessageService messageService) throws IOException {
-        if (!response.isCommitted()) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            objectMapper.writeValue(
-                    response.getWriter(),
-                    ApiResponse.getInstance(
-                            ApiCode.UNAUTHORIZED,
-                            messageService.getMessage(ApiMessages.UNAUTHORIZED)
-                    )
-            );
-        }
+        generateUnauthorized(response, objectMapper, messageService, null);
     }
 
 
     public static void generateSuccess(HttpServletResponse response, ObjectMapper objectMapper, IMessageService messageService) throws IOException {
+        generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_OK, ApiCode.SUCCESS, ApiMessages.SUCCESS);
+    }
+
+
+    private static void generateApiResponse(HttpServletResponse response, ObjectMapper objectMapper, IMessageService messageService, int httpStatusCode, ApiCode code, String apiMessageKey) throws IOException {
+        generateApiResponse(response, objectMapper, messageService, httpStatusCode, code, apiMessageKey, Collections.emptyMap());
+    }
+
+    private static void generateApiResponse(HttpServletResponse response, ObjectMapper objectMapper, IMessageService messageService, int httpStatusCode, ApiCode code, String apiMessageKey, Map<String, Object> extras, String... apiMessageParams) throws IOException {
         if (!response.isCommitted()) {
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(httpStatusCode);
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             objectMapper.writeValue(
                     response.getWriter(),
                     ApiResponse.getInstance(
-                            ApiCode.SUCCESS,
-                            messageService.getMessage(ApiMessages.SUCCESS)
-                    )
+                            code,
+                            messageService.getMessage(apiMessageKey, apiMessageParams)
+                    ).addExtras(extras)
             );
         }
     }

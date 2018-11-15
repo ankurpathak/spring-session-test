@@ -24,4 +24,5 @@ public interface Params {
     String USERNAME = "username";
     String CONTACT = "contact";
     String SUB = "sub";
+    String PROFILE = "profile";
 }
