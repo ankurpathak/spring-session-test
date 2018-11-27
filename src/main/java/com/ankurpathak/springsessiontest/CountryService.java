@@ -2,19 +2,15 @@ package com.ankurpathak.springsessiontest;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.TypeRef;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Named;
 import javax.ws.rs.client.WebTarget;
 import java.util.List;
 
-import static org.hamcrest.Matchers.isEmptyString;
+import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
-import static org.valid4j.Assertive.ensure;
+import static org.valid4j.Assertive.require;
 
 @Service
 public class CountryService implements ICountryService {
@@ -33,7 +29,7 @@ public class CountryService implements ICountryService {
 
     public List<String> alphaCodeToCallingCodes(String alphaCode) {
         //throws  javax.ws.rs.ProcessingException
-        ensure(alphaCode, not(isEmptyString()));
+        require(alphaCode, not(emptyString()));
         String json = countryByAlphaTarget.queryParam("codes", alphaCode).request().get(String.class);
         DocumentContext context = JsonPathUtil.stringToDoc(json);
         return context.read("$[0].callingCodes", new TypeRef<>() {

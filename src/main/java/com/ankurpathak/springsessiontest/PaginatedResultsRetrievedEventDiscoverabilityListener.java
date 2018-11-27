@@ -5,14 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import javax.servlet.http.HttpServletResponse;
-import java.io.Serializable;
 
 @Component
-class PaginatedResultsRetrievedEventDiscoverabilityListener implements ApplicationListener<PaginatedResultsRetrievedEvent<Page<Domain<Serializable>>, Domain<Serializable>, Serializable>> {
+class PaginatedResultsRetrievedEventDiscoverabilityListener implements ApplicationListener<PaginatedResultsRetrievedEvent> {
     @Override
-    public void onApplicationEvent(PaginatedResultsRetrievedEvent<Page<Domain<Serializable>>, Domain<Serializable>, Serializable> ev) {
+    public void onApplicationEvent(PaginatedResultsRetrievedEvent ev) {
         addLinkHeaderOnPagedResourceRetrieval(ev.getResponse(), ev.getSource());
         addTotalPageCountHeader(ev.getResponse(), ev.getSource().getTotalElements());
     }

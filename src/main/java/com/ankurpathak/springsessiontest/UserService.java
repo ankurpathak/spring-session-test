@@ -17,6 +17,7 @@ import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.valid4j.Assertive.ensure;
+import static org.valid4j.Assertive.require;
 
 
 @Service
@@ -207,8 +208,8 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
     @Override
     public Set<String> possibleContacts(String username) {
-        ensure(username, not(emptyString()));
-        if (StringUtils.isNumeric(username))
+        require(username, not(emptyString()));
+        if (!StringUtils.isNumeric(username))
             return Collections.emptySet();
         Set<String> possibleContacts = new LinkedHashSet<>();
         SecurityUtil.getDomainContext()

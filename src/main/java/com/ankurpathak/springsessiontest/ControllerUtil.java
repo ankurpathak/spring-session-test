@@ -25,10 +25,10 @@ public class ControllerUtil {
     }
 
 
-    public static void processValidationForFound(BindingResult result, IMessageService messageService, FoundException ex) {
-        if (result.hasErrors()) {
+    public static void processValidationForFound(IMessageService messageService, FoundException ex) {
+        if (ex.getBindingResult().hasErrors()) {
             throw new ValidationException(
-                    result,
+                    ex.getBindingResult(),
                     messageService.getMessage(ApiMessages.FOUND, ex.getEntity(), ex.getProperty(), ex.getId()),
                     ex.getCode()
             );

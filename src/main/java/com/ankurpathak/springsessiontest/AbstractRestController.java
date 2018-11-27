@@ -76,9 +76,9 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
     protected void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
-        FoundException foundEx = ApplicationExceptionProcessor.processDuplicateKeyException(ex, dto, result);
+        FoundException foundEx = ApplicationExceptionProcessor.processDuplicateKeyException(ex, dto);
         if (foundEx != null) {
-            ControllerUtil.processValidationForFound(result, messageService, foundEx);
+            ControllerUtil.processValidationForFound(messageService, foundEx);
         }
     }
 
@@ -162,7 +162,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         String parsedValue = PagingUtil.parseFieldValue(value);
         Page<T> page = getService().findByField(field, parsedValue, pageable, type);
         PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
-        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent(page, response));
         return page.getContent();
     }
 
@@ -181,7 +181,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         Criteria criteria = PagingUtil.parseRSQL(rsql, type);
         Page<T> page = getService().findByCriteria(criteria, pageable, type);
         PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
-        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent(page, response));
         return page.getContent();
     }
 
@@ -190,7 +190,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         PagingUtil.pagePreCheck(pageable.getPageNumber());
         Page<T> page = getService().findPaginated(pageable);
         PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
-        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent(page, response));
         return ResponseEntity.ok(page.getContent());
     }
 

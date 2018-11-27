@@ -1,13 +1,12 @@
 package com.ankurpathak.springsessiontest;
 
 
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-
+import reactor.core.publisher.Mono;
 import java.util.Optional;
-
-import static org.hamcrest.Matchers.*;
-import static org.valid4j.Assertive.ensure;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.not;
+import static org.valid4j.Assertive.require;
 
 @Service
 public class TokenService extends AbstractDomainService<Token, String> implements ITokenService {
@@ -23,23 +22,17 @@ public class TokenService extends AbstractDomainService<Token, String> implement
 
     @Override
     public Optional<Token> generateToken() {
-        Token token = Token.getInstance();
-        int i = 1;
-        do{
-            try{
-                return Optional.of(dao.insert(token));
-            }catch (DuplicateKeyException ex){
-                token = Token.getInstance();
-            }
-            i++;
-        }while (i <= 10);
-
-        return Optional.empty();
+        return Mono.justOrEmpty(Token.getInstance())
+                .map(dao::insert)
+                .retry(10)
+                .map(Optional::of)
+                .switchIfEmpty(Mono.just(Optional.empty()))
+                .block();
     }
 
     @Override
     public Optional<Token> byValue(String token) {
-        ensure(token, not(isEmptyString()));
+        require(token, not(emptyString()));
         return dao.byValue(token);
     }
 }

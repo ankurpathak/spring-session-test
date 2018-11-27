@@ -33,7 +33,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<?> handleNotFoundException(NotFoundException ex, WebRequest request) {
-        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(
                 ex,
@@ -50,7 +50,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler({FoundException.class})
     public ResponseEntity<?> handleFoundException(FoundException ex, WebRequest request) {
-        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(
                 ex,
@@ -67,7 +67,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler({EnsureViolation.class})
     public ResponseEntity<?> handleFoundException(EnsureViolation ex, WebRequest request) {
-        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(
                 new Exception(ex.getMessage(), ex),
@@ -84,7 +84,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler({DuplicateKeyException.class})
     public ResponseEntity<?> handleDuplicateKeyException(DuplicateKeyException ex, WebRequest request) {
-        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
@@ -99,7 +99,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler({InvalidException.class})
     public ResponseEntity<?> handleInvalidTokenException(InvalidException ex, WebRequest request) {
-        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
@@ -114,7 +114,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @ExceptionHandler({RSQLParserException.class})
     public ResponseEntity<?> handleRSQLParserException(RSQLParserException ex, WebRequest request) {
-        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
@@ -130,7 +130,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
@@ -152,7 +152,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
@@ -168,7 +168,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(
                 ex,

@@ -2,17 +2,18 @@ package com.ankurpathak.springsessiontest;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
 
 public class ApplicationExceptionProcessor {
-    public static FoundException processDuplicateKeyException(DuplicateKeyException ex, DomainDto<?, ?> dto, BindingResult result){
+    public static FoundException processDuplicateKeyException(DuplicateKeyException ex, DomainDto<?, ?> dto){
         ensure(ex, notNullValue());
         ensure(dto, notNullValue());
-        ensure(result, notNullValue());
         String message  = ex.getMessage();
+        BindingResult result = new BindException(dto, dto.domainName());
         FoundException fEx = null;
         if(!StringUtils.isEmpty(message)){
             if(message.contains(DocumentCollections.Index.USER_EMAIL_IDX)){
