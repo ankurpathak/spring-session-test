@@ -1,7 +1,12 @@
 package com.ankurpathak.springsessiontest;
 
+import com.ankurpathak.springsessiontest.controller.LogUtil;
 import com.github.ankurpathak.primitive.bean.constraints.string.StringValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,15 +18,18 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.util.*;
 
+import static com.ankurpathak.springsessiontest.Params.EMAIL;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.valid4j.Assertive.ensure;
 import static org.valid4j.Assertive.require;
 
 
 @Service
 public class UserService extends AbstractDomainService<User, BigInteger> implements IUserService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
 
     private final IUserRepository dao;
     private final ITokenService tokenService;
@@ -42,53 +50,72 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
     @Override
     public Optional<User> byCandidateKey(String candidateKey) {
-        ensure(candidateKey, not(emptyString()));
+        require(candidateKey, not(emptyString()));
         return dao.byCandidateKey(PrimitiveUtils.toBigInteger(candidateKey), candidateKey);
     }
 
     @Override
     public void saveEmailToken(User user, Token token) {
-        ensure(user, notNullValue());
-        ensure(token, notNullValue());
-        if (user.getEmail() != null && !StringUtils.isEmpty(token.getId())) {
-            user.getEmail().setTokenId(token.getId());
-            update(user);
+        require(user, notNullValue());
+        require(token, notNullValue());
+        if (user.getEmail() != null) {
+            if(!StringUtils.isEmpty(token.getId())){
+                user.getEmail().setTokenId(token.getId());
+                update(user);
+            }else{
+                LogUtil.logFieldEmpty(log, Token.class.getSimpleName(), Documents.Token.Field.ID, token.getId());
+            }
+
+        }else {
+            LogUtil.logFieldNull(log, User.class.getSimpleName(), Documents.User.Field.EMAIL, String.valueOf(user.getId()));
         }
     }
 
     @Override
     public Optional<User> byEmail(String email) {
-        ensure(email, not(emptyString()));
-        return dao.byEmail(email);
+        require(email, not(emptyString()));
+        return dao.findByCriteria(Criteria.where(Documents.User.QueryKey.EMAIL).is(email), PageRequest.of(0, 1), User.class)
+                .findFirst();
     }
 
     @Override
     public Optional<User> byEmailTokenId(String tokenId) {
-        ensure(tokenId, not(emptyString()));
+        require(tokenId, not(emptyString()));
         return dao.byEmailTokenId(tokenId);
     }
 
     @Override
-    public void accountEnableEmail(User user) {
-        ensure(user, notNullValue());
-        if (user.getEmail() != null && !StringUtils.isEmpty(user.getEmail().getTokenId()))
-            tokenService.deleteById(user.getEmail().getTokenId());
-        tokenService.generateToken()
-                .ifPresent(token -> {
-                    saveEmailToken(user, token);
-                    emailService.sendForAccountEnable(user, token);
-                });
+    public void accountEnableEmail(String email) {
+        require(email, notNullValue());
+        byEmail(email)
+                .filter(User::isEnabled)
+                .ifPresentOrElse(user -> {
+                        Optional.ofNullable(user.getEmail())
+                                .ifPresentOrElse(x -> {
+                                    Optional.ofNullable(x.getTokenId())
+                                            .filter(String::isEmpty)
+                                            .ifPresentOrElse(tokenService::deleteById,() -> LogUtil.logFieldNull(log, User.class.getSimpleName(), Documents.User.Field.EMAIL_TOKEN_ID, String.valueOf(user.getId())));
+                                    tokenService.generateToken()
+                                            .ifPresentOrElse(token -> {
+                                                saveEmailToken(user, token);
+                                                emailService.sendForAccountEnable(user, token);
+                                            }, () -> LogUtil.logNull(log, Token.class.getSimpleName()));
+
+                            }, () -> LogUtil.logFieldNull(log, User.class.getSimpleName(),Documents.User.Field.EMAIL, String.valueOf(user.getId())));
+
+                    }, () -> { throw new NotFoundException(email, EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);}
+                );
     }
 
     @Override
     public Token.TokenStatus accountEnable(@Nonnull String token) {
-        ensure(token, not(emptyString()));
+        require(token, not(emptyString()));
         return verifyEmailToken(token);
     }
 
     @Override
     public Token.TokenStatus forgetPasswordEnable(String token) {
-        ensure(token, not(emptyString()));
+        require(token, not(emptyString()));
         return verifyPasswordToken(token);
     }
 
@@ -119,13 +146,13 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
     @Override
     public Optional<User> byPasswordTokenId(String tokenId) {
-        ensure(tokenId, not(emptyString()));
+        require(tokenId, not(emptyString()));
         return dao.byPasswordTokenId(tokenId);
     }
 
     @Override
     public void forgotPasswordEmail(User user) {
-        ensure(user, notNullValue());
+        require(user, notNullValue());
         if (user.getPassword() != null && !StringUtils.isEmpty(user.getPassword().getTokenId()))
             tokenService.deleteById(user.getPassword().getTokenId());
         tokenService.generateToken()
@@ -138,8 +165,8 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
     @Override
     public void savePasswordToken(User user, Token token) {
-        ensure(user, notNullValue());
-        ensure(token, notNullValue());
+        require(user, notNullValue());
+        require(token, notNullValue());
         if (user.getPassword() != null && !StringUtils.isEmpty(token.getId())) {
             user.getPassword().setTokenId(token.getId());
             update(user);
@@ -148,8 +175,8 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
     @Override
     public void validateExistingPassword(User user, UserDto dto) {
-        ensure(user, notNullValue());
-        ensure(dto, notNullValue());
+        require(user, notNullValue());
+        require(dto, notNullValue());
         Optional.ofNullable(user.getPassword())
                 .ifPresentOrElse(password -> {
                     if (!passwordEncoder.matches(dto.getCurrentPassword(), password.getValue()))
@@ -227,7 +254,7 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
     @Override
     public User create(User entity) {
-        ensure(entity, notNullValue());
+        require(entity, notNullValue());
         return dao.persist(entity);
     }
 }

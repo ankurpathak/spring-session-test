@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
 import static org.valid4j.Assertive.require;
@@ -33,7 +34,15 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
     }
 
     @Override
-    public Page<T> findByCriteria(final Criteria criteria, final Pageable pageable, Class<T> type) {
+    public Page<T> findByCriteriaPaginated(final Criteria criteria, final Pageable pageable, final Class<T> type) {
+        require(criteria, notNullValue());
+        require(pageable, notNullValue());
+        require(type, notNullValue());
+        return dao.findByCriteriaPaginated(criteria, pageable, type);
+    }
+
+    @Override
+    public Stream<T> findByCriteria(final Criteria criteria, final Pageable pageable, final Class<T> type) {
         require(criteria, notNullValue());
         require(pageable, notNullValue());
         require(type, notNullValue());
@@ -41,7 +50,14 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
     }
 
     @Override
-    public Page<T> findPaginated(final Pageable pageable) {
+    public long countByCriteria(final Criteria criteria, final Pageable pageable, final Class<T> type) {
+        require(criteria, notNullValue());
+        require(type, notNullValue());
+        return dao.countByCriteria(criteria, type);
+    }
+
+        @Override
+    public Page<T> findAllPaginated(final Pageable pageable) {
         require(pageable, notNullValue());
         return dao.findAll(pageable);
     }

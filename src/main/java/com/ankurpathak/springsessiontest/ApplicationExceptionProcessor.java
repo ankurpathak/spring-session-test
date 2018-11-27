@@ -16,16 +16,16 @@ public class ApplicationExceptionProcessor {
         BindingResult result = new BindException(dto, dto.domainName());
         FoundException fEx = null;
         if(!StringUtils.isEmpty(message)){
-            if(message.contains(DocumentCollections.Index.USER_EMAIL_IDX)){
+            if(message.contains(Documents.Index.USER_EMAIL_IDX)){
                 UserDto userDto = (UserDto) dto;
                 fEx = new FoundException(ex, result, userDto.getEmail(), "email", "User", ApiCode.EMAIL_FOUND);
             }
-            else if(message.contains(DocumentCollections.Index.USER_CONTACT_IDX)) {
+            else if(message.contains(Documents.Index.USER_CONTACT_IDX)) {
                 UserDto userDto = (UserDto) dto;
                 fEx = new FoundException(ex, result, userDto.getContact(), "contact", "User", ApiCode.CONTACT_FOUND);
             }
 
-            else if(message.contains(DocumentCollections.Index.USER_USERNAME_IDX)){
+            else if(message.contains(Documents.Index.USER_USERNAME_IDX)){
                 UserDto userDto = (UserDto) dto;
                 fEx = new FoundException(ex, result, userDto.getUsername(), "username", "User", ApiCode.USERNAME_FOUND);
             }

@@ -25,4 +25,18 @@ public interface Params {
     String CONTACT = "contact";
     String SUB = "sub";
     String PROFILE = "profile";
+
+
+
+    interface Query extends Params {
+
+    }
+
+    interface Path extends Params {
+
+    }
+
+    interface Extas extends Params {
+
+    }
 }

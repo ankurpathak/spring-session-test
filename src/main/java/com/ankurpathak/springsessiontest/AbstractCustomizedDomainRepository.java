@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Stream;
 
 public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, ID extends Serializable> implements ICustomizedDomainRepository<T, ID> {
 
@@ -32,7 +33,7 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
     }
 
     @Override
-    public Page<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type) {
+    public Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type) {
         List<T> list = template.find(
                 new Query().with(pageable).addCriteria(criteria),
                 type
@@ -42,5 +43,19 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
                 pageable,
                 template.count(new Query().addCriteria(criteria), type)
         );
+    }
+
+    @Override
+    public Stream<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type) {
+        return template.find(
+                new Query().with(pageable).addCriteria(criteria),
+                type
+        ).stream();
+    }
+
+
+    @Override
+    public long countByCriteria(Criteria criteria, Class<T> type) {
+        return template.count(new Query().addCriteria(criteria), type);
     }
 }

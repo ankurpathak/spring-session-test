@@ -1,11 +1,79 @@
 package com.ankurpathak.springsessiontest;
 
-public interface DocumentCollections {
+public interface Documents {
 
     String USER = "users";
     String ROLE = "roles";
     String TOKEN = "tokens";
     String SEQUENCE = "sequences";
+
+
+    interface Domain {
+        interface Field {
+            String ID = "id";
+        }
+    }
+
+    interface User {
+
+        interface Field extends Domain.Field {
+
+            String EMAIL = "email";
+            String EMAIL_TOKEN_ID = "email.tokenId";
+        }
+
+        interface Index {
+
+        }
+
+        interface Query {
+
+        }
+
+
+        interface QueryKey {
+            String EMAIL = "email.value";
+        }
+
+
+
+    }
+
+
+    interface Role {
+
+        interface Field extends Domain.Field {
+
+        }
+
+        interface Index {
+
+        }
+
+        interface Query {
+
+        }
+
+    }
+
+
+    interface Token {
+
+        interface Field extends Domain.Field{
+
+        }
+
+        interface Index {
+
+        }
+
+        interface Query {
+
+        }
+
+
+
+    }
 
 
     interface Index {

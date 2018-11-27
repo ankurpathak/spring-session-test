@@ -4,7 +4,6 @@ package com.ankurpathak.springsessiontest;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.github.ankurpathak.primitive.bean.constraints.string.StringValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -18,11 +17,11 @@ import java.math.BigInteger;
 import java.util.*;
 
 
-@Document(collection = DocumentCollections.USER)
+@Document(collection = Documents.USER)
 @CompoundIndexes({
-        @CompoundIndex(name = DocumentCollections.Index.USER_EMAIL_IDX, sparse = true, unique = true, def = DocumentCollections.Index.USER_EMAIL_IDX_DEF),
-        @CompoundIndex(name = DocumentCollections.Index.USER_CONTACT_IDX, sparse = true, unique = true, def = DocumentCollections.Index.USER_CONTACT_IDX_DEF),
-        @CompoundIndex(name = DocumentCollections.Index.USER_EMAIL_TOKEN_ID_IDX, sparse = true, unique = true, def = DocumentCollections.Index.USER_EMAIL_TOKEN_ID_IDX_DEF)
+        @CompoundIndex(name = Documents.Index.USER_EMAIL_IDX, sparse = true, unique = true, def = Documents.Index.USER_EMAIL_IDX_DEF),
+        @CompoundIndex(name = Documents.Index.USER_CONTACT_IDX, sparse = true, unique = true, def = Documents.Index.USER_CONTACT_IDX_DEF),
+        @CompoundIndex(name = Documents.Index.USER_EMAIL_TOKEN_ID_IDX, sparse = true, unique = true, def = Documents.Index.USER_EMAIL_TOKEN_ID_IDX_DEF)
 })
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User extends ExtendedDomain<BigInteger> implements Serializable {
@@ -31,7 +30,7 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     private String firstName;
     private String lastName;
     private Contact email;
-    @Indexed(name = DocumentCollections.Index.USER_USERNAME_IDX, unique = true, sparse = true)
+    @Indexed(name = Documents.Index.USER_USERNAME_IDX, unique = true, sparse = true)
     private String username;
     private Contact contact;
     private Set<String> roles;

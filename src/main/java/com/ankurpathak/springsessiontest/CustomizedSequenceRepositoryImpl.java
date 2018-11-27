@@ -21,7 +21,7 @@ public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRe
     public BigInteger next(String id)  {
 
         //get sequence id
-        Query query = new Query(Criteria.where(DocumentCollections.Field.FIELD_ID).is(id));
+        Query query = new Query(Criteria.where(Documents.Field.FIELD_ID).is(id));
 
         Sequence sequence = template.findOne(query, Sequence.class);
         BigInteger nextValue = sequence.getCurr();
@@ -29,7 +29,7 @@ public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRe
 
         //increase sequence id by 1
         Update update = new Update();
-        update.set(DocumentCollections.Field.FIELD_CURRENT, nextValue);
+        update.set(Documents.Field.FIELD_CURRENT, nextValue);
 
         //return new increased id
         FindAndModifyOptions options = new FindAndModifyOptions();

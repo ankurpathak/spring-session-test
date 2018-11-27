@@ -1,15 +1,12 @@
 package com.ankurpathak.springsessiontest;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 
 import java.util.*;
@@ -58,7 +55,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         Criteria criteria = new Criteria().orOperator(criteriaList.toArray(new Criteria[]{}));
-        Optional<User> user = userService.findByCriteria(criteria, PageRequest.of(0, 1), User.class)
+        Optional<User> user = userService.findByCriteriaPaginated(criteria, PageRequest.of(0, 1), User.class)
                 .stream()
                 .findFirst();
         if (user.isPresent()) {
@@ -92,7 +89,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Criteria criteria = new Criteria();
         if(CollectionUtils.isEmpty(criteriaList))
             criteria.orOperator(criteriaList.toArray(new Criteria[]{}));
-        return userService.findByCriteria(criteria, PageRequest.of(0, 1), User.class)
+        return userService.findByCriteriaPaginated(criteria, PageRequest.of(0, 1), User.class)
                 .stream()
                 .findFirst();
     }

@@ -3,24 +3,21 @@ package com.ankurpathak.springsessiontest;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.passay.entropy.RandomPasswordEntropy;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
 
 @JsonInclude(Include.NON_EMPTY)
-@Document(collection = DocumentCollections.TOKEN)
+@Document(collection = Documents.TOKEN)
 public class Token extends Domain<String> implements Serializable {
 
-    @Indexed(name = DocumentCollections.Index.TOKEN_VALUE_IDX, unique = true, sparse = true)
+    @Indexed(name = Documents.Index.TOKEN_VALUE_IDX, unique = true, sparse = true)
     private String value;
 
-    @Indexed(name = DocumentCollections.Index.TOKEN_EXPIRY_IDX, expireAfterSeconds= EXPIRATION_IN_SECONDS)
+    @Indexed(name = Documents.Index.TOKEN_EXPIRY_IDX, expireAfterSeconds= EXPIRATION_IN_SECONDS)
     private Instant expiry;
     private static final int EXPIRATION_IN_MINUTES = 30;
 

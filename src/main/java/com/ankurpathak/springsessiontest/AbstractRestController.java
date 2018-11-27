@@ -139,7 +139,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         ControllerUtil.pagePreCheck(block);
         Criteria criteria = ControllerUtil.parseRSQL(rsql, type);
         Pageable pageable = ControllerUtil.getPageable(block, size, sort);
-        Page<T> page = getService().findByCriteria(criteria, pageable, type);
+        Page<T> page = getService().findByCriteriaPaginated(criteria, pageable, type);
         ControllerUtil.pagePostCheck(block, page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
         return page.getContent();
@@ -148,7 +148,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     protected ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
         ControllerUtil.pagePreCheck(block);
         Pageable request = ControllerUtil.getPageable(block, size, sort);
-        Page<T> page = getService().findPaginated(request);
+        Page<T> page = getService().findAllPaginated(request);
         ControllerUtil.pagePostCheck(block, page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
         return ResponseEntity.ok(page.getContent());
@@ -179,7 +179,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     protected List<T> search(String rsql, Pageable pageable, Class<T> type, HttpServletResponse response) {
         PagingUtil.pagePreCheck(pageable.getPageNumber());
         Criteria criteria = PagingUtil.parseRSQL(rsql, type);
-        Page<T> page = getService().findByCriteria(criteria, pageable, type);
+        Page<T> page = getService().findByCriteriaPaginated(criteria, pageable, type);
         PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent(page, response));
         return page.getContent();
@@ -188,7 +188,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
     protected ResponseEntity<?> paginated(Pageable pageable, HttpServletResponse response) {
         PagingUtil.pagePreCheck(pageable.getPageNumber());
-        Page<T> page = getService().findPaginated(pageable);
+        Page<T> page = getService().findAllPaginated(pageable);
         PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent(page, response));
         return ResponseEntity.ok(page.getContent());

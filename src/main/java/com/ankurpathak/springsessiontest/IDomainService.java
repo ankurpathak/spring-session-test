@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
 
@@ -18,9 +19,13 @@ public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
 
     List<T> findAll();
 
-    Page<T> findPaginated(Pageable pageable);
+    Stream<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
 
-    Page<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
+    long countByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
+
+    Page<T> findAllPaginated(Pageable pageable);
+
+    Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type);
 
     // write
 

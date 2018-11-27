@@ -54,20 +54,14 @@ public class AccountRestController extends AbstractRestController<User, BigInteg
 
 
     @PutMapping(PATH_ACCOUNT_EMAIL)
-    public ResponseEntity<?> accountEnableEmail(@PathVariable(EMAIL) String email) {
-        Optional<User> user = service.byEmail(email);
-        if (user.isPresent()) {
-            service.accountEnableEmail(user.get());
-            return ControllerUtil.processSuccess(messageService);
-        } else {
-            throw new NotFoundException(email, EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);
-        }
-
+    public ResponseEntity<?> accountEnableEmail(@PathVariable(Path.EMAIL) String email) {
+       service.accountEnableEmail(email);
+       return ControllerUtil.processSuccess(messageService);
     }
 
 
     @PutMapping(PATH_ACCOUNT_ENABLE)
-    public ResponseEntity<?> accountEnable(HttpServletRequest request, @PathVariable(TOKEN) String token) {
+    public ResponseEntity<?> accountEnable(HttpServletRequest request, @PathVariable(Path.TOKEN) String token) {
         Token.TokenStatus status = service.accountEnable(token);
         return ControllerUtil.processTokenStatus(status, token, messageService);
     }
