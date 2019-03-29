@@ -1,8 +1,8 @@
 package com.github.ankurpathak.app.service.impl;
 
-import com.github.ankurpathak.app.ExtendedMongoRepository;
-import com.github.ankurpathak.app.IDomainService;
-import com.github.ankurpathak.app.MatcherUtil;
+import com.github.ankurpathak.app.domain.repository.mongo.ExtendedMongoRepository;
+import com.github.ankurpathak.app.service.IDomainService;
+import com.github.ankurpathak.app.util.MatcherUtil;
 import com.github.ankurpathak.app.domain.model.Domain;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

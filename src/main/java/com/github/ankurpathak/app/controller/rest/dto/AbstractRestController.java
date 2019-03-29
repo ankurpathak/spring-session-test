@@ -6,8 +6,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.zjsonpatch.*;
 import com.github.ankurpathak.app.*;
 import com.github.ankurpathak.app.config.ControllerUtil;
-import com.github.ankurpathak.app.controller.rest.dto.ApiCode;
+import com.github.ankurpathak.app.controller.rest.util.DuplicateKeyExceptionProcessor;
+import com.github.ankurpathak.app.domain.converter.IToDomain;
+import com.github.ankurpathak.app.controller.rest.dto.converter.IToDto;
 import com.github.ankurpathak.app.domain.model.Domain;
+import com.github.ankurpathak.app.domain.updater.IUpdateDomain;
+import com.github.ankurpathak.app.event.DomainCreatedEvent;
+import com.github.ankurpathak.app.exception.FoundException;
+import com.github.ankurpathak.app.exception.InvalidException;
+import com.github.ankurpathak.app.service.IDomainService;
+import com.github.ankurpathak.app.service.IMessageService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
@@ -80,7 +88,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
     protected void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
-        FoundException foundEx = ApplicationExceptionProcessor.processDuplicateKeyException(ex, dto);
+        FoundException foundEx = DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dto);
         if (foundEx != null) {
             ControllerUtil.processValidationForFound(messageService, foundEx);
         }

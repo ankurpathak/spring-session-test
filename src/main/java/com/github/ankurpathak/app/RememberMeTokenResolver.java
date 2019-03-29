@@ -1,5 +1,8 @@
 package com.github.ankurpathak.app;
 
+import com.github.ankurpathak.app.security.core.CookieRememberMeTokenResover;
+import com.github.ankurpathak.app.security.core.HeaderRememberMeTokenResolver;
+import com.github.ankurpathak.app.security.core.IRememberMeTokenResolver;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;

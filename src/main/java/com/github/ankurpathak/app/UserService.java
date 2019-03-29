@@ -1,9 +1,19 @@
 package com.github.ankurpathak.app;
 
+import com.github.ankurpathak.app.constant.Model;
 import com.github.ankurpathak.app.controller.rest.dto.ApiCode;
+import com.github.ankurpathak.app.exception.InvalidException;
+import com.github.ankurpathak.app.security.dto.CustomUserDetails;
+import com.github.ankurpathak.app.domain.repository.mongo.IUserRepository;
+import com.github.ankurpathak.app.security.dto.DomainContext;
+import com.github.ankurpathak.app.service.IEmailService;
+import com.github.ankurpathak.app.service.ITokenService;
+import com.github.ankurpathak.app.service.IUserService;
+import com.github.ankurpathak.app.service.IpService;
 import com.github.ankurpathak.app.service.impl.AbstractDomainService;
 import com.github.ankurpathak.app.service.impl.CountryCacheService;
-import com.github.ankurpathak.primitive.bean.constraints.string.StringValidator;
+import com.github.ankurpathak.app.util.LogUtil;
+import com.github.ankurpathak.primitive.string.StringValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,18 +74,18 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
                 user.getEmail().setTokenId(token.getId());
                 update(user);
             }else{
-                LogUtil.logFieldEmpty(log, Token.class.getSimpleName(), Documents.Token.Field.ID, token.getId());
+                LogUtil.logFieldEmpty(log, Token.class.getSimpleName(), Model.Token.Field.ID, token.getId());
             }
 
         }else {
-            LogUtil.logFieldNull(log, User.class.getSimpleName(), Documents.User.Field.EMAIL, String.valueOf(user.getId()));
+            LogUtil.logFieldNull(log, User.class.getSimpleName(), Model.User.Field.EMAIL, String.valueOf(user.getId()));
         }
     }
 
     @Override
     public Optional<User> byEmail(String email) {
         require(email, not(emptyString()));
-        return dao.findByCriteria(Criteria.where(Documents.User.QueryKey.EMAIL).is(email), PageRequest.of(0, 1), User.class)
+        return dao.findByCriteria(Criteria.where(Model.User.QueryKey.EMAIL).is(email), PageRequest.of(0, 1), User.class)
                 .findFirst();
     }
 
@@ -95,14 +105,14 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
                                 .ifPresentOrElse(x -> {
                                     Optional.ofNullable(x.getTokenId())
                                             .filter(String::isEmpty)
-                                            .ifPresentOrElse(tokenService::deleteById,() -> LogUtil.logFieldNull(log, User.class.getSimpleName(), Documents.User.Field.EMAIL_TOKEN_ID, String.valueOf(user.getId())));
+                                            .ifPresentOrElse(tokenService::deleteById,() -> LogUtil.logFieldNull(log, User.class.getSimpleName(), Model.User.Field.EMAIL_TOKEN_ID, String.valueOf(user.getId())));
                                     tokenService.generateToken()
                                             .ifPresentOrElse(token -> {
                                                 saveEmailToken(user, token);
                                                 emailService.sendForAccountEnable(user, token);
                                             }, () -> LogUtil.logNull(log, Token.class.getSimpleName()));
 
-                            }, () -> LogUtil.logFieldNull(log, User.class.getSimpleName(),Documents.User.Field.EMAIL, String.valueOf(user.getId())));
+                            }, () -> LogUtil.logFieldNull(log, User.class.getSimpleName(), Model.User.Field.EMAIL, String.valueOf(user.getId())));
 
                     }, () -> { throw new NotFoundException(email, Params.EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);}
                 );
@@ -223,7 +233,7 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
         if (StringValidator.email(username, false))
             possibleKeys.put(Params.EMAIL, username);
         else if (StringValidator.contact(username, false))
-            possibleKeys.put(Params.CONTACT, username);
+            possibleKeys.put(Params.PHONE, username);
 
         BigInteger possibleId = PrimitiveUtils.toBigInteger(username);
         if (possibleId.compareTo(BigInteger.ZERO) > 0) {

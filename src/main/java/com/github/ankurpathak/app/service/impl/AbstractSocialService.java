@@ -1,6 +1,6 @@
 package com.github.ankurpathak.app.service.impl;
 
-import com.github.ankurpathak.app.ISocialService;
+import com.github.ankurpathak.app.service.ISocialService;
 import com.github.ankurpathak.app.SocialProperties;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.builder.api.DefaultApi20;

@@ -1,6 +1,6 @@
 package com.github.ankurpathak.app.service.impl;
 
-import com.github.ankurpathak.app.ICountryService;
+import com.github.ankurpathak.app.service.ICountryService;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;

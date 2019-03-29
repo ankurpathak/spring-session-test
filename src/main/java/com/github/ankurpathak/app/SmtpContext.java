@@ -1,5 +1,6 @@
 package com.github.ankurpathak.app;
 
+import com.github.ankurpathak.app.service.dto.EmailContext;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.io.Serializable;

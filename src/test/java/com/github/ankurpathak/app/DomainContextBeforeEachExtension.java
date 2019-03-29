@@ -1,5 +1,7 @@
 package com.github.ankurpathak.app;
 
+import com.github.ankurpathak.app.security.core.DomainContextHolder;
+import com.github.ankurpathak.app.security.dto.DomainContext;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 

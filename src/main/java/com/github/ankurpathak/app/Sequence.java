@@ -2,13 +2,14 @@ package com.github.ankurpathak.app;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.github.ankurpathak.app.constant.Model;
 import com.github.ankurpathak.app.domain.model.Domain;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.math.BigInteger;
 
-@Document(collection = Documents.SEQUENCE)
+@Document(collection = Model.SEQUENCE)
 @JsonInclude(Include.NON_EMPTY)
 public final class Sequence extends Domain<String> implements Serializable {
     private BigInteger curr;

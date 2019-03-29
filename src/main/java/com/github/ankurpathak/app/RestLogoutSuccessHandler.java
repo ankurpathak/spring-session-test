@@ -1,5 +1,6 @@
 package com.github.ankurpathak.app;
 
+import com.github.ankurpathak.app.service.IFilterService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 import org.springframework.stereotype.Component;

@@ -38,14 +38,14 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>10</java.version>
+        <java.version>11</java.version>
         <el.version>3.0.1-b08</el.version>
         <spring-data-releasetrain.version>Lovelace-RELEASE</spring-data-releasetrain.version>
         <hamcrest.version>2.1</hamcrest.version>
         <auth0.jwt.version>3.4.0</auth0.jwt.version>
         <username-validation.version>1.2.1</username-validation.version>
-        <password-validaton.version>1.0.3-SNAPSHOT</password-validaton.version>
-        <primitive-validation.version>1.0-SNAPSHOT</primitive-validation.version>
+        <password-validaton.version>1.0.3</password-validaton.version>
+        <primitive-validation.version>1.0.2</primitive-validation.version>
         <json-path.version>2.3.0</json-path.version>
         <commons-lang.version>3.8</commons-lang.version>
         <commons-io.version>2.6</commons-io.version>
@@ -446,6 +446,16 @@
         </dependency>
         <!-- Mocito Junit 5 -->
 
+        <!-- Reflections -->
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
+        </dependency>
+        <!-- Reflections -->
+
+
+
 
 
 
@@ -458,7 +468,7 @@
         <resources>
             <resource>
                 <directory>src/main/resources-filtered</directory>
-                <filtering>true</filtering>
+                <filtering>false</filtering>
             </resource>
             <resource>
                 <directory>src/main/resources</directory>

@@ -1,6 +1,9 @@
 package com.github.ankurpathak.app.config;
 
 import com.github.ankurpathak.app.*;
+import com.github.ankurpathak.app.service.IFacebookService;
+import com.github.ankurpathak.app.service.IGoogleService;
+import com.github.ankurpathak.app.service.ILinkedinService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;

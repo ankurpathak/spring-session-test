@@ -1,5 +1,6 @@
 package com.github.ankurpathak.app;
 
+import com.github.ankurpathak.app.constant.Model;
 import com.github.ankurpathak.app.domain.model.Domain;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,10 +11,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@Document(collection = Documents.ROLE)
+@Document(collection = Model.ROLE)
 public class Role extends Domain<String> implements Serializable {
 
-    @Indexed(name = Documents.Index.ROLE_NAME_IDX, unique = true, sparse = true)
+    @Indexed(name = Model.Index.ROLE_NAME_IDX, unique = true, sparse = true)
     private String name;
     private Set<String> privileges;
     public static final String ROLE_ADMIN = "ROLE_ADMIN";

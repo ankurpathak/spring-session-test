@@ -1,6 +1,7 @@
 package com.github.ankurpathak.app;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.ankurpathak.app.security.dto.LoginRequestDto;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,6 +1,7 @@
 package com.github.ankurpathak.app;
 
 import com.github.ankurpathak.app.domain.model.Domain;
+import com.github.ankurpathak.app.domain.repository.mongo.custom.util.AbstractAggregation;
 import org.bson.Document;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

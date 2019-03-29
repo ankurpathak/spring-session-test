@@ -1,5 +1,6 @@
 package com.github.ankurpathak.app;
 
+import com.github.ankurpathak.app.event.ExtendedApplicationEvent;
 import org.springframework.data.domain.Page;
 import javax.servlet.http.HttpServletResponse;
 

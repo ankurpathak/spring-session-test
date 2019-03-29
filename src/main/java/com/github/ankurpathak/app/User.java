@@ -4,6 +4,7 @@ package com.github.ankurpathak.app;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.github.ankurpathak.app.constant.Model;
 import com.github.ankurpathak.app.controller.rest.dto.View;
 import com.github.ankurpathak.app.domain.model.Contact;
 import com.github.ankurpathak.app.domain.model.ExtendedDomain;
@@ -20,11 +21,11 @@ import java.math.BigInteger;
 import java.util.*;
 
 
-@Document(collection = Documents.USER)
+@Document(collection = Model.USER)
 @CompoundIndexes({
-        @CompoundIndex(name = Documents.Index.USER_EMAIL_IDX, sparse = true, unique = true, def = Documents.Index.USER_EMAIL_IDX_DEF),
-        @CompoundIndex(name = Documents.Index.USER_CONTACT_IDX, sparse = true, unique = true, def = Documents.Index.USER_CONTACT_IDX_DEF),
-        @CompoundIndex(name = Documents.Index.USER_EMAIL_TOKEN_ID_IDX, sparse = true, unique = true, def = Documents.Index.USER_EMAIL_TOKEN_ID_IDX_DEF)
+        @CompoundIndex(name = Model.Index.USER_EMAIL_IDX, sparse = true, unique = true, def = Model.Index.USER_EMAIL_IDX_DEF),
+        @CompoundIndex(name = Model.Index.USER_CONTACT_IDX, sparse = true, unique = true, def = Model.Index.USER_CONTACT_IDX_DEF),
+        @CompoundIndex(name = Model.Index.USER_EMAIL_TOKEN_ID_IDX, sparse = true, unique = true, def = Model.Index.USER_EMAIL_TOKEN_ID_IDX_DEF)
 })
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User extends ExtendedDomain<BigInteger> implements Serializable {
@@ -33,9 +34,9 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     private String firstName;
     private String lastName;
     private Contact email;
-    @Indexed(name = Documents.Index.USER_USERNAME_IDX, unique = true, sparse = true)
+    @Indexed(name = Model.Index.USER_USERNAME_IDX, unique = true, sparse = true)
     private String username;
-    private Contact contact;
+    private Contact phone;
     private Set<String> roles;
     private boolean enabled;
 
@@ -216,8 +217,8 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
         return this;
     }
 
-    public User contact(Contact contact) {
-        this.contact = contact;
+    public User contact(Contact phone) {
+        this.phone = phone;
         return this;
     }
 
@@ -252,12 +253,12 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
         this.username = username;
     }
     @JsonView({View.Me.class})
-    public Contact getContact() {
-        return contact;
+    public Contact getPhone() {
+        return phone;
     }
 
-    public void setContact(Contact contact) {
-        this.contact = contact;
+    public void setPhone(Contact phone) {
+        this.phone = phone;
     }
     @JsonView({View.Me.class})
     public Set<Contact> getEmails() {
@@ -278,11 +279,11 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     }
 
     public static final String ANONYMOUS_USERNAME= "anonymous";
-    public static final User ANONYMOUS_USER = User.getInstance();
+    public static final User ANONYMOUS_USER;
     public static final BigInteger ANONYMOUS_ID = BigInteger.ONE;
     static
     {
-        ANONYMOUS_USER.username(ANONYMOUS_USERNAME)
+        ANONYMOUS_USER = getInstance().username(ANONYMOUS_USERNAME)
                 .roles(Set.of(Role.ROLE_ANONYMOUS))
                 .id(ANONYMOUS_ID)
                 .enabled(false);

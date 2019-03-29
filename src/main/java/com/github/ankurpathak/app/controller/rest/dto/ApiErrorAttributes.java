@@ -1,6 +1,6 @@
 package com.github.ankurpathak.app.controller.rest.dto;
 
-import com.github.ankurpathak.app.MessageUtil;
+import com.github.ankurpathak.app.util.MessageUtil;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;

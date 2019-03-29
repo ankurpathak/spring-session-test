@@ -2,6 +2,7 @@ package com.github.ankurpathak.app;
 
 import com.github.ankurpathak.app.config.ControllerUtil;
 import com.github.ankurpathak.app.controller.rest.dto.ApiCode;
+import com.github.ankurpathak.app.rsql.CustomRSQLVisitor;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import cz.jirutka.rsql.parser.RSQLParser;

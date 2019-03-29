@@ -2,6 +2,7 @@ package com.github.ankurpathak.app;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.github.ankurpathak.app.constant.Model;
 import com.github.ankurpathak.app.domain.model.Domain;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -12,13 +13,13 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @JsonInclude(Include.NON_EMPTY)
-@Document(collection = Documents.TOKEN)
+@Document(collection = Model.TOKEN)
 public class Token extends Domain<String> implements Serializable {
 
-    @Indexed(name = Documents.Index.TOKEN_VALUE_IDX, unique = true, sparse = true)
+    @Indexed(name = Model.Index.TOKEN_VALUE_IDX, unique = true, sparse = true)
     private String value;
 
-    @Indexed(name = Documents.Index.TOKEN_EXPIRY_IDX, expireAfterSeconds= EXPIRATION_IN_SECONDS)
+    @Indexed(name = Model.Index.TOKEN_EXPIRY_IDX, expireAfterSeconds= EXPIRATION_IN_SECONDS)
     private Instant expiry;
     private static final int EXPIRATION_IN_MINUTES = 30;
 

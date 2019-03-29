@@ -25,10 +25,7 @@ import static org.valid4j.Assertive.ensure;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     public static final String SUCCESS_URL = "/";
-
-
 
 
     private final AuthenticationSuccessHandler restAuthenticationSuccessHandler;
@@ -39,8 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final FilterConfig filterConfig;
     private final SessionRegistry sessionRegistry;
     private final LogoutSuccessHandler restLogoutSuccessHandler;
-    private final OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService;
-    private final OidcUserService customOidcUserService;
+    //private final OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService;
+   // private final OidcUserService customOidcUserService;
 
 
     @Autowired
@@ -50,7 +47,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 
-    public WebSecurityConfig(AuthenticationSuccessHandler restAuthenticationSuccessHandler, AuthenticationFailureHandler restAuthenticationFailureHandler, AccessDeniedHandler restAccessDeniedHandler, PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices, RestAuthenticationEntryPoint restAuthenticationEntryPoint, FilterConfig filterConfig, SessionRegistry sessionRegistry, LogoutSuccessHandler restLogoutSuccessHandler, OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService, OidcUserService customOidcUserService) {
+    public WebSecurityConfig(AuthenticationSuccessHandler restAuthenticationSuccessHandler,
+                             AuthenticationFailureHandler restAuthenticationFailureHandler,
+                             AccessDeniedHandler restAccessDeniedHandler,
+                             PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices,
+                             RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+                             FilterConfig filterConfig,
+                             SessionRegistry sessionRegistry,
+                             LogoutSuccessHandler restLogoutSuccessHandler
+                            // OAuth2UserService<OAuth2UserRequest, OAuth2User> customOAuth2UserService,
+                            // OidcUserService customOidcUserService
+    ) {
         this.restAuthenticationSuccessHandler = restAuthenticationSuccessHandler;
         this.restAuthenticationFailureHandler = restAuthenticationFailureHandler;
         this.restAccessDeniedHandler = restAccessDeniedHandler;
@@ -59,8 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.filterConfig = filterConfig;
         this.sessionRegistry = sessionRegistry;
         this.restLogoutSuccessHandler = restLogoutSuccessHandler;
-        this.customOAuth2UserService = customOAuth2UserService;
-        this.customOidcUserService = customOidcUserService;
+       // this.customOAuth2UserService = customOAuth2UserService;
+      //  this.customOidcUserService = customOidcUserService;
     }
 
 
@@ -96,17 +103,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .denyAll()
 
-                .and()
+               // .and()
 
-                .oauth2Login()
-                .tokenEndpoint()
-                .accessTokenResponseClient(OAuthConfig.authorizationCodeTokenResponseClient())
-                .and()
-                .userInfoEndpoint().userService(customOAuth2UserService).oidcUserService(customOidcUserService)
-                .and()
-                .successHandler(restAuthenticationSuccessHandler)
-                .failureHandler(restAuthenticationFailureHandler)
-                .permitAll()
+               // .oauth2Login()
+               // .tokenEndpoint()
+                //.accessTokenResponseClient(OAuthConfig.authorizationCodeTokenResponseClient())
+               // .and()
+               // .userInfoEndpoint().userService(customOAuth2UserService).oidcUserService(customOidcUserService)
+              //  .and()
+               // .successHandler(restAuthenticationSuccessHandler)
+             //   .failureHandler(restAuthenticationFailureHandler)
+              //  .permitAll()
                 .and()
                 .logout()
                 .logoutUrl(RequestMappingPaths.PATH_LOGOUT)
@@ -123,7 +130,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterAt(filterConfig.usernamePasswordAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
                 //  .addFilterAfter(socialApplicationAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 //  .addFilterAfter(socialWebAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(filterConfig.securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
+                .addFilterBefore(filterConfig.securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(restAccessDeniedHandler)
                 .and()

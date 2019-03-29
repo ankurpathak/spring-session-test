@@ -1,5 +1,6 @@
 package com.github.ankurpathak.app;
 
+import com.github.ankurpathak.app.service.dto.SocialProfile;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class SocialProfileNotFoundException extends UsernameNotFoundException {

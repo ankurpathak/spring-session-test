@@ -1,9 +1,9 @@
 package com.github.ankurpathak.app.config;
 
-import com.github.ankurpathak.app.ExtendedPersistentTokenBasedRememberMeServices;
-import com.github.ankurpathak.app.IRememberMeRequestedResolver;
-import com.github.ankurpathak.app.IRememberMeTokenResolver;
-import com.github.ankurpathak.app.MongoTokenRepositoryImpl;
+import com.github.ankurpathak.app.security.core.ExtendedPersistentTokenBasedRememberMeServices;
+import com.github.ankurpathak.app.security.core.IRememberMeRequestedResolver;
+import com.github.ankurpathak.app.security.core.IRememberMeTokenResolver;
+import com.github.ankurpathak.app.security.core.MongoTokenRepositoryImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;

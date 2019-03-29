@@ -1,5 +1,6 @@
 package com.github.ankurpathak.app;
 
+import com.github.ankurpathak.app.controller.rest.dto.DomainDto;
 import com.github.ankurpathak.password.bean.constraints.NotContainWhitespace;
 import com.github.ankurpathak.password.bean.constraints.PasswordMatches;
 import com.github.ankurpathak.primitive.bean.constraints.string.Contact;

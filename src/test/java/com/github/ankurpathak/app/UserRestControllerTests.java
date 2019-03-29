@@ -1,16 +1,16 @@
 package com.github.ankurpathak.app;
 
-import com.github.ankurpathak.app.service.ISequenceService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.ankurpathak.app.security.service.CustomUserDetailsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.github.ankurpathak.app.RequestMappingPaths.PATH_GET_ME;
@@ -25,21 +25,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 public class UserRestControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+
+    private final MockMvc mockMvc;
+    private final ObjectMapper objectMapper;
+    private final MongoTemplate mongoTemplate;
+    private final CustomUserDetailsService userDetailsService;
+
 
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    public UserRestControllerTests(MockMvc mockMvc, ObjectMapper objectMapper, MongoTemplate mongoTemplate, CustomUserDetailsService userDetailsService) {
+        this.mockMvc = mockMvc;
+        this.objectMapper = objectMapper;
+        this.mongoTemplate = mongoTemplate;
+        this.userDetailsService = userDetailsService;
+    }
+
+
+   // @RegisterExtension
+   // public DomainContextBeforeEachExtension domainContextBeforeEachExtension = new DomainContextBeforeEachExtension("103.51.209.45");
 
     @RegisterExtension
-    public DomainContextBeforeEachExtension domainContextBeforeEachExtension = new DomainContextBeforeEachExtension("103.51.209.45");
-
-    @RegisterExtension
-    public MongoCleanUpExtension mongoCleanUpExtension = new MongoCleanUpExtension(this, Sequence.class,User.class, Documents.Role.class);
+    public MongoSetUpExtension<UserRestControllerTests> mongoSetUpExtension = new MongoSetUpExtension<>(this);
 
     @Test
+    //@WithUserDetails("ankurpathak@live.in")
     public void getMe()throws Exception{
-        mockMvc.perform(get(apiPath(PATH_GET_ME)).with(authentication(token("7385500660"))))
+        mockMvc.perform(get(apiPath(PATH_GET_ME))
+                .with(authentication(token("ankurpathak@live.in")))
+
+                )
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(jsonPath("$.id", greaterThan(1)));
@@ -52,16 +66,4 @@ public class UserRestControllerTests {
         return token;
     }
 
-
-
-
-
-   // @TestConfiguration
-    public static class TestConfig {
-
-        @Bean
-        public LoginContextRefreshedListener loginContextRefreshedListener(ISequenceService sequenceService, IUserService userService, IRoleService roleService, ITokenService tokenService, PasswordEncoder passwordEncoder){
-            return new LoginContextRefreshedListener(sequenceService, userService, roleService, passwordEncoder);
-        }
-    }
 }

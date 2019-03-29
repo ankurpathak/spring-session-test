@@ -2,8 +2,8 @@ package com.github.ankurpathak.app.domain.model;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.github.ankurpathak.app.DomainDto;
-import com.github.ankurpathak.app.IToDto;
+import com.github.ankurpathak.app.controller.rest.dto.DomainDto;
+import com.github.ankurpathak.app.controller.rest.dto.converter.IToDto;
 import com.github.ankurpathak.app.controller.rest.dto.View;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

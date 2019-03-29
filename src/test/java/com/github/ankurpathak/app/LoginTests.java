@@ -3,14 +3,17 @@ package com.github.ankurpathak.app;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.app.controller.rest.dto.ApiCode;
+import com.github.ankurpathak.app.security.dto.LoginRequestDto;
+import com.github.ankurpathak.app.service.IRoleService;
 import com.github.ankurpathak.app.service.ISequenceService;
+import com.github.ankurpathak.app.service.ITokenService;
+import com.github.ankurpathak.app.service.IUserService;
 import com.github.ankurpathak.app.util.WebUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
@@ -22,30 +25,31 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class LoginTests {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final MockMvc mockMvc;
+    private final ObjectMapper objectMapper;
+    private final MongoTemplate mongoTemplate;
 
 
-    public MongoTemplate getMongoTemplate() {
-        return mongoTemplate;
-    }
+
 
     @RegisterExtension
     public DomainContextBeforeEachExtension domainContextBeforeEachExtension = new DomainContextBeforeEachExtension("103.51.209.45");
 
 
     @RegisterExtension
-    public MongoCleanUpExtension mongoCleanUpExtension = new MongoCleanUpExtension(this, Sequence.class,User.class, Role.class);
+    public MongoSetUpExtension mongoSetUpExtension = new MongoSetUpExtension<LoginTests>(this);
+
+    @Autowired
+    public LoginTests(MockMvc mockMvc, ObjectMapper objectMapper, MongoTemplate mongoTemplate) {
+        this.mockMvc = mockMvc;
+        this.objectMapper = objectMapper;
+        this.mongoTemplate = mongoTemplate;
+    }
 
     @Test
     public void loginWithEmailAndCorrectPassword() throws Exception {
@@ -169,13 +173,8 @@ public class LoginTests {
 
 
 
-   @TestConfiguration
-    public static class TestConfig {
 
-        @Bean
-        public LoginContextRefreshedListener loginContextRefreshedListener(ISequenceService sequenceService, IUserService userService, IRoleService roleService, ITokenService tokenService, PasswordEncoder passwordEncoder){
-            return new LoginContextRefreshedListener(sequenceService, userService, roleService, passwordEncoder);
-        }
-    }
 
 }
+
+

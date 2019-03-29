@@ -22,7 +22,7 @@ public interface Params {
     String JSON = "json";
     String USER = "user";
     String USERNAME = "username";
-    String CONTACT = "contact";
+    String PHONE = "contact";
     String SUB = "sub";
     String PROFILE = "profile";
 
