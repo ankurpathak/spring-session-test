@@ -1,7 +1,7 @@
 package com.github.ankurpathak.app.security.filter;
 
 
-import com.github.ankurpathak.app.Role;
+import com.github.ankurpathak.app.domain.model.Role;
 import com.github.ankurpathak.app.security.dto.CustomUserDetails;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationDetailsSource;

@@ -1,7 +1,7 @@
 package com.github.ankurpathak.app.security.dto;
 
-import com.github.ankurpathak.app.Role;
-import com.github.ankurpathak.app.User;
+import com.github.ankurpathak.app.domain.model.Role;
+import com.github.ankurpathak.app.domain.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;

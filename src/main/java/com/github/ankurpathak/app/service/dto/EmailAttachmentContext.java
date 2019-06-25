@@ -4,17 +4,17 @@ import javax.activation.DataSource;
 import java.io.Serializable;
 
 public class EmailAttachmentContext implements Serializable {
-    final private String orignalFileName;
+    final private String originalFileName;
     final private DataSource dataSource;
 
 
-    public EmailAttachmentContext(String orignalFileName, DataSource dataSource) {
-        this.orignalFileName = orignalFileName;
+    public EmailAttachmentContext(String originalFileName, DataSource dataSource) {
+        this.originalFileName = originalFileName;
         this.dataSource = dataSource;
     }
 
-    public String getOrignalFileName() {
-        return orignalFileName;
+    public String getOriginalFileName() {
+        return originalFileName;
     }
 
 

@@ -1,7 +1,6 @@
 package com.github.ankurpathak.app.service;
 
-import com.github.ankurpathak.app.Role;
-import com.github.ankurpathak.app.service.IDomainService;
+import com.github.ankurpathak.app.domain.model.Role;
 
 import java.util.Optional;
 

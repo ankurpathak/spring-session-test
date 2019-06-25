@@ -17,8 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class LogoutTests {
 
 
-    @RegisterExtension
-    public MongoSetUpExtension mongoSetUpExtension = new MongoSetUpExtension(this);
+    //@RegisterExtension
+//    public MongoSetUpExtension mongoSetUpExtension = new MongoSetUpExtension(this);
 
 
 }

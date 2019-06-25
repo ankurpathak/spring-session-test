@@ -1,7 +1,7 @@
 package com.github.ankurpathak.app.service.impl;
 
 import com.github.ankurpathak.app.domain.repository.mongo.ISequenceRepository;
-import com.github.ankurpathak.app.Sequence;
+import com.github.ankurpathak.app.domain.model.Sequence;
 import com.github.ankurpathak.app.service.ISequenceService;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package com.github.ankurpathak.app.rsql;
 
-import com.github.ankurpathak.app.PrimitiveUtils;
+import com.github.ankurpathak.app.util.PrimitiveUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.time.Instant;

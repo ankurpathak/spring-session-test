@@ -1,8 +1,8 @@
 package com.github.ankurpathak.app.service.impl.util;
 
-import com.github.ankurpathak.app.PropertyUtil;
-import com.github.ankurpathak.app.SmtpContext;
-import com.github.ankurpathak.app.SmtpCredential;
+import com.github.ankurpathak.app.util.PropertyUtil;
+import com.github.ankurpathak.app.service.dto.SmtpContext;
+import com.github.ankurpathak.app.service.dto.SmtpCredential;
 import com.github.ankurpathak.app.service.dto.EmailAttachmentContext;
 import com.github.ankurpathak.app.service.dto.EmailContext;
 import org.slf4j.Logger;
@@ -61,7 +61,7 @@ public class EmailUtil {
         messageHelper.setText(emailContext.getBody(), true);
         if (!CollectionUtils.isEmpty(emailContext.getEmailAttachments()))
             for (EmailAttachmentContext dataSource : emailContext.getEmailAttachments()) {
-                messageHelper.addAttachment(dataSource.getOrignalFileName(), dataSource.getDataSource());
+                messageHelper.addAttachment(dataSource.getOriginalFileName(), dataSource.getDataSource());
             }
         if (!StringUtils.isEmpty(emailContext.getReplyTo()))
             messageHelper.setReplyTo(emailContext.getReplyTo());

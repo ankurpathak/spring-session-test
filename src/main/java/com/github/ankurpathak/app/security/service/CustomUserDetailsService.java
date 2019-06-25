@@ -1,6 +1,8 @@
 package com.github.ankurpathak.app.security.service;
 
-import com.github.ankurpathak.app.*;
+import com.github.ankurpathak.app.constant.Params;
+import com.github.ankurpathak.app.domain.model.Role;
+import com.github.ankurpathak.app.domain.model.User;
 import com.github.ankurpathak.app.security.dto.CustomUserDetails;
 import com.github.ankurpathak.app.service.IRoleService;
 import com.github.ankurpathak.app.service.IUserService;

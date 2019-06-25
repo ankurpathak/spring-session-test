@@ -1,7 +1,7 @@
 package com.github.ankurpathak.app.controller.rest.dto.converter;
 
-import com.github.ankurpathak.app.User;
-import com.github.ankurpathak.app.UserDto;
+import com.github.ankurpathak.app.domain.model.User;
+import com.github.ankurpathak.app.controller.rest.dto.UserDto;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;

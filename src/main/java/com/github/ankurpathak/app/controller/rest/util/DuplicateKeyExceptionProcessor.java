@@ -3,7 +3,7 @@ package com.github.ankurpathak.app.controller.rest.util;
 import com.github.ankurpathak.app.constant.Model;
 import com.github.ankurpathak.app.controller.rest.dto.DomainDto;
 import com.github.ankurpathak.app.exception.FoundException;
-import com.github.ankurpathak.app.UserDto;
+import com.github.ankurpathak.app.controller.rest.dto.UserDto;
 import com.github.ankurpathak.app.controller.rest.dto.ApiCode;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.StringUtils;

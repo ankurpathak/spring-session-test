@@ -1,9 +1,8 @@
 package com.github.ankurpathak.app.service;
 
-import com.github.ankurpathak.app.Token;
-import com.github.ankurpathak.app.User;
-import com.github.ankurpathak.app.UserDto;
-import com.github.ankurpathak.app.service.IDomainService;
+import com.github.ankurpathak.app.domain.model.Token;
+import com.github.ankurpathak.app.domain.model.User;
+import com.github.ankurpathak.app.controller.rest.dto.UserDto;
 
 import java.math.BigInteger;
 import java.util.Map;

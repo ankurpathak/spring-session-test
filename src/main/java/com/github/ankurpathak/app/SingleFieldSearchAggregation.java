@@ -1,5 +1,6 @@
 package com.github.ankurpathak.app;
 
+import com.github.ankurpathak.app.constant.Params;
 import com.github.ankurpathak.app.domain.model.Domain;
 import com.github.ankurpathak.app.domain.repository.mongo.custom.util.AbstractAggregation;
 import org.bson.Document;
@@ -27,7 +28,7 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
     private TypedAggregation<T> getListAggregation(String field, String value, Pageable pageable, Class<T> type, boolean project) {
         long skip = (long) pageable.getPageNumber() * (long) pageable.getPageSize();
         long limit = pageable.getPageSize();
-        List<AggregationOperation> operations = new ArrayList<>(getCombinedAggreagation(field, value));
+        List<AggregationOperation> operations = new ArrayList<>(getCombinedAggregation(field, value));
         if (!pageable.getSort().isEmpty())
             operations.add(TypedAggregation.sort(pageable.getSort()));
         operations.add(Aggregation.skip(skip));
@@ -42,13 +43,13 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
 
 
     private TypedAggregation<T> getCountAggregation(String field, String value, Class<T> type) {
-        List<AggregationOperation> operations = new ArrayList<>(getCombinedAggreagation(field, value));
+        List<AggregationOperation> operations = new ArrayList<>(getCombinedAggregation(field, value));
         operations.add(Aggregation.count().as(Params.COUNT));
         return Aggregation.newAggregation(type, operations);
     }
 
 
-    public static List<AggregationOperation> getCombinedAggreagation(String field, String value) {
+    public static List<AggregationOperation> getCombinedAggregation(String field, String value) {
         return List.of(anyFieldToString(field), search(value));
     }
 

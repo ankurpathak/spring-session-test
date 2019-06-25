@@ -1,8 +1,8 @@
 package com.github.ankurpathak.app.domain.updater;
 
-import com.github.ankurpathak.app.Password;
-import com.github.ankurpathak.app.User;
-import com.github.ankurpathak.app.UserDto;
+import com.github.ankurpathak.app.domain.model.Password;
+import com.github.ankurpathak.app.domain.model.User;
+import com.github.ankurpathak.app.controller.rest.dto.UserDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 

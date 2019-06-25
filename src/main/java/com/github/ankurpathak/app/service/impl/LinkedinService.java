@@ -1,6 +1,6 @@
 package com.github.ankurpathak.app.service.impl;
 
-import com.github.ankurpathak.app.SocialProperties;
+import com.github.ankurpathak.app.service.dto.SocialProperties;
 import com.github.ankurpathak.app.service.ILinkedinService;
 import com.github.ankurpathak.app.service.dto.LinkedinProperties;
 import com.github.ankurpathak.app.service.dto.SocialProfile;

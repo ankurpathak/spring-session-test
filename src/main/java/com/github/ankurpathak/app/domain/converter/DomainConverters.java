@@ -1,7 +1,10 @@
 package com.github.ankurpathak.app.domain.converter;
 
-import com.github.ankurpathak.app.*;
+import com.github.ankurpathak.app.controller.rest.dto.UserDto;
 import com.github.ankurpathak.app.domain.model.Contact;
+import com.github.ankurpathak.app.domain.model.Password;
+import com.github.ankurpathak.app.domain.model.Role;
+import com.github.ankurpathak.app.domain.model.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 

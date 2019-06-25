@@ -1,9 +1,9 @@
 package com.github.ankurpathak.app;
 
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.app.util.MatcherUtil;
 import com.mongodb.client.model.IndexOptions;
+import de.flapdoodle.embed.mongo.MongodExecutable;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -21,13 +21,10 @@ import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexRes
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.util.ClassTypeInformation;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static org.hamcrest.Matchers.notNullValue;
@@ -40,6 +37,9 @@ public class MongoSetUpExtension<T> implements AfterEachCallback, BeforeEachCall
     private ObjectMapper objectMapper;
     private Collection<Class<?>> mongoCollections;
     private Map<String, Resource> jsons = null;
+
+
+
 
     public MongoTemplate getMongoTemplate() {
         if(this.mongoTemplate == null){
@@ -112,7 +112,6 @@ public class MongoSetUpExtension<T> implements AfterEachCallback, BeforeEachCall
                     jsons.put(document.collection(), file);
                 }
             }
-
         }
         return jsons;
     }
@@ -167,13 +166,13 @@ public class MongoSetUpExtension<T> implements AfterEachCallback, BeforeEachCall
 
     @Override
     public void afterEach(ExtensionContext extensionContext) throws Exception {
-        dropDatabase();
+          dropDatabase();
         //dropCollections();
     }
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
-        //dropCollections();
+       // dropCollections();
         dropDatabase();
         createIndices();
         createDocuments();

@@ -1,9 +1,12 @@
 package com.github.ankurpathak.app.service.impl;
 
-import com.github.ankurpathak.app.*;
+import com.github.ankurpathak.app.domain.model.Token;
+import com.github.ankurpathak.app.domain.model.User;
 import com.github.ankurpathak.app.service.IEmailService;
 import com.github.ankurpathak.app.service.IEmailTemplateService;
 import com.github.ankurpathak.app.service.dto.EmailContext;
+import com.github.ankurpathak.app.service.dto.SmtpContext;
+import com.github.ankurpathak.app.service.dto.SmtpCredential;
 import com.github.ankurpathak.app.service.impl.util.EmailUtil;
 import com.github.ankurpathak.app.util.MessageUtil;
 import org.slf4j.Logger;

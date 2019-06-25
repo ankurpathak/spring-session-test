@@ -2,8 +2,8 @@ package com.github.ankurpathak.app.domain.repository.mongo.custom.impl;
 
 import com.github.ankurpathak.app.constant.Model;
 import com.github.ankurpathak.app.domain.repository.mongo.custom.AbstractCustomizedDomainRepository;
-import com.github.ankurpathak.app.Sequence;
-import com.github.ankurpathak.app.SequenceException;
+import com.github.ankurpathak.app.domain.model.Sequence;
+import com.github.ankurpathak.app.domain.repository.mongo.exception.SequenceException;
 import com.github.ankurpathak.app.domain.repository.mongo.custom.CustomizedSequenceRepository;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;

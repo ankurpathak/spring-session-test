@@ -1,7 +1,7 @@
 package com.github.ankurpathak.app.service;
 
-import com.github.ankurpathak.app.Token;
-import com.github.ankurpathak.app.User;
+import com.github.ankurpathak.app.domain.model.Token;
+import com.github.ankurpathak.app.domain.model.User;
 
 public interface IEmailService {
     void sendForAccountEnable(User user, Token token);

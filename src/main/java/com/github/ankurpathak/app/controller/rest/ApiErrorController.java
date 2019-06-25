@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
-import static com.github.ankurpathak.app.RequestMappingPaths.PATH_GET_ERROR;
-import static com.github.ankurpathak.app.RequestMappingPaths.apiPath;
+import static com.github.ankurpathak.app.constant.RequestMappingPaths.PATH_GET_ERROR;
+import static com.github.ankurpathak.app.constant.RequestMappingPaths.apiPath;
 
 
 @ApiController

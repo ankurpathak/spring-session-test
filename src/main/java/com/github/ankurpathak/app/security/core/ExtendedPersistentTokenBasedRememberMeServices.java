@@ -1,6 +1,5 @@
 package com.github.ankurpathak.app.security.core;
 
-import com.github.ankurpathak.app.RemeberMeTokenResolverDelegateBackServices;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;

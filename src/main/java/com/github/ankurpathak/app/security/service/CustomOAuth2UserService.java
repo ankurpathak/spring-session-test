@@ -1,9 +1,9 @@
 package com.github.ankurpathak.app.security.service;
 
 import com.github.ankurpathak.app.security.dto.CustomUserDetails;
-import com.github.ankurpathak.app.Password;
-import com.github.ankurpathak.app.Role;
-import com.github.ankurpathak.app.User;
+import com.github.ankurpathak.app.domain.model.Password;
+import com.github.ankurpathak.app.domain.model.Role;
+import com.github.ankurpathak.app.domain.model.User;
 import com.github.ankurpathak.app.controller.rest.dto.ApiCode;
 import com.github.ankurpathak.app.domain.model.Contact;
 import org.apache.commons.collections4.MapUtils;

@@ -1,7 +1,6 @@
 package com.github.ankurpathak.app.service;
 
-import com.github.ankurpathak.app.Token;
-import com.github.ankurpathak.app.service.IDomainService;
+import com.github.ankurpathak.app.domain.model.Token;
 
 import java.util.Optional;
 

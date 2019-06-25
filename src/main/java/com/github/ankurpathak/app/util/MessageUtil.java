@@ -1,6 +1,6 @@
 package com.github.ankurpathak.app.util;
 
-import com.github.ankurpathak.app.SecurityUtil;
+import com.github.ankurpathak.app.security.util.SecurityUtil;
 import com.github.ankurpathak.app.security.dto.DomainContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;

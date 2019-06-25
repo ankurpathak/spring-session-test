@@ -1,9 +1,9 @@
 package com.github.ankurpathak.app.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ankurpathak.app.*;
-import com.github.ankurpathak.app.security.filter.DomainContextFilter;
-import com.github.ankurpathak.app.security.filter.ExtendedAnonymousAuthenticationFilter;
+import com.github.ankurpathak.app.security.core.RestSavedRequestAwareAuthenticationSuccessHandler;
+import com.github.ankurpathak.app.security.core.RestSimpleUrlAuthenticationFailureHandler;
+import com.github.ankurpathak.app.security.filter.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

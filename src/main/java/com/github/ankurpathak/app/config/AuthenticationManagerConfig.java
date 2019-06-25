@@ -1,7 +1,7 @@
 package com.github.ankurpathak.app.config;
 
-import com.github.ankurpathak.app.SocialApplicationAuthenticationProvider;
-import com.github.ankurpathak.app.SocialWebAuthenticationProvider;
+import com.github.ankurpathak.app.security.core.SocialApplicationAuthenticationProvider;
+import com.github.ankurpathak.app.security.core.SocialWebAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;

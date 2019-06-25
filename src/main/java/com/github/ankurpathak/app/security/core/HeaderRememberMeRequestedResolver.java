@@ -1,6 +1,5 @@
 package com.github.ankurpathak.app.security.core;
 
-import com.github.ankurpathak.app.RemeberMeTokenResolverDelegateBackServices;
 import com.github.ankurpathak.app.util.WebUtil;
 
 import javax.servlet.http.HttpServletRequest;

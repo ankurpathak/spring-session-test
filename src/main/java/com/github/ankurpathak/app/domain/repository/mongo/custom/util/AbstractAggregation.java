@@ -1,6 +1,6 @@
 package com.github.ankurpathak.app.domain.repository.mongo.custom.util;
 
-import com.github.ankurpathak.app.Params;
+import com.github.ankurpathak.app.constant.Params;
 import com.github.ankurpathak.app.domain.model.Domain;
 import org.apache.commons.collections.CollectionUtils;
 import org.bson.Document;

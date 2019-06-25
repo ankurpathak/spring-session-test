@@ -1,6 +1,7 @@
 package com.github.ankurpathak.app.config;
 
-import com.github.ankurpathak.app.*;
+import com.github.ankurpathak.app.security.core.SocialApplicationAuthenticationProvider;
+import com.github.ankurpathak.app.security.core.SocialWebAuthenticationProvider;
 import com.github.ankurpathak.app.service.IFacebookService;
 import com.github.ankurpathak.app.service.IGoogleService;
 import com.github.ankurpathak.app.service.ILinkedinService;

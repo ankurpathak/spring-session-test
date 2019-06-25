@@ -2,8 +2,8 @@ package com.github.ankurpathak.app.domain.repository.mongo.custom.impl;
 
 import com.github.ankurpathak.app.domain.repository.mongo.custom.AbstractCustomizedDomainRepository;
 import com.github.ankurpathak.app.domain.repository.mongo.ISequenceRepository;
-import com.github.ankurpathak.app.Sequence;
-import com.github.ankurpathak.app.User;
+import com.github.ankurpathak.app.domain.model.Sequence;
+import com.github.ankurpathak.app.domain.model.User;
 import com.github.ankurpathak.app.domain.repository.mongo.custom.CustomizedUserRepository;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;

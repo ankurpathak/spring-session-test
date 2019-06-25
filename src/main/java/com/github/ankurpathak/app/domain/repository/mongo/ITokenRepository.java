@@ -1,7 +1,7 @@
 package com.github.ankurpathak.app.domain.repository.mongo;
 
-import com.github.ankurpathak.app.Params;
-import com.github.ankurpathak.app.Token;
+import com.github.ankurpathak.app.constant.Params;
+import com.github.ankurpathak.app.domain.model.Token;
 import com.github.ankurpathak.app.domain.repository.mongo.custom.CustomizedTokenRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.query.Param;

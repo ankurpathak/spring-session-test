@@ -1,6 +1,6 @@
 package com.github.ankurpathak.app.domain.repository.mongo;
 
-import com.github.ankurpathak.app.Role;
+import com.github.ankurpathak.app.domain.model.Role;
 import com.github.ankurpathak.app.domain.repository.mongo.custom.CustomizedRoleRepository;
 
 import java.util.Optional;

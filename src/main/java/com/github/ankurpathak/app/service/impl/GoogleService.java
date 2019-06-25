@@ -5,7 +5,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.ankurpathak.app.service.IGoogleService;
 import com.github.ankurpathak.app.service.dto.SocialProfile;
-import com.github.ankurpathak.app.SocialProperties;
+import com.github.ankurpathak.app.service.dto.SocialProperties;
 import com.github.ankurpathak.app.service.dto.GoogleProperties;
 import com.github.scribejava.apis.GoogleApi20;
 import com.github.scribejava.apis.openid.OpenIdOAuth2AccessToken;

@@ -1,6 +1,6 @@
 package com.github.ankurpathak.app.annotation;
 
-import com.github.ankurpathak.app.Params;
+import com.github.ankurpathak.app.constant.Params;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.lang.annotation.*;

@@ -2,9 +2,9 @@ package com.github.ankurpathak.app.service.impl.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.app.service.IMessageService;
-import com.github.ankurpathak.app.Params;
+import com.github.ankurpathak.app.constant.Params;
 import com.github.ankurpathak.app.service.dto.SocialProfile;
-import com.github.ankurpathak.app.SocialProfileNotFoundException;
+import com.github.ankurpathak.app.security.exception.SocialProfileNotFoundException;
 import com.github.ankurpathak.app.controller.rest.dto.ApiCode;
 import com.github.ankurpathak.app.controller.rest.dto.ApiMessages;
 import com.github.ankurpathak.app.controller.rest.dto.ApiResponse;
