@@ -52,7 +52,7 @@ public class MongoDbContainer extends GenericContainer<MongoDbContainer> impleme
 
     @Override
     public void afterAll(ExtensionContext extensionContext) throws Exception {
-        close();
+       // close();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class MongoDbContainer extends GenericContainer<MongoDbContainer> impleme
                 try {
                     statement.evaluate();
                 }finally {
-                    close();
+                  //  close();
                 }
             }
         };

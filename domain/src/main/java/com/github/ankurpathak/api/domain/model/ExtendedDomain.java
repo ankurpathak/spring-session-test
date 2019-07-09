@@ -2,7 +2,7 @@ package com.github.ankurpathak.api.domain.model;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.github.ankurpathak.api.controller.rest.dto.View;
+import com.github.ankurpathak.api.rest.controller.dto.View;
 import com.github.ankurpathak.api.security.util.SecurityUtil;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;

@@ -1,9 +1,9 @@
 package com.github.ankurpathak.api.config;
 
 import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.controller.rest.dto.ApiCode;
-import com.github.ankurpathak.api.controller.rest.dto.ApiMessages;
-import com.github.ankurpathak.api.controller.rest.dto.ApiResponse;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
+import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.exception.FoundException;
 import com.github.ankurpathak.api.exception.InvalidException;

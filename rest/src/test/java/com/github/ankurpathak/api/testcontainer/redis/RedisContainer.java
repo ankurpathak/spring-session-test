@@ -56,7 +56,7 @@ public class RedisContainer extends GenericContainer<RedisContainer> implements 
 
     @Override
     public void afterAll(ExtensionContext extensionContext) throws Exception {
-        close();
+       // close();
     }
 
     @Override
@@ -76,7 +76,7 @@ public class RedisContainer extends GenericContainer<RedisContainer> implements 
                 try {
                     statement.evaluate();
                 }finally {
-                    close();
+                   // close();
                 }
             }
         };

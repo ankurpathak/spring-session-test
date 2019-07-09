@@ -4,7 +4,7 @@ import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.domain.model.Password;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
-import com.github.ankurpathak.api.controller.rest.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.domain.model.Contact;
 import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;

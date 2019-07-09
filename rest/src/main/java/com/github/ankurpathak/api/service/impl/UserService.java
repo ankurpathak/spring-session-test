@@ -1,11 +1,11 @@
 package com.github.ankurpathak.api.service.impl;
 
 import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.controllor.rest.dto.UserDto;
+import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.security.util.SecurityUtil;
 import com.github.ankurpathak.api.constant.Model;
-import com.github.ankurpathak.api.controller.rest.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.exception.InvalidException;

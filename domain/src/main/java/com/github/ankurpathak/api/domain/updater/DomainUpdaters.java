@@ -1,6 +1,6 @@
 package com.github.ankurpathak.api.domain.updater;
 
-import com.github.ankurpathak.api.controllor.rest.dto.UserDto;
+import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.domain.model.Password;
 import com.github.ankurpathak.api.domain.model.User;
 

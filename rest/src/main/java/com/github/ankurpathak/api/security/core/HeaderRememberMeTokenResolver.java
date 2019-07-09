@@ -8,18 +8,22 @@ import javax.servlet.http.HttpServletResponse;
 
 public class HeaderRememberMeTokenResolver implements IRememberMeTokenResolver {
     @Override
-    public void setToken(RemeberMeTokenResolverDelegateBackServices rememberMeServices, String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
+    public void setToken(RememberMeTokenResolverDelegateBackServices rememberMeServices, String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
         setHeader(rememberMeServices, tokens, response);
     }
 
     @Override
-    public String getToken(RemeberMeTokenResolverDelegateBackServices rememberMeServices, HttpServletRequest request) {
+    public String getToken(RememberMeTokenResolverDelegateBackServices rememberMeServices, HttpServletRequest request) {
         return WebUtil.getRememberMeToken(request);
     }
 
+    @Override
+    public void cancelToken(RememberMeTokenResolverDelegateBackServices rememberMeServices, HttpServletRequest request, HttpServletResponse response) {
+        WebUtil.setRememberMeToken(response, "");
+    }
 
 
-    public void setHeader(RemeberMeTokenResolverDelegateBackServices rememberMeServices, String[] tokens, HttpServletResponse response) {
+    public void setHeader(RememberMeTokenResolverDelegateBackServices rememberMeServices, String[] tokens, HttpServletResponse response) {
         String cookieValue = rememberMeServices.encodeToken(tokens);
         if (!StringUtils.isEmpty(cookieValue))
             WebUtil.setRememberMeToken(response, cookieValue);

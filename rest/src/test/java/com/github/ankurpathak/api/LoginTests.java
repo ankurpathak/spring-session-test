@@ -2,7 +2,7 @@ package com.github.ankurpathak.api;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ankurpathak.api.controller.rest.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.mongo.MongoDataRule;
 import com.github.ankurpathak.api.security.DomainContextRule;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
@@ -82,8 +82,13 @@ public class LoginTests {
     public void loginWithEmailAndIncorrectPassword() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "incorrectpassword");
         mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+                .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
+                .andExpect(cookie().exists("remember-me"))
+                .andExpect(cookie().value("remember-me", (String)null))
+                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, ""))
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.BAD_CREDENTIALS.getCode())));
 
@@ -109,6 +114,10 @@ public class LoginTests {
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
+                .andExpect(cookie().exists("remember-me"))
+                .andExpect(cookie().value("remember-me", (String)null))
+                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, ""))
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.BAD_CREDENTIALS.getCode())));
 
@@ -145,6 +154,10 @@ public class LoginTests {
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
+                .andExpect(cookie().exists("remember-me"))
+                .andExpect(cookie().value("remember-me", (String)null))
+                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, ""))
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.BAD_CREDENTIALS.getCode())));
 
@@ -157,6 +170,10 @@ public class LoginTests {
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
+                .andExpect(cookie().exists("remember-me"))
+                .andExpect(cookie().value("remember-me", (String)null))
+                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, ""))
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.BAD_CREDENTIALS.getCode())));
 
@@ -170,6 +187,10 @@ public class LoginTests {
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
+                .andExpect(cookie().exists("remember-me"))
+                .andExpect(cookie().value("remember-me", (String)null))
+                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, ""))
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.ACCOUNT_DISABLED.getCode())));
     }
@@ -181,6 +202,10 @@ public class LoginTests {
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
+                .andExpect(cookie().exists("remember-me"))
+                .andExpect(cookie().value("remember-me", (String)null))
+                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, ""))
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.ACCOUNT_DISABLED.getCode())));
     }

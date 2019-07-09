@@ -1,6 +1,6 @@
 package com.github.ankurpathak.api.config;
 
-import com.github.ankurpathak.api.controllor.rest.dto.converter.DtoConverters;
+import com.github.ankurpathak.api.rest.controllor.dto.converter.DtoConverters;
 import com.github.ankurpathak.api.domain.converter.DomainConverters;
 import com.github.ankurpathak.api.domain.updater.DomainUpdaters;
 import com.google.gson.Gson;

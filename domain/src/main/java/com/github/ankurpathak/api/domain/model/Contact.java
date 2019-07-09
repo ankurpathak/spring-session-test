@@ -1,7 +1,7 @@
 package com.github.ankurpathak.api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.github.ankurpathak.api.controller.rest.dto.View;
+import com.github.ankurpathak.api.rest.controller.dto.View;
 
 import java.io.Serializable;
 

@@ -18,7 +18,7 @@ public class RememberMeTokenResolver implements IRememberMeTokenResolver {
     }
 
     @Override
-    public void setToken(RemeberMeTokenResolverDelegateBackServices rememberMeServices, String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
+    public void setToken(RememberMeTokenResolverDelegateBackServices rememberMeServices, String[] tokens, int maxAge, HttpServletRequest request, HttpServletResponse response) {
         switch (type) {
             case HEADER_ONLY:
                 headerRememberMeTokenResolver.setToken(rememberMeServices, tokens, maxAge, request, response);
@@ -40,7 +40,7 @@ public class RememberMeTokenResolver implements IRememberMeTokenResolver {
     }
 
     @Override
-    public String getToken(RemeberMeTokenResolverDelegateBackServices rememberMeServices, HttpServletRequest request) {
+    public String getToken(RememberMeTokenResolverDelegateBackServices rememberMeServices, HttpServletRequest request) {
         String tempToken = null;
         switch (type) {
             case HEADER_ONLY:
@@ -55,6 +55,12 @@ public class RememberMeTokenResolver implements IRememberMeTokenResolver {
             default:
                 return cookieRememberMeTokenResover.getToken(rememberMeServices, request);
         }
+    }
+
+    @Override
+    public void cancelToken(RememberMeTokenResolverDelegateBackServices rememberMeServices, HttpServletRequest request, HttpServletResponse response) {
+       headerRememberMeTokenResolver.cancelToken(rememberMeServices, request, response);
+       cookieRememberMeTokenResover.cancelToken(rememberMeServices, request, response);
     }
 
 

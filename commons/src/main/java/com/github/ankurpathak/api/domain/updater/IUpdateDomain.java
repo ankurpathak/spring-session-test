@@ -1,6 +1,6 @@
 package com.github.ankurpathak.api.domain.updater;
 
-import com.github.ankurpathak.api.controller.rest.dto.DomainDto;
+import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.domain.model.Domain;
 
 import java.io.Serializable;

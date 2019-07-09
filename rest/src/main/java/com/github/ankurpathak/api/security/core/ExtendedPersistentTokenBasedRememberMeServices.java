@@ -7,7 +7,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ExtendedPersistentTokenBasedRememberMeServices extends PersistentTokenBasedRememberMeServices implements RemeberMeTokenResolverDelegateBackServices {
+public class ExtendedPersistentTokenBasedRememberMeServices extends PersistentTokenBasedRememberMeServices implements RememberMeTokenResolverDelegateBackServices {
     private boolean alwaysRemember;
 
 
@@ -55,6 +55,12 @@ public class ExtendedPersistentTokenBasedRememberMeServices extends PersistentTo
     protected String extractRememberMeCookie(HttpServletRequest request) {
         return rememberMeTokenResolver.getToken(this, request);
     }
+
+    @Override
+    protected void cancelCookie(HttpServletRequest request, HttpServletResponse response) {
+        rememberMeTokenResolver.cancelToken(this, request, response);
+    }
+
     //Token Resolver
 
 
@@ -88,6 +94,11 @@ public class ExtendedPersistentTokenBasedRememberMeServices extends PersistentTo
     @Override
     public boolean getRememberMeRequested(HttpServletRequest request, String parameter) {
         return super.rememberMeRequested(request, parameter);
+    }
+
+    @Override
+    public void cancelToken(HttpServletRequest request, HttpServletResponse response) {
+        super.cancelCookie(request, response);
     }
     //Delegate Back
 

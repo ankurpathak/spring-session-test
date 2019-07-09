@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.ankurpathak.api.constant.Model;
-import com.github.ankurpathak.api.controller.rest.dto.View;
+import com.github.ankurpathak.api.rest.controller.dto.View;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;

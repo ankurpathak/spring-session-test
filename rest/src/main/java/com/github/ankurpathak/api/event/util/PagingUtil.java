@@ -4,7 +4,7 @@ import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.util.PrimitiveUtils;
 import com.github.ankurpathak.api.Strings;
 import com.github.ankurpathak.api.config.ControllerUtil;
-import com.github.ankurpathak.api.controller.rest.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.exception.NotFoundException;
 import com.github.ankurpathak.api.rsql.CustomRSQLVisitor;
 import com.google.common.base.Splitter;

@@ -1,6 +1,6 @@
 package com.github.ankurpathak.api.exception;
 
-import com.github.ankurpathak.api.controller.rest.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import org.springframework.validation.BindingResult;
 
 public class ValidationException extends RuntimeException {

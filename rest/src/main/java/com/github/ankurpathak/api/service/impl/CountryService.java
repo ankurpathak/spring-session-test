@@ -1,7 +1,7 @@
 package com.github.ankurpathak.api.service.impl;
 
 import com.github.ankurpathak.api.service.ICountryService;
-import com.github.ankurpathak.api.controller.rest.util.JsonPathUtil;
+import com.github.ankurpathak.api.rest.controller.util.JsonPathUtil;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.TypeRef;
 import org.springframework.stereotype.Service;
