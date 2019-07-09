@@ -1,13 +1,15 @@
-package com.github.ankurpathak.app;
+package com.github.ankurpathak.app.mongo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.app.util.MatcherUtil;
 import com.mongodb.client.model.IndexOptions;
-import de.flapdoodle.embed.mongo.MongodExecutable;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -31,7 +33,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
 import static org.valid4j.Assertive.require;
 
-public class MongoSetUpExtension<T> implements AfterEachCallback, BeforeEachCallback {
+public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, TestRule {
     private T test;
     private MongoTemplate mongoTemplate;
     private ObjectMapper objectMapper;
@@ -66,13 +68,12 @@ public class MongoSetUpExtension<T> implements AfterEachCallback, BeforeEachCall
     }
 
     public Map<String, Resource> getJsons() {
-        this.jsons = null;
         this.jsons = setUpJsons();
-        ensure(this.jsons, MatcherUtil.notMapEmpty());
+       // ensure(this.jsons, MatcherUtil.notMapEmpty());
         return this.jsons;
     }
 
-    public MongoSetUpExtension(T test) {
+    public MongoDataRule(T test) {
         require(test, notNullValue());
         this.test = test;
     }
@@ -107,7 +108,7 @@ public class MongoSetUpExtension<T> implements AfterEachCallback, BeforeEachCall
         for(Class<?> mongoCollection : getMongoCollections()){
             Document document = AnnotationUtils.findAnnotation(mongoCollection, Document.class);
             if(document != null){
-                Resource file = new ClassPathResource(String.format("%s.json", document.collection()), mongoCollection);
+                Resource file = new ClassPathResource(String.format("%s.json", document.collection()), test.getClass());
                 if(file.exists()){
                     jsons.put(document.collection(), file);
                 }
@@ -166,15 +167,38 @@ public class MongoSetUpExtension<T> implements AfterEachCallback, BeforeEachCall
 
     @Override
     public void afterEach(ExtensionContext extensionContext) throws Exception {
-          dropDatabase();
-        //dropCollections();
+        after();
     }
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) throws Exception {
-       // dropCollections();
+        before();
+    }
+
+    public void before()throws Exception{
+        // dropCollections();
         dropDatabase();
         createIndices();
         createDocuments();
+    }
+
+    public void after() throws Exception{
+        dropDatabase();
+        //dropCollections();
+    }
+
+    @Override
+    public Statement apply(Statement statement, Description description) {
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                MongoDataRule.this.before();
+                try {
+                    statement.evaluate();
+                }finally {
+                    MongoDataRule.this.after();
+                }
+            }
+        };
     }
 }

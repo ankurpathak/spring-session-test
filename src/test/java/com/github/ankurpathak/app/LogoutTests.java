@@ -18,7 +18,7 @@ public class LogoutTests {
 
 
     //@RegisterExtension
-//    public MongoSetUpExtension mongoSetUpExtension = new MongoSetUpExtension(this);
+//    public MongoDataRule mongoDataRule = new MongoDataRule(this);
 
 
 }
