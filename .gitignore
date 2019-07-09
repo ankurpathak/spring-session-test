@@ -12,12 +12,13 @@
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+/**/.idea
 *.iws
-*.iml
+/**/*.iml
 *.ipr
+/**/target
 
-**/*filter.properties
+/**/**/*filter.properties
 
 ### NetBeans ###
 /nbproject/private/
