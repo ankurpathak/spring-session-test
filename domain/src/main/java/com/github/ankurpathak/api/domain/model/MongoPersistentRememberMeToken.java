@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.domain.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -33,7 +34,7 @@ public class MongoPersistentRememberMeToken extends PersistentRememberMeToken {
 
     }
 
-
+    @PersistenceConstructor
     public MongoPersistentRememberMeToken(final String username, final String series, final String tokenValue, final Date date) {
         super(username, series, tokenValue, date);
     }

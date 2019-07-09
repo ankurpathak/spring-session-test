@@ -137,10 +137,10 @@
             <!-- Redis Reactive Client -->
 
             <!-- Reactor Core -->
-            <!--<dependency>
+            <dependency>
                 <groupId>io.projectreactor</groupId>
                 <artifactId>reactor-core</artifactId>
-            </dependency>-->
+            </dependency>
             <!-- Reactor Core -->
 
 

@@ -116,11 +116,10 @@
 
 
         <!-- Redis Client -->
-        <!-- <dependency>
+         <dependency>
              <groupId>redis.clients</groupId>
              <artifactId>jedis</artifactId>
-             <version>${jedis.version}</version>
-         </dependency>-->
+         </dependency>
         <!-- Redis Client -->
 
 
@@ -133,10 +132,10 @@
 
 
         <!-- Redis Reactive Client -->
-        <dependency>
+       <!-- <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
-        </dependency>
+        </dependency>-->
         <!-- Redis Reactive Client -->
 
         <!-- Reactor Core -->

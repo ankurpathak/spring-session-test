@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.github.ankurpathak.api.constant.RequestMappingPaths.PATH_FAVICON;
 
 @RestController
-public class FaviconRestController {
+public class FaviconController {
     @GetMapping(PATH_FAVICON)
     void returnNoFavicon() {
     }

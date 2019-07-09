@@ -98,6 +98,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CHANGE_PROFILE)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
                 .antMatchers(HttpMethod.PATCH, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CHANGE_PROFILE)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
                 .mvcMatchers(HttpMethod.GET, RequestMappingPaths.PATH_FAVICON).permitAll()
+                .mvcMatchers(HttpMethod.GET, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_REMEMBER_ME)).rememberMe()
                 .anyRequest()
                 .denyAll()
 

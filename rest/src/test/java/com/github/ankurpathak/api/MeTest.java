@@ -2,6 +2,7 @@ package com.github.ankurpathak.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.mongo.MongoDataRule;
+import com.github.ankurpathak.api.redis.RedisDataRule;
 import com.github.ankurpathak.api.security.DomainContextRule;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.testcontainer.mongo.MongoDbContainer;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ContextConfiguration;
@@ -45,9 +47,11 @@ public class MeTest {
     private ObjectMapper objectMapper;
     @Autowired
     private CustomUserDetailsService userDetailsService;
-
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private RedisTemplate<?, ?> redisTemplate;
 
     //@RegisterExtension
     @ClassRule
@@ -59,7 +63,12 @@ public class MeTest {
 
     //@RegisterExtension
     @Rule
-    public MongoDataRule mongoDataRule = new MongoDataRule(this);
+    public MongoDataRule<MeTest> mongoDataRule = new MongoDataRule<>(this);
+
+    //@RegisterExtension
+    @Rule
+    public RedisDataRule<MeTest> redisDataRule = new RedisDataRule<>(this);
+
 
     //@RegisterExtension
     public DomainContextRule domainContextRule = new DomainContextRule("103.51.209.45");;

@@ -35,20 +35,20 @@ import static org.valid4j.Assertive.require;
 
 public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, TestRule {
     private T test;
-    private MongoTemplate mongoTemplate;
+    private MongoTemplate template;
     private ObjectMapper objectMapper;
-    private Collection<Class<?>> mongoCollections;
+    private Collection<Class<?>> collections;
     private Map<String, Resource> jsons = null;
 
 
 
 
-    public MongoTemplate getMongoTemplate() {
-        if(this.mongoTemplate == null){
-            this.mongoTemplate = setUpMongoTemplate();
-            ensure(mongoTemplate, notNullValue());
+    public MongoTemplate getTemplate() {
+        if(this.template == null){
+            this.template = setUpTemplate();
+            ensure(template, notNullValue());
         }
-        return this.mongoTemplate;
+        return this.template;
     }
 
     public ObjectMapper getObjectMapper() {
@@ -59,12 +59,12 @@ public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, 
         return this.objectMapper;
     }
 
-    public Collection<Class<?>> getMongoCollections() {
-        if(this.mongoCollections == null){
-            this.mongoCollections = setUpCollections();
-            ensure(this.mongoCollections, MatcherUtil.notCollectionEmpty());
+    public Collection<Class<?>> getCollections() {
+        if(this.collections == null){
+            this.collections = setUpCollections();
+            ensure(this.collections, MatcherUtil.notCollectionEmpty());
         }
-        return this.mongoCollections;
+        return this.collections;
     }
 
     public Map<String, Resource> getJsons() {
@@ -80,7 +80,7 @@ public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, 
 
 
 
-    private MongoTemplate setUpMongoTemplate(){
+    private MongoTemplate setUpTemplate(){
         Field field = ReflectionUtils.findField(test.getClass(), "mongoTemplate");
         if(field != null) {
             field.setAccessible(true);
@@ -105,7 +105,7 @@ public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, 
 
     private Map<String, Resource> setUpJsons() {
         Map<String, Resource> jsons = new HashMap<>();
-        for(Class<?> mongoCollection : getMongoCollections()){
+        for(Class<?> mongoCollection : getCollections()){
             Document document = AnnotationUtils.findAnnotation(mongoCollection, Document.class);
             if(document != null){
                 Resource file = new ClassPathResource(String.format("%s.json", document.collection()), test.getClass());
@@ -129,7 +129,7 @@ public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, 
     private void createDocuments() throws IOException {
         for(Map.Entry<String, Resource> json: this.getJsons().entrySet()){
             List<?> list = getObjectMapper().readValue(json.getValue().getFile(), List.class);
-            getMongoTemplate().insert(list, json.getKey());
+            getTemplate().insert(list, json.getKey());
         }
     }
 
@@ -137,23 +137,23 @@ public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, 
 
 
     private void dropCollections() {
-        for (final Class<?> type : this.getMongoCollections()) {
-            this.getMongoTemplate().dropCollection(type);
+        for (final Class<?> type : this.getCollections()) {
+            this.getTemplate().dropCollection(type);
         }
     }
 
     private void dropDatabase() {
-        this.getMongoTemplate().getDb().drop();
+        this.getTemplate().getDb().drop();
     }
     private void createIndices() {
-        for (final Class<?> type : this.getMongoCollections()) {
+        for (final Class<?> type : this.getCollections()) {
             createIndicesFor(type);
         }
     }
 
     private void createIndicesFor(final Class<?> type) {
         final MongoMappingContext mappingContext =
-                (MongoMappingContext) getMongoTemplate().getConverter().getMappingContext();
+                (MongoMappingContext) getTemplate().getConverter().getMappingContext();
         final MongoPersistentEntityIndexResolver indexResolver =
                 new MongoPersistentEntityIndexResolver(mappingContext);
         for (final MongoPersistentEntityIndexResolver.IndexDefinitionHolder indexToCreate : indexResolver.resolveIndexFor(ClassTypeInformation.from(type))) {
@@ -161,7 +161,7 @@ public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, 
         }
     }
     private void createIndex(final MongoPersistentEntityIndexResolver.IndexDefinitionHolder indexDefinition) {
-        this.getMongoTemplate().getDb().getCollection(indexDefinition.getCollection())
+        this.getTemplate().getDb().getCollection(indexDefinition.getCollection())
                 .createIndex(indexDefinition.getIndexKeys(), new IndexOptions().partialFilterExpression(indexDefinition.getIndexOptions()));
     }
 

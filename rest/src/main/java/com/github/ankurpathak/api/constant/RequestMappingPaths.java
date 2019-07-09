@@ -44,6 +44,7 @@ public interface RequestMappingPaths {
     String PATH_LOGOUT = "/logout";
 
     String PATH_FAVICON = "/favicon.ico";
+    String PATH_REMEMBER_ME = "/remember-me";
 
 
     static String apiPath(String path){
