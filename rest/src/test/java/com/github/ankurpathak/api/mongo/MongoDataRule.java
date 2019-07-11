@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.mongo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.ankurpathak.api.AbstractRestIntegrationTest;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import com.mongodb.client.model.IndexOptions;
 import org.apache.commons.collections.CollectionUtils;
@@ -33,8 +34,8 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
 import static org.valid4j.Assertive.require;
 
-public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, TestRule {
-    private T test;
+public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> implements AfterEachCallback, BeforeEachCallback, TestRule {
+    private AbstractRestIntegrationTest<SELF> test;
     private MongoTemplate template;
     private ObjectMapper objectMapper;
     private Collection<Class<?>> collections;
@@ -73,7 +74,7 @@ public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, 
         return this.jsons;
     }
 
-    public MongoDataRule(T test) {
+    public MongoDataRule(AbstractRestIntegrationTest<SELF> test) {
         require(test, notNullValue());
         this.test = test;
     }
@@ -192,11 +193,11 @@ public class MongoDataRule<T> implements AfterEachCallback, BeforeEachCallback, 
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                MongoDataRule.this.before();
+                before();
                 try {
                     statement.evaluate();
                 }finally {
-                    MongoDataRule.this.after();
+                    after();
                 }
             }
         };

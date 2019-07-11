@@ -44,7 +44,7 @@ public class UserController extends AbstractRestController<User,BigInteger, User
 
 
     @Override
-    public IDomainService<User, BigInteger> getService() {
+    public IDomainService<User, BigInteger> getUserService() {
         return service;
     }
 

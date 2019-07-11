@@ -19,6 +19,7 @@ public class WebUtil {
     public static final String HEADER_X_REMEMBER_ME_TOKEN = "X-Remember-Me-Token";
     public static final String HEADER_X_REMEMBER_ME = "X-Remember-Me";
     public static final String HEADER_X_AUTH_TOKEN = "X-Auth-Token";
+    public static final String COO = "X-Auth-Token";
 
 
 

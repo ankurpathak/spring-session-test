@@ -1,85 +1,37 @@
-package com.github.ankurpathak.api;
+package com.github.ankurpathak.api.security;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ankurpathak.api.redis.RedisDataRule;
+import com.github.ankurpathak.api.AbstractRestIntegrationTest;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
-import com.github.ankurpathak.api.mongo.MongoDataRule;
-import com.github.ankurpathak.api.security.DomainContextRule;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
-import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
-import com.github.ankurpathak.api.testcontainer.mongo.MongoDbContainer;
-import com.github.ankurpathak.api.testcontainer.redis.RedisContainer;
 import com.github.ankurpathak.api.util.WebUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.*;
+import static com.github.ankurpathak.api.constant.RequestMappingPaths.PATH_GET_ME;
+import static com.github.ankurpathak.api.constant.RequestMappingPaths.apiPath;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
+
+
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @ContextConfiguration(initializers = {LoginTests.Initializer.class})
-public class LoginTests {
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
-    private RedisTemplate<?, ?> redisTemplate;
-
-
-    //@RegisterExtension
-    @ClassRule
-    public static MongoDbContainer mongo = new MongoDbContainer();
-
-    //@RegisterExtension
-    @Rule
-    public MongoDataRule<LoginTests> mongoDataRule = new MongoDataRule<>(this);
-
-    //@RegisterExtension
-    @Rule
-    public RedisDataRule<LoginTests> redisDataRule = new RedisDataRule<>(this);
-
-
-    //@RegisterExtension
-    @ClassRule
-    public static RedisContainer redis = new RedisContainer();
-
-
-    //@RegisterExtension
-    @Rule
-    public DomainContextRule domainContextRule = new DomainContextRule("103.51.209.45");;
+public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
 
     @Test
     public void loginWithEmailAndCorrectPassword() throws Exception {
@@ -342,15 +294,10 @@ public class LoginTests {
 
     }
 
-    public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of(
-                    String.format("spring.data.mongodb.uri=mongodb://%s:%d/test", mongo.getContainerIpAddress(), mongo.getPort()),
-                    String.format("spring.redis.url=redis://%s:%d", redis.getContainerIpAddress(), redis.getPort())
-            ).applyTo(configurableApplicationContext.getEnvironment());
-        }
-    }
 }
+
+
+
 
 
 

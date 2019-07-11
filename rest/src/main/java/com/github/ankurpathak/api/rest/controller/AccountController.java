@@ -16,13 +16,11 @@ import com.github.ankurpathak.api.service.IUserService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,25 +31,27 @@ import java.util.Map;
 public class AccountController extends AbstractRestController<User, BigInteger, UserDto> {
     private final IUserService service;
     private final DomainConverters converters;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public IDomainService<User, BigInteger> getService() {
+    public IDomainService<User, BigInteger> getUserService() {
         return service;
     }
 
-    public AccountController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainConverters converters) {
+    public AccountController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainConverters converters, PasswordEncoder passwordEncoder) {
         super(applicationEventPublisher, messageService, objectMapper, validator);
         this.service = service;
-
         this.converters = converters;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     @PostMapping(RequestMappingPaths.PATH_ACCOUNT)
-    public ResponseEntity<?> account(HttpServletRequest request, HttpServletResponse response, @Validated({UserDto.Default.class, UserDto.Register.class}) @RequestBody UserDto dto, BindingResult result) {
+    public ResponseEntity<?> account(@RequestParam(name = "async", defaultValue = "true") Boolean async, HttpServletRequest request, HttpServletResponse response, @Validated({UserDto.Default.class, UserDto.Register.class}) @RequestBody UserDto dto, BindingResult result) {
         try {
+            dto.password(passwordEncoder.encode(dto.getPassword()));
             User user = tryCreateOne(dto, result, response, converters.userDtoRegisterToDomain());
-            applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user));
+            applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user, async));
             return ControllerUtil.processSuccessCreated(messageService, Map.of(Params.ID, user.getId()));
         } catch (DuplicateKeyException ex) {
             catchCreateOne(dto, ex, result, request);
@@ -61,8 +61,8 @@ public class AccountController extends AbstractRestController<User, BigInteger, 
 
 
     @PutMapping(RequestMappingPaths.PATH_ACCOUNT_EMAIL)
-    public ResponseEntity<?> accountEnableEmail(@PathVariable(Params.Path.EMAIL) String email) {
-       service.accountEnableEmail(email);
+    public ResponseEntity<?> accountEnableEmail(@PathVariable(Params.Path.EMAIL) String email, @RequestParam(name = "async", defaultValue = "true") boolean async) {
+       service.accountEnableEmail(email, async);
        return ControllerUtil.processSuccess(messageService);
     }
 

@@ -8,6 +8,7 @@ import com.github.ankurpathak.api.service.dto.EmailContext;
 import com.github.ankurpathak.api.service.dto.SmtpContext;
 import com.github.ankurpathak.api.service.dto.SmtpCredential;
 import com.github.ankurpathak.api.service.impl.util.EmailUtil;
+import com.github.ankurpathak.api.util.MatcherUtil;
 import com.github.ankurpathak.api.util.MessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,7 @@ import java.util.*;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
+import static org.valid4j.Assertive.require;
 
 /**
  * Created by ankur on 29-05-2017.
@@ -66,9 +68,9 @@ public class EmailService implements IEmailService {
 
     @Override
     @Async
-    public void sendForAccountEnable(User user, Token token) {
-        ensure(user, notNullValue());
-        ensure(token, notNullValue());
+    public void sendForAccountEnable(User user, Token token, boolean async) {
+        require(user, notNullValue());
+        require(token, notNullValue());
         String createAccountEnableHtml = null;
         try {
             createAccountEnableHtml = emailTemplateService.createAccountEnableHtml(user, token);
@@ -77,14 +79,14 @@ public class EmailService implements IEmailService {
         }
 
         if (!StringUtils.isEmpty(createAccountEnableHtml)) {
-            sendUserEmail(user, MESSAGE_ACCOUNT_ENABLE_SUBJECT, createAccountEnableHtml);
+            sendUserEmail(user, MESSAGE_ACCOUNT_ENABLE_SUBJECT, createAccountEnableHtml, async);
         }
     }
 
     @Override
-    public void sendForForgetPassword(User user, Token token) {
-        ensure(user, notNullValue());
-        ensure(token, notNullValue());
+    public void sendForForgetPassword(User user, Token token, boolean async) {
+        require(user, notNullValue());
+        require(token, notNullValue());
         String createForgetPasswordHtml = null;
         try {
             createForgetPasswordHtml = emailTemplateService.createForgetPasswordHtml(user, token);
@@ -93,25 +95,51 @@ public class EmailService implements IEmailService {
         }
 
         if (!StringUtils.isEmpty(createForgetPasswordHtml)) {
-            sendUserEmail(user, MESSAGE_FORGET_PASSWORD_SUBJECT, createForgetPasswordHtml);
+            sendUserEmail(user, MESSAGE_FORGET_PASSWORD_SUBJECT, createForgetPasswordHtml, async);
         }
 
     }
 
+    @Override
+    public void sendTextEmail(String email, String subject, String body, String replyTo, String... ccs) {
+        require(email, MatcherUtil.notStringEmpty());
+        require(subject, notNullValue());
+        require(subject, notNullValue());
+        sendSimpleMessage(email, subject, body, replyTo, ccs);
+    }
 
-    public void sendUserEmail(User user, String subjectKey, String html) {
-        ensure(user, notNullValue());
-        ensure(user.getEmail(), notNullValue());
+
+
+    @Override
+    public void sendTextEmail(String email, String subject, String body) {
+        sendTextEmail(email, subject, body, null);
+    }
+
+
+
+    private void sendSimpleMessage(String email, String subject, String body, String replyTo, String... ccs){
+        JavaMailSender sender = getJavaMailSender(SmtpCredential.EMPTY_INSTANCE);
+        String from = EmailUtil.getFrom(SmtpCredential.EMPTY_INSTANCE, environment);
+        EmailContext emailContext = new EmailContext(subject, email, from, body, null, null, null);
+        EmailUtil.sendSimpleMessage(new SmtpContext(Collections.singletonList(emailContext), sender));
+    }
+
+
+
+
+
+    private void sendUserEmail(User user, String subjectKey, String html, boolean async) {
+        require(user, notNullValue());
+        require(user.getEmail(), notNullValue());
         String email = user.getEmail().getValue();
         String subject = MessageUtil.getMessage(messageSource, subjectKey);
         JavaMailSender sender = getJavaMailSender(SmtpCredential.EMPTY_INSTANCE);
         String from = EmailUtil.getFrom(SmtpCredential.EMPTY_INSTANCE, environment);
         if (!StringUtils.isEmpty(email)) {
             EmailContext emailContextUser = new EmailContext(subject, email, from, html, null, null, null);
-            EmailUtil.sendHtmlMail(taskExecutor, new SmtpContext(Collections.singletonList(emailContextUser), sender));
+            EmailUtil.sendMimeMail(taskExecutor, new SmtpContext(Collections.singletonList(emailContextUser), sender, async));
         }
         disposeJavaMailSender(sender);
-
     }
 
 

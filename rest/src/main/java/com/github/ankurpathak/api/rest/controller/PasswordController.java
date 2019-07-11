@@ -5,58 +5,53 @@ import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentUser;
 import com.github.ankurpathak.api.config.ControllerUtil;
-import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.updater.DomainUpdaters;
-import com.github.ankurpathak.api.exception.NotFoundException;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
+import com.github.ankurpathak.api.service.IPasswordService;
 import com.github.ankurpathak.api.service.IUserService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
-import java.util.Optional;
 
 import static com.github.ankurpathak.api.constant.RequestMappingPaths.*;
 
 @ApiController
 public class PasswordController extends AbstractRestController<User, BigInteger, UserDto> {
 
-    private final IUserService service;
+    private final IUserService userService;
+    private final IPasswordService service;
     private final DomainUpdaters updaters;
+    private final PasswordEncoder encoder;
 
-    public PasswordController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainUpdaters updaters) {
+    public PasswordController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IPasswordService service, IUserService userService, DomainUpdaters updaters, PasswordEncoder encoder) {
         super(applicationEventPublisher, messageService, objectMapper, validator);
         this.service = service;
+        this.userService = userService;
         this.updaters = updaters;
+        this.encoder = encoder;
     }
 
     @Override
-    public IDomainService<User, BigInteger> getService() {
-        return service;
+    public IDomainService<User, BigInteger> getUserService() {
+        return userService;
     }
 
 
     @PutMapping(PATH_FORGET_PASSWORD_EMAIL)
-    public ResponseEntity<?> forgetPasswordEmail(@PathVariable(Params.EMAIL) String email){
-        Optional<User> user = service.byEmail(email);
-        if (user.isPresent()) {
-            service.forgotPasswordEmail(user.get());
-            return ControllerUtil.processSuccess(messageService);
-        } else {
-            throw new NotFoundException(email, Params.EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);
-        }
+    public ResponseEntity<?> forgetPasswordEmail(@PathVariable(Params.EMAIL) String email, @RequestParam(name = "async", defaultValue = "true") boolean async){
+        service.forgotPasswordEmail(email, async);
+        return ControllerUtil.processSuccess(messageService);
     }
 
 
@@ -70,6 +65,7 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
     @PutMapping(PATH_FORGET_PASSWORD)
     public ResponseEntity<?> forgetPassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ForgetPassword.class}) UserDto dto, BindingResult result) {
         ControllerUtil.processValidation(result, messageService);
+        dto.password(encoder.encode(dto.getPassword()));
         return update(dto, user, updaters.forgetPasswordUpdater(), request);
     }
 
@@ -78,6 +74,7 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
     public ResponseEntity<?> changePassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ChangePassword.class}) UserDto dto, BindingResult result){
         ControllerUtil.processValidation(result, messageService);
         service.validateExistingPassword(user, dto);
+        dto.password(encoder.encode(dto.getPassword()));
         return update(dto, user, updaters.forgetPasswordUpdater(), request);
     }
 

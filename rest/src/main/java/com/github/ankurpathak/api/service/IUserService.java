@@ -17,19 +17,14 @@ public interface IUserService  extends IDomainService<User, BigInteger> {
     Optional<User> byEmailTokenId(String tokenId);
 
 
-    void accountEnableEmail(String email);
+    void accountEnableEmail(String email, boolean async);
 
     Token.TokenStatus accountEnable(String token);
 
-    Token.TokenStatus forgetPasswordEnable(String token);
-
     Optional<User> byPasswordTokenId(String tokenId);
-
-    void forgotPasswordEmail(User user);
 
     void savePasswordToken(User user, Token token);
 
-    void validateExistingPassword(User user, UserDto dto);
 
     Map<String, Object> possibleCandidateKeys(String username);
 

@@ -29,8 +29,14 @@ public class MatcherUtil {
         return allOf(notNullValue(), anEmptyMap());
     }
 
-    public static Matcher<Map<?, ?>> emptyString(){
+    public static Matcher<String> stringEmpty(){
+
         return allOf(notNullValue(), emptyString());
+    }
+
+    public static Matcher<String> notStringEmpty(){
+
+        return allOf(notNullValue(), not(emptyString()));
     }
 
     public static Matcher<Map<?, ?>> notMapEmpty(){

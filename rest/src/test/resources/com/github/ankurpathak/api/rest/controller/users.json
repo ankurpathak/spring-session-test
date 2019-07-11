@@ -1,0 +1,40 @@
+[{
+  "_id" : "1",
+  "username" : "anonymous",
+  "roles" : "ROLE_ANONYMOUS",
+  "enabled":  false
+
+},
+  {
+  "_id" : "2",
+  "firstName": "Ankur",
+  "lastName": "Pathak",
+  "roles" : "ROLE_ADMIN",
+  "email" : {
+    "tag" : "primary",
+    "value" : "ankurpathak@live.in"
+  },
+  "phone" : {
+    "tag" : "primary",
+    "value" : "+917385500660"
+  },
+  "password" : {
+    "value" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG"
+  },
+  "enabled":  true
+},
+  {
+  "_id" : "3",
+  "firstName": "Amar",
+  "lastName": "Mule",
+  "roles" : "ROLE_ADMIN",
+  "email" : {
+    "tag" : "primary",
+    "value" : "amarmule@live.in"
+  },
+  "password" : {
+    "value" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG"
+  },
+  "enabled":  false
+}
+]

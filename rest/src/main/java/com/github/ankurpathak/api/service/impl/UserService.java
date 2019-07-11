@@ -102,7 +102,7 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
     }
 
     @Override
-    public void accountEnableEmail(String email) {
+    public void accountEnableEmail(String email, boolean async) {
         require(email, notNullValue());
         byEmail(email)
                 .filter(User::isEnabled)
@@ -115,7 +115,7 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
                                     tokenService.generateToken()
                                             .ifPresentOrElse(token -> {
                                                 saveEmailToken(user, token);
-                                                emailService.sendForAccountEnable(user, token);
+                                                emailService.sendForAccountEnable(user, token, async);
                                             }, () -> LogUtil.logNull(log, Token.class.getSimpleName()));
 
                             }, () -> LogUtil.logFieldNull(log, User.class.getSimpleName(), Model.User.Field.EMAIL, String.valueOf(user.getId())));
@@ -130,36 +130,9 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
         return verifyEmailToken(token);
     }
 
-    @Override
-    public Token.TokenStatus forgetPasswordEnable(String token) {
-        require(token, not(emptyString()));
-        return verifyPasswordToken(token);
-    }
 
-    private Token.TokenStatus verifyPasswordToken(String value) {
-        var token = tokenService.byValue(value);
-        if (token.isPresent()) {
-            if (token.get().getExpiry().isBefore(Instant.now())) {
-                tokenService.delete(token.get());
-                return Token.TokenStatus.EXPIRED;
-            }
-            Optional<User> user = byPasswordTokenId(token.get().getId());
-            if (user.isPresent()) {
-                UserDetails details = CustomUserDetails.getInstance(user.get(), Set.of(Role.Privilege.PRIV_FORGET_PASSWORD));
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        details,
-                        null,
-                        details.getAuthorities()
-                );
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                tokenService.delete(token.get());
-                return Token.TokenStatus.VALID;
-            }
 
-            return Token.TokenStatus.INVALID;
-        } else return Token.TokenStatus.EXPIRED;
 
-    }
 
     @Override
     public Optional<User> byPasswordTokenId(String tokenId) {
@@ -167,18 +140,7 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
         return dao.byPasswordTokenId(tokenId);
     }
 
-    @Override
-    public void forgotPasswordEmail(User user) {
-        require(user, notNullValue());
-        if (user.getPassword() != null && !StringUtils.isEmpty(user.getPassword().getTokenId()))
-            tokenService.deleteById(user.getPassword().getTokenId());
-        tokenService.generateToken()
-                .ifPresent(token -> {
-                    savePasswordToken(user, token);
-                    emailService.sendForForgetPassword(user, token);
-                });
 
-    }
 
     @Override
     public void savePasswordToken(User user, Token token) {
@@ -188,21 +150,6 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
             user.getPassword().setTokenId(token.getId());
             update(user);
         }
-    }
-
-    @Override
-    public void validateExistingPassword(User user, UserDto dto) {
-        require(user, notNullValue());
-        require(dto, notNullValue());
-        Optional.ofNullable(user.getPassword())
-                .ifPresentOrElse(password -> {
-                    if (!passwordEncoder.matches(dto.getCurrentPassword(), password.getValue()))
-                        throw new InvalidException(ApiCode.INVALID_PASSWORD, Params.PASSWORD, dto.getCurrentPassword());
-
-                }, () -> {
-                    throw new InvalidException(ApiCode.INVALID_PASSWORD, Params.PASSWORD, dto.getCurrentPassword());
-                });
-
     }
 
 

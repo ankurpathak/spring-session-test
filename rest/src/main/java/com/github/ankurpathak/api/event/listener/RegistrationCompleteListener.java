@@ -48,7 +48,7 @@ public class RegistrationCompleteListener implements ApplicationListener<Registr
                                         .ifPresent(email -> {
                                             email.setTokenId(token.getId());
                                             service.update(user);
-                                            emailService.sendForAccountEnable(user, token);
+                                            emailService.sendForAccountEnable(user, token, event.isAsync());
                                         });
                             });
 

@@ -79,9 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .anonymous().authenticationFilter(filterConfig.anonymousAuthenticationFilter())
-
                 .and()
-
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_GET_ME)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.POST, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CREATE_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
@@ -94,7 +92,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_FORGET_PASSWORD_ENABLE)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD_ENABLE)
                 .antMatchers(HttpMethod.PUT, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_FORGET_PASSWORD)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD)
                 .antMatchers(HttpMethod.GET, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_SEARCH_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
-                .antMatchers(HttpMethod.PATCH, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CHANGE_PASSWORD)).hasAuthority(Role.Privilege.PRIV_CHANGE_PASSWORD)
+                .antMatchers(HttpMethod.PATCH, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CHANGE_PASSWORD)).hasAnyAuthority(Role.Privilege.PRIV_CHANGE_PASSWORD, Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.PUT, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CHANGE_PROFILE)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
                 .antMatchers(HttpMethod.PATCH, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CHANGE_PROFILE)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
                 .mvcMatchers(HttpMethod.GET, RequestMappingPaths.PATH_FAVICON).permitAll()
