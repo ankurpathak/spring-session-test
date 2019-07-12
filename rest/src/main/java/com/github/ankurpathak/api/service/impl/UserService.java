@@ -101,37 +101,6 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
         return dao.byEmailTokenId(tokenId);
     }
 
-    @Override
-    public void accountEnableEmail(String email, boolean async) {
-        require(email, notNullValue());
-        byEmail(email)
-                .filter(User::isEnabled)
-                .ifPresentOrElse(user -> {
-                        Optional.ofNullable(user.getEmail())
-                                .ifPresentOrElse(x -> {
-                                    Optional.ofNullable(x.getTokenId())
-                                            .filter(String::isEmpty)
-                                            .ifPresentOrElse(tokenService::deleteById,() -> LogUtil.logFieldNull(log, User.class.getSimpleName(), Model.User.Field.EMAIL_TOKEN_ID, String.valueOf(user.getId())));
-                                    tokenService.generateToken()
-                                            .ifPresentOrElse(token -> {
-                                                saveEmailToken(user, token);
-                                                emailService.sendForAccountEnable(user, token, async);
-                                            }, () -> LogUtil.logNull(log, Token.class.getSimpleName()));
-
-                            }, () -> LogUtil.logFieldNull(log, User.class.getSimpleName(), Model.User.Field.EMAIL, String.valueOf(user.getId())));
-
-                    }, () -> { throw new NotFoundException(email, Params.EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);}
-                );
-    }
-
-    @Override
-    public Token.TokenStatus accountEnable(@Nonnull String token) {
-        require(token, not(emptyString()));
-        return verifyEmailToken(token);
-    }
-
-
-
 
 
     @Override
@@ -146,36 +115,19 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
     public void savePasswordToken(User user, Token token) {
         require(user, notNullValue());
         require(token, notNullValue());
-        if (user.getPassword() != null && !StringUtils.isEmpty(token.getId())) {
-            user.getPassword().setTokenId(token.getId());
-            update(user);
+        if (user.getPassword() != null ){
+            if(!StringUtils.isEmpty(token.getId())) {
+                user.getPassword().setTokenId(token.getId());
+                update(user);
+            } else{
+                LogUtil.logFieldEmpty(log, Token.class.getSimpleName(), Model.Token.Field.ID, token.getId());
+            }
+        }else {
+            LogUtil.logFieldNull(log, User.class.getSimpleName(), Model.User.Field.EMAIL, String.valueOf(user.getId()));
         }
     }
 
 
-    private Token.TokenStatus verifyEmailToken(String value) {
-        var token = tokenService.byValue(value);
-        if (token.isPresent()) {
-            final Calendar cal = Calendar.getInstance();
-            if (token.get().getExpiry().isBefore(Instant.now())) {
-                tokenService.delete(token.get());
-                return Token.TokenStatus.EXPIRED;
-            }
-            Optional<User> user = byEmailTokenId(token.get().getId());
-            if (user.isPresent()) {
-                user.get().setEnabled(true);
-                user.get().getEmail().setTokenId(null);
-                user.get().getEmail().setChecked(true);
-                update(user.get());
-                tokenService.delete(token.get());
-                return Token.TokenStatus.VALID;
-            }
-
-            return Token.TokenStatus.INVALID;
-
-        } else return Token.TokenStatus.EXPIRED;
-
-    }
 
     @Override
     public Map<String, Object> possibleCandidateKeys(String username) {

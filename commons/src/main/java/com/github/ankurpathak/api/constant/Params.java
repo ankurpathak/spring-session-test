@@ -25,6 +25,9 @@ public interface Params {
     String PHONE = "contact";
     String SUB = "sub";
     String PROFILE = "profile";
+    String ASYNC = "async";
+    String TRUE = "true";
+    String FALSE = "false";
 
 
 
@@ -37,6 +40,10 @@ public interface Params {
     }
 
     interface Extas extends Params {
+
+    }
+
+    interface Default extends Params {
 
     }
 }

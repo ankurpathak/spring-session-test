@@ -26,7 +26,7 @@ public class DomainConverters {
                 .middleName(dto.getMiddleName())
                 .email(Contact.getInstance(dto.getEmail()))
                 .roles(Set.of(Role.ROLE_ADMIN))
-                .password(Password.getInstance().value(dto.getPassword()));
+                .password(Password.getInstance().value(dto.getEncodedPassword()));
     }
 
 

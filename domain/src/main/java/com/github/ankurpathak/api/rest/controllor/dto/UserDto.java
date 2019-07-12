@@ -39,6 +39,16 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
     @NotContainWhitespace(groups = ChangePassword.class)
     private String currentPassword;
 
+    private String encodedPassword;
+
+
+    public String getEncodedPassword() {
+        return encodedPassword;
+    }
+
+    public void setEncodedPassword(String encodedPassword) {
+        this.encodedPassword = encodedPassword;
+    }
 
     public String getContact() {
         return contact;
@@ -154,6 +164,11 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
 
     public UserDto currentPassword(String currentPassword) {
         this.currentPassword = currentPassword;
+        return this;
+    }
+
+    public UserDto encodedPassword(String encodedPassword) {
+        this.encodedPassword = encodedPassword;
         return this;
     }
 

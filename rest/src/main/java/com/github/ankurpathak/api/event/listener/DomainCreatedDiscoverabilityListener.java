@@ -15,12 +15,9 @@ import java.net.URI;
 class DomainCreatedDiscoverabilityListener implements ApplicationListener<DomainCreatedEvent<Domain<Serializable>, Serializable>> {
 
     void addLinkHeaderOnResourceCreation(final HttpServletResponse response, final Serializable id) {
-        final URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path(String.format("{%s}", PATH_PARAM_ID)).buildAndExpand(PATH_PARAM_ID).toUri();
+        final URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(id).toUri();
         response.setHeader(HttpHeaders.LOCATION, uri.toASCIIString());
     }
-
-    public static final String PATH_PARAM_ID = "id";
-
 
     @Override
     public void onApplicationEvent(DomainCreatedEvent<Domain<Serializable>, Serializable> event) {

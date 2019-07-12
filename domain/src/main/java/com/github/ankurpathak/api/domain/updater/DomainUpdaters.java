@@ -13,7 +13,7 @@ public class DomainUpdaters {
 
     public IUpdateDomain<User, BigInteger, UserDto> forgetPasswordUpdater() {
         return (user, dto) -> user
-                .password(Password.getInstance().value(dto.getPassword()));
+                .password(Password.getInstance().value(dto.getEncodedPassword()));
     }
 
 

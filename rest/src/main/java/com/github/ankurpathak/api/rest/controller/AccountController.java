@@ -10,6 +10,7 @@ import com.github.ankurpathak.api.domain.converter.DomainConverters;
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.event.RegistrationCompleteEvent;
+import com.github.ankurpathak.api.service.IAccountService;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.IUserService;
@@ -29,27 +30,29 @@ import java.util.Map;
 
 @ApiController
 public class AccountController extends AbstractRestController<User, BigInteger, UserDto> {
-    private final IUserService service;
+    private final IUserService userService;
     private final DomainConverters converters;
     private final PasswordEncoder passwordEncoder;
+    private final IAccountService service;
 
     @Override
     public IDomainService<User, BigInteger> getUserService() {
-        return service;
+        return userService;
     }
 
-    public AccountController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainConverters converters, PasswordEncoder passwordEncoder) {
+    public AccountController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService userService, DomainConverters converters, PasswordEncoder passwordEncoder, IAccountService service) {
         super(applicationEventPublisher, messageService, objectMapper, validator);
-        this.service = service;
+        this.userService = userService;
         this.converters = converters;
         this.passwordEncoder = passwordEncoder;
+        this.service = service;
     }
 
 
     @PostMapping(RequestMappingPaths.PATH_ACCOUNT)
     public ResponseEntity<?> account(@RequestParam(name = "async", defaultValue = "true") Boolean async, HttpServletRequest request, HttpServletResponse response, @Validated({UserDto.Default.class, UserDto.Register.class}) @RequestBody UserDto dto, BindingResult result) {
         try {
-            dto.password(passwordEncoder.encode(dto.getPassword()));
+            dto.encodedPassword(passwordEncoder.encode(dto.getPassword()));
             User user = tryCreateOne(dto, result, response, converters.userDtoRegisterToDomain());
             applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user, async));
             return ControllerUtil.processSuccessCreated(messageService, Map.of(Params.ID, user.getId()));
@@ -61,7 +64,7 @@ public class AccountController extends AbstractRestController<User, BigInteger, 
 
 
     @PutMapping(RequestMappingPaths.PATH_ACCOUNT_EMAIL)
-    public ResponseEntity<?> accountEnableEmail(@PathVariable(Params.Path.EMAIL) String email, @RequestParam(name = "async", defaultValue = "true") boolean async) {
+    public ResponseEntity<?> accountEnableEmail(@PathVariable(Params.Path.EMAIL) String email, @RequestParam(name = Params.Query.ASYNC, defaultValue = Params.Default.TRUE) boolean async) {
        service.accountEnableEmail(email, async);
        return ControllerUtil.processSuccess(messageService);
     }

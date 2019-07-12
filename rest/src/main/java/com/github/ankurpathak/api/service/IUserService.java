@@ -10,23 +10,12 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface IUserService  extends IDomainService<User, BigInteger> {
-
-    Optional<User> byCandidateKey(String s);
+    Optional<User> byCandidateKey(String candidateValue);
     void saveEmailToken(User user, Token token);
     Optional<User> byEmail(String email);
     Optional<User> byEmailTokenId(String tokenId);
-
-
-    void accountEnableEmail(String email, boolean async);
-
-    Token.TokenStatus accountEnable(String token);
-
     Optional<User> byPasswordTokenId(String tokenId);
-
     void savePasswordToken(User user, Token token);
-
-
     Map<String, Object> possibleCandidateKeys(String username);
-
     Set<String> possibleContacts(String username);
 }

@@ -65,7 +65,7 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
     @PutMapping(PATH_FORGET_PASSWORD)
     public ResponseEntity<?> forgetPassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ForgetPassword.class}) UserDto dto, BindingResult result) {
         ControllerUtil.processValidation(result, messageService);
-        dto.password(encoder.encode(dto.getPassword()));
+        dto.encodedPassword(encoder.encode(dto.getPassword()));
         return update(dto, user, updaters.forgetPasswordUpdater(), request);
     }
 
@@ -74,7 +74,7 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
     public ResponseEntity<?> changePassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ChangePassword.class}) UserDto dto, BindingResult result){
         ControllerUtil.processValidation(result, messageService);
         service.validateExistingPassword(user, dto);
-        dto.password(encoder.encode(dto.getPassword()));
+        dto.encodedPassword(encoder.encode(dto.getPassword()));
         return update(dto, user, updaters.forgetPasswordUpdater(), request);
     }
 

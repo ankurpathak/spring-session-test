@@ -106,8 +106,6 @@ public class PasswordService  implements IPasswordService {
         }, ()-> {
             throw new NotFoundException(email, Params.EMAIL, User.class.getSimpleName(), ApiCode.NOT_FOUND);
         });
-
-
-
     }
+
 }
