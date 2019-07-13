@@ -2,7 +2,7 @@ package com.github.ankurpathak.api.domain.model;
 
 import java.io.Serializable;
 
-public class Password implements Serializable {
+public class Password implements Serializable{
     private String value;
     private String tokenId;
 
@@ -15,13 +15,6 @@ public class Password implements Serializable {
         this.value = value;
     }
 
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
-    }
 
 
     public Password value(String value) {

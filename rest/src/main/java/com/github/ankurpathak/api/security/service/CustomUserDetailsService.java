@@ -48,7 +48,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             criteriaList.add(Criteria.where("username").is(username));
         } else {
             criteriaList.add(Criteria.where("_id").is(PrimitiveUtils.toBigInteger(username)));
-            criteriaList.add(Criteria.where("contact.value").is(username));
+            criteriaList.add(Criteria.where("phone.value").is(username));
             SecurityUtil.getDomainContext()
                     .map(DomainContext::getRemoteAddress)
                     .flatMap(ipService::ipToCountryAlphaCode)
@@ -56,7 +56,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .ifPresent(callingCodes -> {
                         callingCodes.stream()
                                 .map(callingCode->String.format("+%s%s",callingCode, username))
-                                .forEach(contact -> criteriaList.add(Criteria.where("contact.value").is(contact)));
+                                .forEach(phone -> criteriaList.add(Criteria.where("phone.value").is(phone)));
                     });
         }
 

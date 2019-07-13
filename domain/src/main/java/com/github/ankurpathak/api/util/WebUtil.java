@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.util;
 
 
+import com.github.ankurpathak.api.constant.Params;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,7 @@ public class WebUtil {
     public static final String HEADER_X_REMEMBER_ME_TOKEN = "X-Remember-Me-Token";
     public static final String HEADER_X_REMEMBER_ME = "X-Remember-Me";
     public static final String HEADER_X_AUTH_TOKEN = "X-Auth-Token";
-    public static final String COO = "X-Auth-Token";
+    public static final String HEADER_X_OTP_FLOW = "X-OTP-FLOW";
 
 
 
@@ -38,6 +39,14 @@ public class WebUtil {
 
     public static boolean isRememberMeRequested(HttpServletRequest request){
         return Boolean.parseBoolean(request.getHeader(HEADER_X_REMEMBER_ME));
+    }
+
+    public static boolean isOtpFlow(HttpServletRequest request){
+        return Boolean.parseBoolean(request.getHeader(HEADER_X_OTP_FLOW));
+    }
+
+    public static boolean isAsync(HttpServletRequest request){
+        return Boolean.parseBoolean(request.getParameter(Params.Query.ASYNC));
     }
 
 

@@ -1,6 +1,6 @@
 package com.github.ankurpathak.api.security.filter;
 
-import com.github.ankurpathak.api.security.core.SocialApplicationAuthenticationToken;
+import com.github.ankurpathak.api.security.authentication.token.SocialApplicationAuthenticationToken;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;

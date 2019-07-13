@@ -1,5 +1,6 @@
-package com.github.ankurpathak.api.security.core;
+package com.github.ankurpathak.api.security.authentication.provider;
 
+import com.github.ankurpathak.api.security.authentication.token.SocialApplicationAuthenticationToken;
 import com.github.ankurpathak.api.service.IFacebookService;
 import com.github.ankurpathak.api.service.IGoogleService;
 import com.github.ankurpathak.api.service.ILinkedinService;

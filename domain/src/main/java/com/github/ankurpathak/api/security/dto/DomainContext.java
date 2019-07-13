@@ -9,15 +9,20 @@ import java.util.Locale;
 
 public class DomainContext extends WebAuthenticationDetails implements Serializable {
 
-    private Locale locale;
+    private final Locale locale;
+    private final boolean isOtpFlow;
+    private final boolean isAsync;
 
     public DomainContext(final HttpServletRequest request) {
         super(request);
-        locale = WebUtil.getLocale(request);
+        this.locale = WebUtil.getLocale(request);
+        this.isOtpFlow = WebUtil.isOtpFlow(request);
+        this.isAsync = WebUtil.isAsync(request);
     }
 
     public Locale getLocale() {
-        return locale;
+        return this.locale;
     }
-
+    public boolean getOtpFlow() { return this.isOtpFlow; }
+    public boolean isAsync() { return this.isAsync; }
 }

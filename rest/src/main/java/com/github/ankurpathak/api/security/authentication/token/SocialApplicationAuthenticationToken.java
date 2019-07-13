@@ -1,4 +1,4 @@
-package com.github.ankurpathak.api.security.core;
+package com.github.ankurpathak.api.security.authentication.token;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

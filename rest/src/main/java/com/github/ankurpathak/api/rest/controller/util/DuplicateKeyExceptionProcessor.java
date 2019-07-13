@@ -25,9 +25,9 @@ public class DuplicateKeyExceptionProcessor {
                 UserDto userDto = (UserDto) dto;
                 fEx = new FoundException(ex, result, userDto.getEmail(), "email", "User", ApiCode.EMAIL_FOUND);
             }
-            else if(message.contains(Model.Index.USER_CONTACT_IDX)) {
+            else if(message.contains(Model.Index.USER_PHONE_IDX)) {
                 UserDto userDto = (UserDto) dto;
-                fEx = new FoundException(ex, result, userDto.getContact(), "contact", "User", ApiCode.CONTACT_FOUND);
+                fEx = new FoundException(ex, result, userDto.getContact(), "phone", "User", ApiCode.CONTACT_FOUND);
             }
 
             else if(message.contains(Model.Index.USER_USERNAME_IDX)){

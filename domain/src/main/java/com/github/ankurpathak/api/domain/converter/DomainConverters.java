@@ -6,6 +6,7 @@ import com.github.ankurpathak.api.domain.model.Password;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
 import java.math.BigInteger;
+import java.util.Collections;
 import java.util.Set;
 
 public class DomainConverters {
@@ -16,7 +17,7 @@ public class DomainConverters {
             .lastName(dto.getLastName())
             .middleName(dto.getMiddleName())
             .email(Contact.getInstance(dto.getEmail()))
-            .roles(Set.of(Role.ROLE_ADMIN));
+            .roles(Collections.singleton(Role.ROLE_ADMIN));
 
 
     public IToDomain<User, BigInteger, UserDto> userDtoRegisterToDomain() {
@@ -25,7 +26,7 @@ public class DomainConverters {
                 .lastName(dto.getLastName())
                 .middleName(dto.getMiddleName())
                 .email(Contact.getInstance(dto.getEmail()))
-                .roles(Set.of(Role.ROLE_ADMIN))
+                .roles(Collections.singleton(Role.ROLE_ADMIN))
                 .password(Password.getInstance().value(dto.getEncodedPassword()));
     }
 

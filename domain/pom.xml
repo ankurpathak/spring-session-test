@@ -115,6 +115,13 @@
             <scope>provided</scope>
         </dependency>
         <!-- Spring Boot Web -->
+        <!-- Google Guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Google Guava -->
     </dependencies>
 
 

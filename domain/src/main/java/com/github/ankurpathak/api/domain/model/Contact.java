@@ -13,19 +13,11 @@ public class Contact implements Serializable {
     private String value;
     private String tag;
     private boolean checked;
-    private String tokenId;
 
     public static Contact getInstance(String value){
         return new Contact(value);
     }
 
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
-    }
 
     public Contact(String value) {
         this(value, null, false);

@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 @Repository
 public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRepository<Sequence, String> implements CustomizedSequenceRepository {
@@ -29,7 +30,11 @@ public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRe
         Query query = new Query(Criteria.where(Model.Field.FIELD_ID).is(id));
 
         Sequence sequence = template.findOne(query, Sequence.class);
-        BigInteger nextValue = sequence.getCurr();
+        BigInteger nextValue = BigInteger.ZERO;
+        if(sequence != null){
+            nextValue = sequence.getCurr();
+        }
+
         nextValue = nextValue.add(BigInteger.ONE);
 
         //increase sequence id by 1

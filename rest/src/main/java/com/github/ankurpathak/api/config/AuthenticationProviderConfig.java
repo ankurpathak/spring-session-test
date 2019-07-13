@@ -1,10 +1,15 @@
 package com.github.ankurpathak.api.config;
 
-import com.github.ankurpathak.api.security.core.SocialApplicationAuthenticationProvider;
-import com.github.ankurpathak.api.security.core.SocialWebAuthenticationProvider;
+import com.github.ankurpathak.api.security.authentication.provider.OtpGeneratingAuthenticationProvider;
+import com.github.ankurpathak.api.security.authentication.provider.SocialApplicationAuthenticationProvider;
+import com.github.ankurpathak.api.security.authentication.provider.SocialWebAuthenticationProvider;
+import com.github.ankurpathak.api.security.authentication.token.PreOtpAuthenticationToken;
+import com.github.ankurpathak.api.security.dto.CustomUserDetails;
+import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IFacebookService;
 import com.github.ankurpathak.api.service.IGoogleService;
 import com.github.ankurpathak.api.service.ILinkedinService;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;
@@ -40,7 +45,13 @@ public class AuthenticationProviderConfig {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder);
         provider.setUserDetailsService(userDetailsService);
+        provider.setHideUserNotFoundExceptions(false);
         return provider;
+    }
+
+    @Bean
+    public OtpGeneratingAuthenticationProvider otpGeneratingAuthenticationProvider(DaoAuthenticationProvider daoAuthenticationProvider, ApplicationEventPublisher applicationEventPublisher, CustomUserDetailsService userDetailsService){
+        return new OtpGeneratingAuthenticationProvider(daoAuthenticationProvider, applicationEventPublisher,  userDetailsService);
     }
 
     @Bean

@@ -3,7 +3,6 @@ package com.github.ankurpathak.api.domain.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.github.ankurpathak.api.constant.Model;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,7 +14,6 @@ import java.time.temporal.ChronoUnit;
 @Document(collection = Model.TOKEN)
 public class Token extends Domain<String> implements Serializable {
 
-    @Indexed(name = Model.Index.TOKEN_VALUE_IDX, unique = true, sparse = true)
     private String value;
 
     @Indexed(name = Model.Index.TOKEN_EXPIRY_IDX, expireAfterSeconds= EXPIRATION_IN_SECONDS)
@@ -45,19 +43,33 @@ public class Token extends Domain<String> implements Serializable {
     }
 
 
+
+
     public  static Token getInstance(){
+
         return new Token();
     }
 
-    public final void updateToken(String token) {
-        this.value = token;
-        this.expiry = this.calculateExpiryDate(EXPIRATION_IN_MINUTES);
-    }
 
 
     public Token() {
-        this.value = RandomStringUtils.randomAlphanumeric(8, 8).toLowerCase();
         this.expiry = this.calculateExpiryDate(EXPIRATION_IN_MINUTES);
+    }
+
+    public Token value(String value) {
+        this.value = value;
+        return this;
+    }
+
+    @Override
+    public Token id(String s) {
+        super.id(s);
+        return this;
+    }
+
+    public Token expiry(Instant expiry) {
+        this.expiry = expiry;
+        return this;
     }
 
 

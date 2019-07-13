@@ -136,5 +136,4 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
         dao.deleteAll(domains);
     }
 
-
 }

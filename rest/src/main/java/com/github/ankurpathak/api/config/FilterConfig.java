@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.security.core.RestSavedRequestAwareAuthenticationSuccessHandler;
 import com.github.ankurpathak.api.security.core.RestSimpleUrlAuthenticationFailureHandler;
 import com.github.ankurpathak.api.security.filter.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.ankurpathak.api.service.IFilterService;
+import com.github.ankurpathak.api.service.ITokenService;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
@@ -15,26 +16,23 @@ import java.util.UUID;
 @Configuration
 public class FilterConfig {
 
-    @Autowired
     private final  PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
-    @Autowired
     private final RestSimpleUrlAuthenticationFailureHandler restAuthenticationFailureHandler;
-    @Autowired
     private  final RestSavedRequestAwareAuthenticationSuccessHandler restAuthenticationSuccessHandler;
-    @Autowired
     private final ObjectMapper objectMapper;
-
-
-
+    private final IFilterService filterService;
+    private final ITokenService tokenService;
 
 
     public static final String ANNONYMOUS_KEY = UUID.randomUUID().toString();
 
-    public FilterConfig(PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices, RestSimpleUrlAuthenticationFailureHandler restAuthenticationFailureHandler, RestSavedRequestAwareAuthenticationSuccessHandler restAuthenticationSuccessHandler, ObjectMapper objectMapper) {
+    public FilterConfig(PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices, RestSimpleUrlAuthenticationFailureHandler restAuthenticationFailureHandler, RestSavedRequestAwareAuthenticationSuccessHandler restAuthenticationSuccessHandler, ObjectMapper objectMapper, IFilterService filterService, ITokenService tokenService) {
         this.persistentTokenBasedRememberMeServices = persistentTokenBasedRememberMeServices;
         this.restAuthenticationFailureHandler = restAuthenticationFailureHandler;
         this.restAuthenticationSuccessHandler = restAuthenticationSuccessHandler;
         this.objectMapper = objectMapper;
+        this.filterService = filterService;
+        this.tokenService = tokenService;
     }
 
 
@@ -74,6 +72,10 @@ public class FilterConfig {
         filter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
         filter.setAuthenticationSuccessHandler(restAuthenticationSuccessHandler);
         return filter;
+    }
+
+    protected OtpValidationFilter otpValidationFilter() {
+        return new OtpValidationFilter(filterService, tokenService);
     }
 
 

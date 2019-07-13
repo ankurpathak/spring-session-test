@@ -1,10 +1,15 @@
 package com.github.ankurpathak.api.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.ankurpathak.api.security.authentication.token.PreOtpAuthenticationToken;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class RestUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -49,6 +54,5 @@ public class RestUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
         }
         return loginRequest;
     }
-
 
 }

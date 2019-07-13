@@ -2,23 +2,36 @@ package com.github.ankurpathak.api.security;
 
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
 import com.github.ankurpathak.api.util.WebUtil;
+import org.apache.commons.compress.utils.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static com.github.ankurpathak.api.constant.RequestMappingPaths.PATH_GET_ME;
 import static com.github.ankurpathak.api.constant.RequestMappingPaths.apiPath;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -32,6 +45,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ContextConfiguration(initializers = {LoginTests.Initializer.class})
 public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
+    @Rule
+    public final OutputCapture outputCapture = new OutputCapture();
 
     @Test
     public void loginWithEmailAndCorrectPassword() throws Exception {
@@ -292,6 +307,198 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
             });
         });
 
+    }
+
+    @Test
+    public void existingPhoneGetOtpForLogin() throws Exception{
+        LoginRequestDto dto = new LoginRequestDto("+917385500660", null);
+        mockMvc.perform(post("/login")
+                .param("async", String.valueOf(false))
+                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("SESSION"))
+                .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
+                .andDo(otpResult -> {
+                    mockMvc.perform(get(apiPath(PATH_GET_ME))
+                            .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+
+                    )
+                            .andDo(print())
+                            .andExpect(status().isForbidden());
+
+                });
+
+                outputCapture.expect(containsString("Phone: +917385500660"));
+                outputCapture.expect(containsString("Text:"));
+                outputCapture.expect(containsString("is your otp for login"));
+    }
+
+    @Test
+    public void  existingPhoneAllSameOtpTillExpiry() throws Exception{
+        LoginRequestDto dto = new LoginRequestDto("+917385500660", null);
+        mockMvc.perform(post("/login")
+                .param("async", String.valueOf(false))
+                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("SESSION"))
+                .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
+
+        mockMvc.perform(post("/login")
+                .param("async", String.valueOf(false))
+                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("SESSION"))
+                .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
+
+        mockMvc.perform(post("/login")
+                .param("async", String.valueOf(false))
+                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("SESSION"))
+                .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
+
+        String output = outputCapture.toString();
+        Pattern pattern = Pattern.compile(Pattern.quote("Text: ") + "(.*?)" + Pattern.quote(" is your"));
+        Matcher matcher = pattern.matcher(output);
+        List<String> otps = new ArrayList<>();
+        while (matcher.find()) {
+            otps.add(matcher.group(1));
+        }
+        assertThat(otps).isNotEmpty().hasSize(3);
+        assertEquals("All otps are equal", 1, otps.stream().distinct().count());
+    }
+
+
+
+    @Test
+    public void newPhoneGetOtpForLogin() throws Exception{
+        LoginRequestDto dto = new LoginRequestDto("+917588011779", null);
+        mockMvc.perform(post("/login")
+                .param("async", String.valueOf(false))
+                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("SESSION"))
+                .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
+                .andExpect(newPhoneContactResult-> {
+                    mockMvc.perform(get(apiPath(PATH_GET_ME))
+                            .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(newPhoneContactResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+                    )
+                            .andDo(print())
+                            .andExpect(status().isForbidden());
+                });
+
+        Optional<User> user = userDetailsService.getUserService().byPhone("+917588011779");
+
+        assertTrue("New User exists", user.isPresent());
+        assertFalse("New User is disabled", user.get().isEnabled());
+
+        outputCapture.expect(containsString("Phone: +917588011779"));
+        outputCapture.expect(containsString("Text:"));
+        outputCapture.expect(containsString("is your otp for completing your registration."));
+    }
+
+
+    @Test
+    public void  newPhoneAllSameOtpTillExpiry() throws Exception{
+        LoginRequestDto dto = new LoginRequestDto("+917588011779", null);
+        mockMvc.perform(post("/login")
+                .param("async", String.valueOf(false))
+                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("SESSION"))
+                .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
+
+        mockMvc.perform(post("/login")
+                .param("async", String.valueOf(false))
+                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("SESSION"))
+                .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
+
+        mockMvc.perform(post("/login")
+                .param("async", String.valueOf(false))
+                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("SESSION"))
+                .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
+
+        Optional<User> user = userDetailsService.getUserService().byPhone("+917588011779");
+        assertTrue("New User exists", user.isPresent());
+        assertFalse("New User is disabled", user.get().isEnabled());
+
+        String output = outputCapture.toString();
+        Pattern pattern = Pattern.compile(Pattern.quote("Text: ") + "(.*?)" + Pattern.quote(" is your"));
+        Matcher matcher = pattern.matcher(output);
+        List<String> otps = new ArrayList<>();
+        while (matcher.find()) {
+            otps.add(matcher.group(1));
+        }
+        assertThat(otps).isNotEmpty().hasSize(3);
+        assertEquals("All otps are equal", 1, otps.stream().distinct().count());
     }
 
 }

@@ -30,7 +30,8 @@
             <dependency>
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-releasetrain</artifactId>
-                <version>Lovelace-RELEASE</version>
+<!--                <version>Lovelace-RELEASE</version>-->
+                <version>Moore-RC1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -408,7 +409,13 @@
                 <version>${jsoup.version}</version>
             </dependency>
             <!-- JSoup -->
-
+            <!-- Redis Client -->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>${jedis.version}</version>
+            </dependency>
+            <!-- Redis Client -->
         </dependencies>
     </dependencyManagement>
     <!--Spring Data Release Train -->
@@ -422,7 +429,8 @@
         <concurrentunit.version>0.4.4</concurrentunit.version>
         <jsoup.version>1.10.2</jsoup.version>
         <el.version>3.0.1-b08</el.version>
-        <spring-data-releasetrain.version>Lovelace-RELEASE</spring-data-releasetrain.version>
+<!--        <spring-data-releasetrain.version>Lovelace-RELEASE</spring-data-releasetrain.version>-->
+        <spring-data-releasetrain.version>Moore-RC1</spring-data-releasetrain.version>
         <hamcrest.version>2.1</hamcrest.version>
         <auth0.jwt.version>3.4.0</auth0.jwt.version>
         <username-validation.version>1.2.1</username-validation.version>
@@ -444,7 +452,7 @@
         <geoip2.version>2.12.0</geoip2.version>
         <flipkart.zjsonpatch>0.4.5</flipkart.zjsonpatch>
         <javax.json>1.1</javax.json>
-        <jedis.version>2.9.0</jedis.version>
+        <jedis.version>3.0.0</jedis.version>
         <spring-security.version>5.1.5.RELEASE</spring-security.version>
         <junit.engine.version>5.1.0</junit.engine.version>
         <junit.platform.version>1.1.0</junit.platform.version>

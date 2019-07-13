@@ -49,44 +49,16 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
 
     private final IUserRepository dao;
-    private final ITokenService tokenService;
-    private final IEmailService emailService;
-    private final PasswordEncoder passwordEncoder;
     private final IpService ipService;
     private final CountryCacheService countryService;
 
-    public UserService(IUserRepository dao, ITokenService tokenService, IEmailService emailService, PasswordEncoder passwordEncoder, IpService ipService, CountryCacheService countryService) {
+    public UserService(IUserRepository dao, IpService ipService, CountryCacheService countryService) {
         super(dao);
         this.dao = dao;
-        this.tokenService = tokenService;
-        this.emailService = emailService;
-        this.passwordEncoder = passwordEncoder;
         this.ipService = ipService;
         this.countryService = countryService;
     }
 
-    @Override
-    public Optional<User> byCandidateKey(String candidateKey) {
-        require(candidateKey, not(emptyString()));
-        return dao.byCandidateKey(PrimitiveUtils.toBigInteger(candidateKey), candidateKey);
-    }
-
-    @Override
-    public void saveEmailToken(User user, Token token) {
-        require(user, notNullValue());
-        require(token, notNullValue());
-        if (user.getEmail() != null) {
-            if(!StringUtils.isEmpty(token.getId())){
-                user.getEmail().setTokenId(token.getId());
-                update(user);
-            }else{
-                LogUtil.logFieldEmpty(log, Token.class.getSimpleName(), Model.Token.Field.ID, token.getId());
-            }
-
-        }else {
-            LogUtil.logFieldNull(log, User.class.getSimpleName(), Model.User.Field.EMAIL, String.valueOf(user.getId()));
-        }
-    }
 
     @Override
     public Optional<User> byEmail(String email) {
@@ -96,35 +68,10 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
     }
 
     @Override
-    public Optional<User> byEmailTokenId(String tokenId) {
-        require(tokenId, not(emptyString()));
-        return dao.byEmailTokenId(tokenId);
-    }
-
-
-
-    @Override
-    public Optional<User> byPasswordTokenId(String tokenId) {
-        require(tokenId, not(emptyString()));
-        return dao.byPasswordTokenId(tokenId);
-    }
-
-
-
-    @Override
-    public void savePasswordToken(User user, Token token) {
-        require(user, notNullValue());
-        require(token, notNullValue());
-        if (user.getPassword() != null ){
-            if(!StringUtils.isEmpty(token.getId())) {
-                user.getPassword().setTokenId(token.getId());
-                update(user);
-            } else{
-                LogUtil.logFieldEmpty(log, Token.class.getSimpleName(), Model.Token.Field.ID, token.getId());
-            }
-        }else {
-            LogUtil.logFieldNull(log, User.class.getSimpleName(), Model.User.Field.EMAIL, String.valueOf(user.getId()));
-        }
+    public Optional<User> byPhone(String phone) {
+        require(phone, not(emptyString()));
+        return dao.findByCriteria(Criteria.where(Model.User.QueryKey.PHONE).is(phone), PageRequest.of(0, 1), User.class)
+                .findFirst();
     }
 
 

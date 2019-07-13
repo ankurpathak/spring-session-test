@@ -44,6 +44,34 @@ public class AccountControllerTests extends AbstractRestIntegrationTest<AccountC
                             .withUser("test", "secret")
             );
 
+
+    @Test
+    public void testDuplicateRegistration() throws Exception{
+        UserDto userDto = UserDto.getInstance()
+                .firstName("Ashwani")
+                .lastName("Rathore")
+                .email("rathore.ashwani@gmail.com")
+                .password("password")
+                .confirmPassword("password");
+        mockMvc.perform(post(apiPath(PATH_ACCOUNT), "rathore.ashwani@gmail.com")
+                .param("async", String.valueOf(false))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userDto))
+        )
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post(apiPath(PATH_ACCOUNT), "rathore.ashwani@gmail.com")
+                .param("async", String.valueOf(false))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userDto))
+        )
+                .andDo(print())
+                .andExpect(status().isConflict());
+
+        System.out.println();
+    }
+
     @Test
     public void testRegistration() throws Exception{
         UserDto userDto = UserDto.getInstance()

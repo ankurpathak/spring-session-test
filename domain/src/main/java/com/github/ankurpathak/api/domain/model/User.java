@@ -22,8 +22,10 @@ import java.util.Set;
 @Document(collection = Model.USER)
 @CompoundIndexes({
         @CompoundIndex(name = Model.Index.USER_EMAIL_IDX, sparse = true, unique = true, def = Model.Index.USER_EMAIL_IDX_DEF),
-        @CompoundIndex(name = Model.Index.USER_CONTACT_IDX, sparse = true, unique = true, def = Model.Index.USER_CONTACT_IDX_DEF),
-        @CompoundIndex(name = Model.Index.USER_EMAIL_TOKEN_ID_IDX, sparse = true, unique = true, def = Model.Index.USER_EMAIL_TOKEN_ID_IDX_DEF)
+        @CompoundIndex(name = Model.Index.USER_PHONE_IDX, sparse = true, unique = true, def = Model.Index.USER_PHONE_IDX_DEF),
+        @CompoundIndex(name = Model.Index.USER_EMAIL_TOKEN_ID_IDX, sparse = true, unique = true, def = Model.Index.USER_EMAIL_TOKEN_ID_IDX_DEF),
+        @CompoundIndex(name = Model.Index.USER_PHONE_TOKEN_ID_IDX, sparse = true, unique = true, def = Model.Index.USER_PHONE_TOKEN_ID_IDX_DEF),
+        @CompoundIndex(name = Model.Index.USER_PASSWORD_TOKEN_ID_IDX, sparse = true, unique = true, def = Model.Index.USER_PASSWORD_TOKEN_ID_IDX_DEF)
 })
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User extends ExtendedDomain<BigInteger> implements Serializable {
@@ -215,7 +217,7 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
         return this;
     }
 
-    public User contact(Contact phone) {
+    public User phone(Contact phone) {
         this.phone = phone;
         return this;
     }

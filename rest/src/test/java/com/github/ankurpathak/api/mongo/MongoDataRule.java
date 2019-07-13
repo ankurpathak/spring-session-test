@@ -20,6 +20,9 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.IndexDefinition;
+import org.springframework.data.mongodb.core.index.IndexOperations;
+import org.springframework.data.mongodb.core.index.IndexResolver;
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
@@ -153,14 +156,14 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
     }
 
     private void createIndicesFor(final Class<?> type) {
-        final MongoMappingContext mappingContext =
-                (MongoMappingContext) getTemplate().getConverter().getMappingContext();
-        final MongoPersistentEntityIndexResolver indexResolver =
-                new MongoPersistentEntityIndexResolver(mappingContext);
-        for (final MongoPersistentEntityIndexResolver.IndexDefinitionHolder indexToCreate : indexResolver.resolveIndexFor(ClassTypeInformation.from(type))) {
-            createIndex(indexToCreate);
-        }
+        final MongoMappingContext mappingContext = (MongoMappingContext) getTemplate().getConverter().getMappingContext();
+        final MongoPersistentEntityIndexResolver indexResolver = new MongoPersistentEntityIndexResolver(mappingContext);
+        Iterable<? extends IndexDefinition> definitions = indexResolver.resolveIndexFor(type);
+        IndexOperations indexOperations = template.indexOps(type);
+        definitions.forEach(indexOperations::ensureIndex);
     }
+
+
     private void createIndex(final MongoPersistentEntityIndexResolver.IndexDefinitionHolder indexDefinition) {
         this.getTemplate().getDb().getCollection(indexDefinition.getCollection())
                 .createIndex(indexDefinition.getIndexKeys(), new IndexOptions().partialFilterExpression(indexDefinition.getIndexOptions()));
