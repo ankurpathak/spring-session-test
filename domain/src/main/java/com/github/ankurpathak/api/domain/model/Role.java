@@ -10,10 +10,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@Document(collection = Model.ROLE)
+@Document(collection = Model.Role.ROLE)
 public class Role extends Domain<String> implements Serializable {
 
-    @Indexed(name = Model.Index.ROLE_NAME_IDX, unique = true, sparse = true)
+    @Indexed(name = Model.Role.Index.ROLE_NAME_IDX, unique = true, sparse = true)
     private String name;
     private Set<String> privileges;
     public static final String ROLE_ADMIN = "ROLE_ADMIN";

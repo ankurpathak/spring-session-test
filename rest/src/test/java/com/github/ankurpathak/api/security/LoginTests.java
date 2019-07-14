@@ -501,6 +501,65 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
         assertEquals("All otps are equal", 1, otps.stream().distinct().count());
     }
 
+
+
+    @Test
+    public void existingPhoneLoginWithOtp() throws Exception{
+        LoginRequestDto dto = new LoginRequestDto("+917385500660", null);
+        mockMvc.perform(post("/login")
+                .param("async", String.valueOf(false))
+                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(cookie().exists("SESSION"))
+                .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
+                .andDo(otpResult -> {
+                    mockMvc.perform(get(apiPath(PATH_GET_ME))
+                            .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+
+                    )
+                            .andDo(print())
+                            .andExpect(status().isForbidden());
+
+
+                    outputCapture.expect(containsString("Phone: +917385500660"));
+                    outputCapture.expect(containsString("Text:"));
+                    outputCapture.expect(containsString("is your otp for login"));
+
+                    String output = outputCapture.toString();
+                    String otpToken = StringUtils.substringBetween(output, "Text: ", " is your otp for login.");
+
+                    mockMvc.perform(post("/otp")
+                            .param("async", String.valueOf(false))
+                            .param("otptoken", otpToken)
+                            .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+                    )
+                            .andDo(print())
+                            .andExpect(status().isOk())
+                            .andDo(loginResult -> {
+                                mockMvc.perform(get(apiPath(PATH_GET_ME))
+                                        .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+
+                                )
+                                        .andDo(print())
+                                        .andExpect(status().isOk());
+                            });
+
+
+                });
+
+
+
+
+    }
+
 }
 
 

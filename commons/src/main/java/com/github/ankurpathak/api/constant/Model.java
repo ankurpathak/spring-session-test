@@ -1,114 +1,99 @@
 package com.github.ankurpathak.api.constant;
 
 public interface Model {
-
-    String USER = "users";
-    String ROLE = "roles";
-    String TOKEN = "tokens";
-    String SEQUENCE = "sequences";
-
-
     interface Domain {
         interface Field {
-            String ID = "id";
-            String VALUE = "value";
-
-
-        }
-    }
-
-    interface User {
-
-        interface Field extends Domain.Field {
-
-            String EMAIL = "email";
-            String EMAIL_VALUE = "email.value";
-            String EMAIL_TOKEN_ID = "email.tokenId";
-            String ENABLED = "enabled";
-            String PHONE = "phone";
-            String PHONE_VALUE = "phone.value";
+            String ID = "_id";
         }
 
         interface Index {
 
+            interface Defination {
+
+            }
         }
 
-        interface Query {
+        interface Query { }
+    }
+
+    interface User {
+
+        String USER = "users";
+
+        interface Field extends Domain.Field {
+            String ENABLED = "enabled";
+            String EMAIL = "email";
+            String EMAIL_VALUE = "email.value";
+            String PHONE = "phone";
+            String PHONE_VALUE = "phone.value";
 
         }
 
+        interface Index {
+            String USER_EMAIL_IDX = "usersEmailIdx";
+            String ROLE_NAME_IDX = "rolesNameIdx";
+            String USER_USERNAME_IDX = "usersUsernameIdx";
+            String USER_PHONE_IDX = "usersPhoneIdx";
 
-        interface QueryKey {
-            String EMAIL = "email.value";
-            String PHONE = "phone.value";
-            String PHONE_TOKEN_ID = "phone.tokenId";
-            String EMAIL_TOKEN_ID = "email.tokenId";
-            String PASSWORD_TOKEN_ID = "password.tokenId";
-            String VALUE = "value";
+
+            interface Defination extends Domain.Index.Defination{
+                String USER_EMAIL_IDX_DEF = "{ 'email.value' : 1}";
+                String USER_PHONE_IDX_DEF = "{ 'phone.value' : 1}";
+            }
         }
 
-
-
+        interface Query { }
     }
 
 
     interface Role {
 
-        interface Field extends Domain.Field {
+        String ROLE = "roles";
 
+        interface Field extends Domain.Field { }
+
+        interface Index extends Domain.Index{
+            String ROLE_NAME_IDX = "rolesNameIdx";
+
+            interface Defination extends Domain.Index.Defination{ }
         }
 
-        interface Index {
-
-        }
-
-        interface Query {
-
-        }
+        interface Query extends Domain.Query{ }
 
     }
 
 
     interface Token {
+        String TOKEN = "tokens";
 
         interface Field extends Domain.Field{
+            String VALUE = "value";
         }
 
-        interface Index {
+        interface Index extends Domain.Index{
+            String TOKEN_EXPIRY_IDX  = "tokensExpiryIdx";
 
+            interface Defination extends Domain.Index.Defination{ }
         }
 
-        interface Query {
+        interface Query extends Domain.Query{ }
 
+    }
+
+    interface Sequence {
+        String SEQUENCE = "sequences";
+
+        interface Field extends Domain.Field{
+            String CURRENT = "curr";
         }
 
+        interface Index extends Domain.Index{
+            interface Defination extends Domain.Index.Defination{ }
+        }
+
+        interface Query extends Domain.Query{ }
 
 
     }
 
-
-    interface Index {
-        String USER_EMAIL_IDX = "usersEmailIdx";
-        String ROLE_NAME_IDX = "rolesNameIdx";
-        String USER_USERNAME_IDX = "usersUsernameIdx";
-        String USER_EMAIL_IDX_DEF = "{ 'email.value' : 1}";
-        String USER_PHONE_IDX_DEF = "{ 'phone.value' : 1}";
-        String USER_PHONE_IDX = "usersPhoneIdx";
-        String TOKEN_EXPIRY_IDX  = "tokensExpiryIdx";
-
-        String TOKEN_VALUE_IDX = "tokensValueIdx";
-        String USER_EMAIL_TOKEN_ID_IDX = "usersEmailTokenIdx";
-        String USER_EMAIL_TOKEN_ID_IDX_DEF = "{ 'email.tokenId' : 1}";
-        String USER_PHONE_TOKEN_ID_IDX = "usersPhoneTokenIdx";
-        String USER_PHONE_TOKEN_ID_IDX_DEF = "{ 'phone.tokenId' : 1}";
-        String USER_PASSWORD_TOKEN_ID_IDX = "usersPasswordTokenIdx";
-        String USER_PASSWORD_TOKEN_ID_IDX_DEF = "{ 'password.tokenId' : 1}";
-    }
-
-
-    interface Field{
-        public static final String FIELD_ID = "_id";
-        public static final String FIELD_CURRENT = "curr";
-
-    }
 }

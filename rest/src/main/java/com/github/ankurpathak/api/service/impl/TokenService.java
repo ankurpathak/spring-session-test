@@ -183,7 +183,7 @@ public class TokenService extends AbstractDomainService<Token, String> implement
                 return Token.TokenStatus.EXPIRED;
             }
             if(Objects.equals(tokenOtp, token.get().getValue())){
-                Optional<User> user = customUserDetailsService.getUserService().byEmail(phone);
+                Optional<User> user = customUserDetailsService.getUserService().byPhone(phone);
                 if (user.isPresent()) {
                     user.get().setEnabled(true);
                     user.get().getPhone().setChecked(true);

@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-@Document(collection = Model.SEQUENCE)
+@Document(collection = Model.Sequence.SEQUENCE)
 @JsonInclude(Include.NON_EMPTY)
 public final class Sequence extends Domain<String> implements Serializable {
     private BigInteger curr;

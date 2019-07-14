@@ -21,16 +21,16 @@ public class DuplicateKeyExceptionProcessor {
         BindingResult result = new BindException(dto, dto.domainName());
         FoundException fEx = null;
         if(!StringUtils.isEmpty(message)){
-            if(message.contains(Model.Index.USER_EMAIL_IDX)){
+            if(message.contains(Model.User.Index.USER_EMAIL_IDX)){
                 UserDto userDto = (UserDto) dto;
                 fEx = new FoundException(ex, result, userDto.getEmail(), "email", "User", ApiCode.EMAIL_FOUND);
             }
-            else if(message.contains(Model.Index.USER_PHONE_IDX)) {
+            else if(message.contains(Model.User.Index.USER_PHONE_IDX)) {
                 UserDto userDto = (UserDto) dto;
                 fEx = new FoundException(ex, result, userDto.getContact(), "phone", "User", ApiCode.CONTACT_FOUND);
             }
 
-            else if(message.contains(Model.Index.USER_USERNAME_IDX)){
+            else if(message.contains(Model.User.Index.USER_USERNAME_IDX)){
                 UserDto userDto = (UserDto) dto;
                 fEx = new FoundException(ex, result, userDto.getUsername(), "username", "User", ApiCode.USERNAME_FOUND);
             }

@@ -11,12 +11,12 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @JsonInclude(Include.NON_EMPTY)
-@Document(collection = Model.TOKEN)
+@Document(collection = Model.Token.TOKEN)
 public class Token extends Domain<String> implements Serializable {
 
     private String value;
 
-    @Indexed(name = Model.Index.TOKEN_EXPIRY_IDX, expireAfterSeconds= EXPIRATION_IN_SECONDS)
+    @Indexed(name = Model.Token.Index.TOKEN_EXPIRY_IDX, expireAfterSeconds= EXPIRATION_IN_SECONDS)
     private Instant expiry;
     private static final int EXPIRATION_IN_MINUTES = 30;
 

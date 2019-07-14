@@ -2,6 +2,7 @@ package com.github.ankurpathak.api.security.filter;
 
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.security.authentication.token.PreOtpAuthenticationToken;
+import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.service.IFilterService;
 import com.github.ankurpathak.api.service.ITokenService;
 import org.apache.commons.lang3.StringUtils;
@@ -37,8 +38,6 @@ public class OtpValidationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
-        Assert.isInstanceOf(HttpServletRequest.class, request, "request must be over http");
-        Assert.isInstanceOf(HttpServletResponse.class, response, "response must be over http");
         HttpServletRequest requestHttp = (HttpServletRequest) request;
         HttpServletResponse responseHttp= (HttpServletResponse) response;
 
@@ -68,11 +67,11 @@ public class OtpValidationFilter extends GenericFilterBean {
         }
         PreOtpAuthenticationToken authToken = (PreOtpAuthenticationToken) auth;
 
-        if(!(authToken.getCredentials() instanceof String)){
+        if(!(authToken.getPrincipal() instanceof CustomUserDetails)){
             chain.doFilter(request, response);
             return;
         }
-        String phone = (String) authToken.getCredentials();
+        String phone = ((CustomUserDetails) authToken.getPrincipal()).getUser().getPhone().getValue();
 
         // Validate token
         Token.TokenStatus tokenStatus = tokenService.checkPhoneTokenStatus(phone, token);
@@ -81,7 +80,7 @@ public class OtpValidationFilter extends GenericFilterBean {
             filterService.generateSuccess(responseHttp);
         } else {
             SecurityContextHolder.getContext().setAuthentication(null);
-            filterService.generateSuccess(responseHttp);
+            filterService.generateUnauthorized(responseHttp);
         }
     }
 }

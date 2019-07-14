@@ -8,7 +8,6 @@ import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.rest.controller.dto.View;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.CollectionUtils;
@@ -19,14 +18,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 
-@Document(collection = Model.USER)
-@CompoundIndexes({
-        @CompoundIndex(name = Model.Index.USER_EMAIL_IDX, sparse = true, unique = true, def = Model.Index.USER_EMAIL_IDX_DEF),
-        @CompoundIndex(name = Model.Index.USER_PHONE_IDX, sparse = true, unique = true, def = Model.Index.USER_PHONE_IDX_DEF),
-        @CompoundIndex(name = Model.Index.USER_EMAIL_TOKEN_ID_IDX, sparse = true, unique = true, def = Model.Index.USER_EMAIL_TOKEN_ID_IDX_DEF),
-        @CompoundIndex(name = Model.Index.USER_PHONE_TOKEN_ID_IDX, sparse = true, unique = true, def = Model.Index.USER_PHONE_TOKEN_ID_IDX_DEF),
-        @CompoundIndex(name = Model.Index.USER_PASSWORD_TOKEN_ID_IDX, sparse = true, unique = true, def = Model.Index.USER_PASSWORD_TOKEN_ID_IDX_DEF)
-})
+@Document(collection = Model.User.USER)
+
+@CompoundIndex(name = Model.User.Index.USER_EMAIL_IDX, sparse = true, unique = true, def = Model.User.Index.Defination.USER_EMAIL_IDX_DEF)
+@CompoundIndex(name = Model.User.Index.USER_PHONE_IDX, sparse = true, unique = true, def = Model.User.Index.Defination.USER_PHONE_IDX_DEF)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User extends ExtendedDomain<BigInteger> implements Serializable {
 
@@ -34,7 +29,7 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     private String firstName;
     private String lastName;
     private Contact email;
-    @Indexed(name = Model.Index.USER_USERNAME_IDX, unique = true, sparse = true)
+    @Indexed(name = Model.User.Index.USER_USERNAME_IDX, unique = true, sparse = true)
     private String username;
     private Contact phone;
     private Set<String> roles;
