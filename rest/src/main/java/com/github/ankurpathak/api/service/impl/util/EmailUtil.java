@@ -1,5 +1,7 @@
 package com.github.ankurpathak.api.service.impl.util;
 
+import com.github.ankurpathak.api.security.dto.DomainContext;
+import com.github.ankurpathak.api.security.dto.DomainContextHolder;
 import com.github.ankurpathak.api.util.PropertyUtil;
 import com.github.ankurpathak.api.service.dto.SmtpContext;
 import com.github.ankurpathak.api.service.dto.SmtpCredential;
@@ -18,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import javax.mail.internet.MimeMessage;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.notNullValue;
@@ -108,8 +111,8 @@ public class EmailUtil {
 
     public static void sendMimeMail(TaskExecutor taskExecutor, SmtpContext smtpContext) {
         require(smtpContext, notNullValue());
-        require(smtpContext, notNullValue());
-        if(smtpContext.isAsync()){
+        Optional<DomainContext> domainContext = DomainContextHolder.getContext();
+        if(domainContext.isPresent() && domainContext.get().isAsync()){
             taskExecutor.execute(() -> {
                 processSmtpContextWithMimeMessage(smtpContext);
             });

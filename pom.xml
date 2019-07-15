@@ -10,6 +10,7 @@
         <module>domain</module>
         <module>commons</module>
         <module>rest</module>
+        <module>bank-ifsc</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -360,6 +361,16 @@
                 <artifactId>domain</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.ankurpathak.api</groupId>
+                <artifactId>domain</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ankurpathak.api</groupId>
+                <artifactId>bank-ifsc</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
             <!--Modules -->
 
             <!--Jackson Annotations -->
@@ -425,7 +436,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>11</java.version>
+        <java.version>12</java.version>
         <concurrentunit.version>0.4.4</concurrentunit.version>
         <jsoup.version>1.10.2</jsoup.version>
         <el.version>3.0.1-b08</el.version>
@@ -442,7 +453,7 @@
         <commons-email.version>1.5</commons-email.version>
         <valid4j.version>0.5.0</valid4j.version>
         <passwy.version>1.3.1</passwy.version>
-        <lettuce.version>5.0.4.RELEASE</lettuce.version>
+        <lettuce.version>5.1.7.RELEASE</lettuce.version>
         <lombok.version>1.18.0</lombok.version>
         <scribe-java.version>5.6.0</scribe-java.version>
         <guava.version>26.0-jre</guava.version>

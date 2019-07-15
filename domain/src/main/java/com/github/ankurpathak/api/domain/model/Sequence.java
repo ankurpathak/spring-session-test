@@ -30,7 +30,12 @@ public final class Sequence extends Domain<String> implements Serializable {
 
 
     public static Sequence getUserSequenceInitialValue(){
-        return getInstance().id(ID_USER_SEQ).curr(BigInteger.ZERO);
+        return getInstance().id(ID_USER_SEQ).curr(BigInteger.ONE);
+    }
+
+
+    public static Sequence getBusinessSequenceInitialValue(){
+        return getInstance().id(ID_BUSINESS_SEQ).curr(BigInteger.ONE);
     }
 
 
@@ -40,6 +45,7 @@ public final class Sequence extends Domain<String> implements Serializable {
 
 
     public static final String ID_USER_SEQ = "user_seq";
+    public static final String ID_BUSINESS_SEQ = "business_seq";
 
     public Sequence curr(BigInteger curr) {
         this.curr = curr;

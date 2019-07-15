@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Document(collection = Model.Role.ROLE)
@@ -120,5 +121,19 @@ public class Role extends Domain<String> implements Serializable {
                 Privilege.PRIV_FORGET_PASSWORD_EMAIL,
                 Privilege.PRIV_FORGET_PASSWORD_ENABLE
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Role role = (Role) o;
+        return name.equals(role.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name);
     }
 }

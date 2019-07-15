@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nonnull;
-import java.time.Instant;
-import java.util.Calendar;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.emptyString;
@@ -43,7 +41,7 @@ public class AccountService implements IAccountService {
 
 
     @Override
-    public void accountEnableEmail(@Nonnull String email, boolean async) {
+    public void accountEnableEmail(@Nonnull String email) {
         require(email, notNullValue());
         userService.byEmail(email)
                 .filter(user -> !user.isEnabled())
@@ -53,7 +51,7 @@ public class AccountService implements IAccountService {
                                         tokenService.generateAccountToken(email)
                                                 .ifPresentOrElse(token -> {
                                                     System.out.println(token);
-                                                    emailService.sendForAccountEnable(user, token, async);
+                                                    emailService.sendForAccountEnable(user, token);
                                                 }, () -> LogUtil.logNull(log, Token.class.getSimpleName()));
 
                                     }, () -> LogUtil.logFieldNull(log, User.class.getSimpleName(), Model.User.Field.EMAIL, String.valueOf(user.getId())));

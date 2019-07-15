@@ -9,8 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.PATH_GET_ME;
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.apiPath;
+import static com.github.ankurpathak.api.constant.ApiPaths.PATH_ME;
+import static com.github.ankurpathak.api.constant.ApiPaths.apiPath;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
@@ -30,7 +30,7 @@ public class MeTests extends AbstractRestIntegrationTest<MeTests> {
     @Test
     //@WithUserDetails("ankurpathak@live.in")
     public void getMe() throws Exception {
-        mockMvc.perform(get(apiPath(PATH_GET_ME))
+        mockMvc.perform(get(apiPath(PATH_ME))
                 .with(authentication(token("ankurpathak@live.in")))
 
         )

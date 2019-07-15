@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.PATH_API;
+import static com.github.ankurpathak.api.constant.ApiPaths.PATH_API;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

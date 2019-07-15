@@ -1,7 +1,6 @@
 package com.github.ankurpathak.api.security.service;
 
 import com.github.ankurpathak.api.security.dto.CustomUserDetails;
-import com.github.ankurpathak.api.domain.model.Password;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
@@ -62,7 +61,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                                         .orElseGet(() -> {
                                             User user = User.getInstance()
                                                     .email(Contact.getInstance(email))
-                                                    .password(Password.getInstance().value(passwordEncoder.encode(UUID.randomUUID().toString())))
+                                                    .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                                                     .enabled(true)
                                                     .roles(Collections.singleton(Role.ROLE_ADMIN));
                                             return userDetailsService.getUserService().create(user);

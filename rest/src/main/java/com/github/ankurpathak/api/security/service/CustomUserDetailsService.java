@@ -1,9 +1,12 @@
 package com.github.ankurpathak.api.security.service;
 
+import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
+import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.security.dto.CustomUserDetails;
+import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.IRoleService;
 import com.github.ankurpathak.api.service.IUserService;
 import org.apache.commons.collections.CollectionUtils;
@@ -25,53 +28,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final IRoleService roleService;
     private final IUserService userService;
-    //private final IpService ipService;
-    //private final CountryCacheService countryService;
+    private final IMessageService messageService;
 
-    public CustomUserDetailsService(IRoleService roleService,
-                                    IUserService userService
-            //, IpService ipService,
-                                  //  CountryCacheService countryService
-    ) {
+
+    public CustomUserDetailsService(IRoleService roleService, IUserService userService, IMessageService messageService) {
         this.roleService = roleService;
         this.userService = userService;
-        //this.ipService = ipService;
-       // this.countryService = countryService;
+        this.messageService = messageService;
     }
 
-    /*
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<Criteria> criteriaList = new ArrayList<>();
-        if (!StringUtils.isNumeric(username)) {
-            criteriaList.add(Criteria.where("email.value").is(username));
-            criteriaList.add(Criteria.where("username").is(username));
-        } else {
-            criteriaList.add(Criteria.where("_id").is(PrimitiveUtils.toBigInteger(username)));
-            criteriaList.add(Criteria.where("phone.value").is(username));
-            SecurityUtil.getDomainContext()
-                    .map(DomainContext::getRemoteAddress)
-                    .flatMap(ipService::ipToCountryAlphaCode)
-                    .map(countryService::alphaCodeToCallingCodes)
-                    .ifPresent(callingCodes -> {
-                        callingCodes.stream()
-                                .map(callingCode->String.format("+%s%s",callingCode, username))
-                                .forEach(phone -> criteriaList.add(Criteria.where("phone.value").is(phone)));
-                    });
-        }
 
-        Criteria criteria = new Criteria().orOperator(criteriaList.toArray(new Criteria[]{}));
-        Optional<User> user = userService.findByCriteriaPaginated(criteria, PageRequest.of(0, 1), User.class)
-                .stream()
-                .findFirst();
-        if (user.isPresent()) {
-            return CustomUserDetails.getInstance(user.get(), getPrivileges(user.get().getRoles()));
-        } else {
-            throw new UsernameNotFoundException(String.format(USERNAME_NOT_FOUND_MESSAGE, username));
-        }
-    }
-
-    */
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -79,7 +45,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (user.isPresent()) {
             return CustomUserDetails.getInstance(user.get(), getPrivileges(user.get().getRoles()));
         } else {
-            throw new UsernameNotFoundException(String.format(USERNAME_NOT_FOUND_MESSAGE, username));
+
+            throw new UsernameNotFoundException(
+                    messageService.getMessage(ApiMessages.NOT_FOUND, User.class.getSimpleName(), Model.User.Field.CANDIDATE_ID, username)
+            );
         }
     }
 

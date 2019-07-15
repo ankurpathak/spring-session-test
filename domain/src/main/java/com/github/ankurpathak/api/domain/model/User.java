@@ -15,11 +15,11 @@ import org.springframework.util.CollectionUtils;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 
 @Document(collection = Model.User.USER)
-
 @CompoundIndex(name = Model.User.Index.USER_EMAIL_IDX, sparse = true, unique = true, def = Model.User.Index.Defination.USER_EMAIL_IDX_DEF)
 @CompoundIndex(name = Model.User.Index.USER_PHONE_IDX, sparse = true, unique = true, def = Model.User.Index.Defination.USER_PHONE_IDX_DEF)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -34,31 +34,37 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     private Contact phone;
     private Set<String> roles;
     private boolean enabled;
+    private Set<BigInteger> businessIds;
+
+
+    public Set<BigInteger> getBusinessIds() {
+        return businessIds;
+    }
+
+    public void setBusinessIds(Set<BigInteger> businessIds) {
+        this.businessIds = businessIds;
+    }
 
 
 
-
-
-    public User password(Password password){
+    public User password(String password){
         this.password = password;
         return this;
     }
 
 
-    private Password password;
+    private String password;
 
 
-    public Password getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(Password password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    private Set<Contact> emails;
 
-    private Set<Contact> contacts;
 
 
     public User addRole(String role) {
@@ -76,33 +82,23 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     }
 
 
-    public User addEmail(Contact email) {
-        if (emails == null)
-            emails = new HashSet<>();
-        if (email != null)
-            emails.add(email);
+
+    public User addBusinessId(BigInteger businessId) {
+        if (businessIds == null)
+            businessIds = new HashSet<>();
+        if (BigInteger.ZERO.compareTo(businessId) < 0)
+            businessIds.add(businessId);
         return this;
     }
 
-    public User removeEmail(Contact email) {
-        if (!CollectionUtils.isEmpty(emails))
-            roles.remove(email);
+    public User removeRole(BigInteger businessId) {
+        if (!CollectionUtils.isEmpty(businessIds))
+            businessIds.remove(businessId);
         return this;
     }
 
-    public User addContact(Contact contact) {
-        if (contacts == null)
-            contacts = new HashSet<>();
-        if (contact != null)
-            contacts.add(contact);
-        return this;
-    }
 
-    public User removeContact(Contact contact) {
-        if (!CollectionUtils.isEmpty(contacts))
-            roles.remove(contact);
-        return this;
-    }
+
 
     private String middleName;
 
@@ -217,15 +213,6 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
         return this;
     }
 
-    public User emails(Set<Contact> emails) {
-        this.emails = emails;
-        return this;
-    }
-
-    public User contacts(Set<Contact> contacts) {
-        this.contacts = contacts;
-        return this;
-    }
 
     public User middleName(String middleName) {
         this.middleName = middleName;
@@ -255,23 +242,7 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     public void setPhone(Contact phone) {
         this.phone = phone;
     }
-    @JsonView({View.Me.class})
-    public Set<Contact> getEmails() {
-        return emails;
-    }
 
-    public void setEmails(Set<Contact> emails) {
-        this.emails = emails;
-    }
-
-    @JsonView({View.Me.class})
-    public Set<Contact> getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(Set<Contact> contacts) {
-        this.contacts = contacts;
-    }
 
     public static final String ANONYMOUS_USERNAME= "anonymous";
     public static final User ANONYMOUS_USER;
@@ -290,21 +261,22 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-
         User user = (User) o;
-
-        return email != null ? email.equals(user.email) : user.email == null;
+        return Objects.equals(email, user.email) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(phone, user.phone);
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        return result;
+        return Objects.hash(super.hashCode(), email, username, phone);
     }
 
 
-
+    public User businessIds(Set<BigInteger> businessIds) {
+        this.businessIds = businessIds;
+        return this;
+    }
 }
 
 

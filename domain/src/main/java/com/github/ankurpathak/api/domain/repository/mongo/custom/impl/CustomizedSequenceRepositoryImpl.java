@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
-import java.util.Optional;
 
 @Repository
 public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRepository<Sequence, String> implements CustomizedSequenceRepository {

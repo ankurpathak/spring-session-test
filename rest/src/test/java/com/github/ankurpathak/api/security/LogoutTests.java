@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.github.ankurpathak.api.constant.ApiPaths.PATH_LOGOUT;
+import static com.github.ankurpathak.api.constant.ApiPaths.apiPath;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -22,7 +24,7 @@ public class LogoutTests extends AbstractRestIntegrationTest<LogoutTests> {
     @Test
     public void doLogout() throws Exception{
         mockMvc
-                .perform(logout())
+                .perform(logout(apiPath(PATH_LOGOUT)))
                 .andDo(print());
     }
 

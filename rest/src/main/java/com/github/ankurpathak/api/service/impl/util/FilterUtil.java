@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -35,6 +36,8 @@ public class FilterUtil {
             generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_UNAUTHORIZED, ApiCode.ACCOUNT_DISABLED, ApiMessages.ACCOUNT_DISABLED);
         } else if (ex instanceof BadCredentialsException) {
             generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_UNAUTHORIZED, ApiCode.BAD_CREDENTIALS, ApiMessages.BAD_CREDENTIALS);
+        } else if (ex instanceof UsernameNotFoundException) {
+            generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_UNAUTHORIZED, ApiCode.USER_NOT_FOUND, ex.getMessage());
         } else {
             generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_UNAUTHORIZED, ApiCode.UNAUTHORIZED, ApiMessages.UNAUTHORIZED);
         }
@@ -70,4 +73,11 @@ public class FilterUtil {
     }
 
 
+    public static void generateExpiredToken(String token, HttpServletResponse response, ObjectMapper objectMapper, IMessageService messageService) throws IOException{
+        generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_BAD_REQUEST, ApiCode.EXPIRED_TOKEN, ApiMessages.EXPIRED_TOKEN, Collections.emptyMap(), token);
+    }
+
+    public static void generateInvalid(String key, String value, ApiCode code, HttpServletResponse response, ObjectMapper objectMapper, IMessageService messageService) throws IOException {
+        generateApiResponse(response, objectMapper, messageService, HttpServletResponse.SC_BAD_REQUEST, code, ApiMessages.INVALID, Collections.emptyMap(), key, value);
+    }
 }

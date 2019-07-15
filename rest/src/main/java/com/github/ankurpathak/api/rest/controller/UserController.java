@@ -7,20 +7,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentUser;
 import com.github.ankurpathak.api.config.ControllerUtil;
-import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.constant.RequestMappingPaths;
+import com.github.ankurpathak.api.constant.ApiPaths;
+import com.github.ankurpathak.api.domain.converter.UserConverters;
+import com.github.ankurpathak.api.domain.model.User;
+import com.github.ankurpathak.api.domain.updater.UserUpdaters;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controller.dto.View;
 import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
-import com.github.ankurpathak.api.rest.controllor.dto.converter.DtoConverters;
-import com.github.ankurpathak.api.domain.converter.DomainConverters;
-import com.github.ankurpathak.api.domain.model.User;
-import com.github.ankurpathak.api.domain.updater.DomainUpdaters;
+import com.github.ankurpathak.api.rest.controllor.dto.converter.UserDtoConverters;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.IUserService;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigInteger;
-import java.util.List;
 
 
 @ApiController
@@ -38,25 +35,20 @@ public class UserController extends AbstractRestController<User,BigInteger, User
 
 
     private final IUserService service;
-    private final DomainConverters converters;
-    private final DomainUpdaters updaters;
-    private final DtoConverters dtoConverters;
+
 
 
     @Override
-    public IDomainService<User, BigInteger> getUserService() {
+    public IDomainService<User, BigInteger> getDomainService() {
         return service;
     }
 
-    public UserController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service, DomainConverters converters, DomainUpdaters updaters, DtoConverters dtoConverters) {
+    public UserController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service) {
         super(applicationEventPublisher, messageService, objectMapper, validator);
         this.service = service;
-        this.converters = converters;
-        this.updaters = updaters;
-        this.dtoConverters = dtoConverters;
     }
 
-    @GetMapping(RequestMappingPaths.PATH_GET_ME)
+    @GetMapping(ApiPaths.PATH_ME)
     @JsonView(View.Me.class)
     public User get(@CurrentUser User user){
         return user;
@@ -64,9 +56,9 @@ public class UserController extends AbstractRestController<User,BigInteger, User
 
 
 
-    @PostMapping(RequestMappingPaths.PATH_CREATE_USER)
+    @PostMapping(ApiPaths.PATH_USER)
     public ResponseEntity<?> createOne(HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({DomainDto.Default.class}) UserDto dto, BindingResult result){
-        return createOne(dto, result, request, response, converters.userDtoCreateToDomain);
+        return createOne(dto, result, request, response, UserConverters.userDtoCreateToDomain);
     }
 
     /*
@@ -91,38 +83,41 @@ public class UserController extends AbstractRestController<User,BigInteger, User
     }
     */
 
-    @GetMapping(RequestMappingPaths.PATH_SEARCH_BY_FIEND_USER)
+    /*
+    @GetMapping(ApiPaths.PATH_SEARCH_BY_FIEND_USER)
     @JsonView(View.Public.class)
     public List<User> search(HttpServletResponse response, @PathVariable(Params.FIELD) String field, @PathVariable(Params.VALUE) String value, Pageable pageable){
         return searchByField(field, value, pageable, User.class, response);
     }
 
 
-    @GetMapping(RequestMappingPaths.PATH_LIST_FIELD_USER)
+    @GetMapping(ApiPaths.PATH_LIST_FIELD_USER)
     public List<String> listFields(@PathVariable(Params.FIELD) String field, @PathVariable(Params.VALUE) String value, Pageable pageable){
         return listField(field, value, pageable, User.class);
     }
 
 
-    @GetMapping(RequestMappingPaths.PATH_SEARCH_USER)
+    @GetMapping(ApiPaths.PATH_SEARCH_USER)
     @JsonView(View.Public.class)
     public List<User> search(HttpServletResponse response, @RequestParam(Params.RSQL) String rsql, Pageable pageable){
         return search(rsql, pageable, User.class, response);
     }
 
+     */
 
 
-    @PutMapping(RequestMappingPaths.PATH_CHANGE_PROFILE)
+
+    @PutMapping(ApiPaths.PATH_USER)
     public ResponseEntity<?> update(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({DomainDto.Default.class}) UserDto dto, BindingResult result){
         ControllerUtil.processValidation(result, messageService);
-        return update(dto, user, updaters.profileUpdater, request);
+        return update(dto, user, UserUpdaters.profileUpdater, request);
     }
 
 
-    @PatchMapping(RequestMappingPaths.PATH_CHANGE_PROFILE)
+    @PatchMapping(ApiPaths.PATH_USER)
     public ResponseEntity<?> patch(HttpServletRequest request, @CurrentUser User user, @RequestBody JsonNode patch, BindingResult result){
         ControllerUtil.processValidation(result, messageService);
-        return patch(patch, user, dtoConverters.userToUserDto, updaters.profileUpdater, UserDto.class, DomainDto.Default.class);
+        return patch(patch, user, UserDtoConverters.userToUserDto, UserUpdaters.profileUpdater, UserDto.class, DomainDto.Default.class);
     }
 
 }

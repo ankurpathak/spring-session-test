@@ -99,8 +99,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User, OidcUser {
 
     @Override
     public String getPassword() {
-        ensure(user.getPassword(), notNullValue());
-        return user.getPassword().getValue();
+        return user.getPassword();
     }
 
     @Override

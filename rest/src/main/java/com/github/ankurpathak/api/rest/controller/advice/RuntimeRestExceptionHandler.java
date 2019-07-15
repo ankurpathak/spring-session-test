@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.valid4j.errors.ContractViolation;
 import org.valid4j.errors.EnsureViolation;
+import org.valid4j.errors.RequireViolation;
 
 
 @RestControllerAdvice
@@ -72,8 +74,8 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     }
 
 
-    @ExceptionHandler({EnsureViolation.class})
-    public ResponseEntity<?> handleFoundException(EnsureViolation ex, WebRequest request) {
+    @ExceptionHandler({EnsureViolation.class, RequireViolation.class})
+    public ResponseEntity<?> handleFoundException(ContractViolation ex, WebRequest request) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         ex.printStackTrace();
         return handleExceptionInternal(

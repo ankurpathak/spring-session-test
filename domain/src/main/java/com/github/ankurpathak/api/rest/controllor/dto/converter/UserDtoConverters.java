@@ -6,9 +6,9 @@ import com.github.ankurpathak.api.domain.model.User;
 
 import java.math.BigInteger;
 
-public class DtoConverters {
+public class UserDtoConverters {
 
-    public IToDto<User, BigInteger, UserDto> userToUserDto = domain -> UserDto.getInstance()
+    public static IToDto<User, BigInteger, UserDto> userToUserDto = domain -> UserDto.getInstance()
             .firstName(domain.getFirstName())
             .lastName(domain.getLastName())
             .middleName(domain.getMiddleName());

@@ -76,7 +76,7 @@ public class RedisContainer extends GenericContainer<RedisContainer> implements 
                 try {
                     statement.evaluate();
                 }finally {
-                   // close();
+                  // close();
                 }
             }
         };

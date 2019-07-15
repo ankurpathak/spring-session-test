@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.github.ankurpathak.api.rest.controller.dto.View;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Contact implements Serializable {
 
@@ -67,17 +68,12 @@ public class Contact implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Contact contact = (Contact) o;
-
-        if (checked != contact.checked) return false;
-        return value != null ? value.equals(contact.value) : contact.value == null;
+        return value.equals(contact.value);
     }
 
     @Override
     public int hashCode() {
-        int result = value != null ? value.hashCode() : 0;
-        result = 31 * result + (checked ? 1 : 0);
-        return result;
+        return Objects.hash(value);
     }
 }

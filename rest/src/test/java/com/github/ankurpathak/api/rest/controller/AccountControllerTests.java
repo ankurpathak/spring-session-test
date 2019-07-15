@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.mail.internet.MimeMessage;
 
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.*;
+import static com.github.ankurpathak.api.constant.ApiPaths.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -97,7 +97,7 @@ public class AccountControllerTests extends AbstractRestIntegrationTest<AccountC
         String otp = elementOtp.text();
 
         LoginRequestDto dto = new LoginRequestDto("rathore.ashwani@gmail.com", "password");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
 
@@ -107,7 +107,7 @@ public class AccountControllerTests extends AbstractRestIntegrationTest<AccountC
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

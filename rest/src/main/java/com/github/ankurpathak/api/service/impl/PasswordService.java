@@ -56,7 +56,7 @@ public class PasswordService  implements IPasswordService {
         require(dto, notNullValue());
         Optional.ofNullable(user.getPassword())
                 .ifPresentOrElse(password -> {
-                    if (!passwordEncoder.matches(dto.getCurrentPassword(), password.getValue()))
+                    if (!passwordEncoder.matches(dto.getCurrentPassword(), password))
                         throw new InvalidException(ApiCode.INVALID_PASSWORD, Params.PASSWORD, dto.getCurrentPassword());
 
                 }, () -> {
@@ -75,7 +75,7 @@ public class PasswordService  implements IPasswordService {
                     .ifPresentOrElse(token -> {
                         tokenService.findForgetPasswordToken(token.getValue())
                                 .ifPresentOrElse(reverseToken-> {
-                                    emailService.sendForForgetPassword(user, reverseToken, async);
+                                    emailService.sendForForgetPassword(user, reverseToken);
                                 }, () -> LogUtil.logNull(log, Token.class.getSimpleName()));
                     }, () -> LogUtil.logNull(log, Token.class.getSimpleName()));
         }, ()-> {

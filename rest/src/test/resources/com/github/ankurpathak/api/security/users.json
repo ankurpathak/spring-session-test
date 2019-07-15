@@ -18,9 +18,7 @@
     "tag" : "primary",
     "value" : "+917385500660"
   },
-  "password" : {
-    "value" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG"
-  },
+  "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
   "enabled":  true
 },
   {
@@ -32,9 +30,7 @@
     "tag" : "primary",
     "value" : "amarmule@live.in"
   },
-  "password" : {
-    "value" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG"
-  },
+  "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
   "enabled":  false
 }
 ]

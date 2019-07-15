@@ -1,15 +1,11 @@
 package com.github.ankurpathak.api.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ankurpathak.api.security.authentication.token.PreOtpAuthenticationToken;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class RestUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -20,8 +16,9 @@ public class RestUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
     private boolean postOnly = true;
     private final ObjectMapper objectMapper;
 
-    public RestUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper) {
+    public RestUsernamePasswordAuthenticationFilter(String defaultFilterProcessesUr, ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
+        setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(defaultFilterProcessesUr));
     }
 
     @Override

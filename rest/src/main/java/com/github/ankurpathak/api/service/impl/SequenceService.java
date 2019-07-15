@@ -16,7 +16,8 @@ public class SequenceService extends AbstractDomainService<Sequence, String> imp
     }
 
     @Override
-    public Sequence init() {
-        return dao.insert(Sequence.getUserSequenceInitialValue());
+    public void init() {
+        dao.insert(Sequence.getUserSequenceInitialValue());
+        dao.insert(Sequence.getBusinessSequenceInitialValue());
     }
 }

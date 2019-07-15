@@ -68,7 +68,7 @@ public class EmailService implements IEmailService {
 
     @Override
     @Async
-    public void sendForAccountEnable(User user, Token token, boolean async) {
+    public void sendForAccountEnable(User user, Token token) {
         require(user, notNullValue());
         require(token, notNullValue());
         String createAccountEnableHtml = null;
@@ -79,12 +79,12 @@ public class EmailService implements IEmailService {
         }
 
         if (!StringUtils.isEmpty(createAccountEnableHtml)) {
-            sendUserEmail(user, MESSAGE_ACCOUNT_ENABLE_SUBJECT, createAccountEnableHtml, async);
+            sendUserEmail(user, MESSAGE_ACCOUNT_ENABLE_SUBJECT, createAccountEnableHtml);
         }
     }
 
     @Override
-    public void sendForForgetPassword(User user, Token token, boolean async) {
+    public void sendForForgetPassword(User user, Token token) {
         require(user, notNullValue());
         require(token, notNullValue());
         String createForgetPasswordHtml = null;
@@ -95,7 +95,7 @@ public class EmailService implements IEmailService {
         }
 
         if (!StringUtils.isEmpty(createForgetPasswordHtml)) {
-            sendUserEmail(user, MESSAGE_FORGET_PASSWORD_SUBJECT, createForgetPasswordHtml, async);
+            sendUserEmail(user, MESSAGE_FORGET_PASSWORD_SUBJECT, createForgetPasswordHtml);
         }
 
     }
@@ -128,7 +128,7 @@ public class EmailService implements IEmailService {
 
 
 
-    private void sendUserEmail(User user, String subjectKey, String html, boolean async) {
+    private void sendUserEmail(User user, String subjectKey, String html) {
         require(user, notNullValue());
         require(user.getEmail(), notNullValue());
         String email = user.getEmail().getValue();
@@ -137,7 +137,7 @@ public class EmailService implements IEmailService {
         String from = EmailUtil.getFrom(SmtpCredential.EMPTY_INSTANCE, environment);
         if (!StringUtils.isEmpty(email)) {
             EmailContext emailContextUser = new EmailContext(subject, email, from, html, null, null, null);
-            EmailUtil.sendMimeMail(taskExecutor, new SmtpContext(Collections.singletonList(emailContextUser), sender, async));
+            EmailUtil.sendMimeMail(taskExecutor, new SmtpContext(Collections.singletonList(emailContextUser), sender));
         }
         disposeJavaMailSender(sender);
     }

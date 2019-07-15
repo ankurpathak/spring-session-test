@@ -8,29 +8,21 @@ import java.util.List;
 public class SmtpContext implements Serializable {
     private final List<EmailContext> emails;
     private final JavaMailSender sender;
-    private final boolean async;
+
 
     public List<EmailContext> getEmails() {
         return emails;
     }
 
-    public SmtpContext(List<EmailContext> emails, JavaMailSender sender, boolean async) {
+    public SmtpContext(List<EmailContext> emails, JavaMailSender sender) {
         this.emails = emails;
         this.sender = sender;
-        this.async = async;
     }
 
 
-    public SmtpContext(List<EmailContext> emails, JavaMailSender sender){
-        this(emails, sender, true);
-    }
 
     public JavaMailSender getSender() {
         return sender;
     }
 
-
-    public boolean isAsync() {
-        return async;
-    }
 }

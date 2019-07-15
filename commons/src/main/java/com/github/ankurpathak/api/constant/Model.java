@@ -4,6 +4,7 @@ public interface Model {
     interface Domain {
         interface Field {
             String ID = "_id";
+            String CANDIDATE_ID = "candidateKey";
         }
 
         interface Index {
@@ -93,6 +94,49 @@ public interface Model {
 
         interface Query extends Domain.Query{ }
 
+
+    }
+
+    interface Business {
+        String BUSINESS = "businesses";
+
+        interface Field extends Domain.Field{
+            String CURRENT = "curr";
+        }
+
+        interface Index extends Domain.Index{
+            interface Defination extends Domain.Index.Defination{ }
+        }
+
+        interface Query extends Domain.Query{ }
+
+    }
+
+    interface Mail {
+        String MAIL = "mails";
+
+        interface Field extends Domain.Field{
+        }
+
+        interface Index extends Domain.Index{
+            interface Defination extends Domain.Index.Defination{ }
+        }
+
+        interface Query extends Domain.Query{ }
+
+    }
+
+    interface Text {
+        String TEXT = "texts";
+
+        interface Field extends Domain.Field{
+        }
+
+        interface Index extends Domain.Index{
+            interface Defination extends Domain.Index.Defination{ }
+        }
+
+        interface Query extends Domain.Query{ }
 
     }
 

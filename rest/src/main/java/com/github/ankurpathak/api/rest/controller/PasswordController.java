@@ -8,7 +8,7 @@ import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.domain.model.User;
-import com.github.ankurpathak.api.domain.updater.DomainUpdaters;
+import com.github.ankurpathak.api.domain.updater.UserUpdaters;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.IPasswordService;
@@ -24,26 +24,24 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.*;
+import static com.github.ankurpathak.api.constant.ApiPaths.*;
 
 @ApiController
 public class PasswordController extends AbstractRestController<User, BigInteger, UserDto> {
 
     private final IUserService userService;
     private final IPasswordService service;
-    private final DomainUpdaters updaters;
     private final PasswordEncoder encoder;
 
-    public PasswordController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IPasswordService service, IUserService userService, DomainUpdaters updaters, PasswordEncoder encoder) {
+    public PasswordController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IPasswordService service, IUserService userService, PasswordEncoder encoder) {
         super(applicationEventPublisher, messageService, objectMapper, validator);
         this.service = service;
         this.userService = userService;
-        this.updaters = updaters;
         this.encoder = encoder;
     }
 
     @Override
-    public IDomainService<User, BigInteger> getUserService() {
+    public IDomainService<User, BigInteger> getDomainService() {
         return userService;
     }
 
@@ -66,7 +64,7 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
     public ResponseEntity<?> forgetPassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ForgetPassword.class}) UserDto dto, BindingResult result) {
         ControllerUtil.processValidation(result, messageService);
         dto.encodedPassword(encoder.encode(dto.getPassword()));
-        return update(dto, user, updaters.forgetPasswordUpdater(), request);
+        return update(dto, user, UserUpdaters.forgetPasswordUpdater(), request);
     }
 
 
@@ -75,7 +73,7 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
         ControllerUtil.processValidation(result, messageService);
         service.validateExistingPassword(user, dto);
         dto.encodedPassword(encoder.encode(dto.getPassword()));
-        return update(dto, user, updaters.forgetPasswordUpdater(), request);
+        return update(dto, user,UserUpdaters.forgetPasswordUpdater(), request);
     }
 
 

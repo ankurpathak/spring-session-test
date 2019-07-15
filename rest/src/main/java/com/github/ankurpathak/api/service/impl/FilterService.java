@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.service.impl.util.FilterUtil;
 import com.github.ankurpathak.api.service.IFilterService;
 import com.github.ankurpathak.api.service.IMessageService;
@@ -38,5 +39,15 @@ public class FilterService implements IFilterService {
     @Override
     public void generateForbidden(HttpServletResponse response) throws IOException{
         FilterUtil.generateForbidden(response, objectMapper, messageService);
+    }
+
+    @Override
+    public void generateExpiredToken(String token, HttpServletResponse response) throws IOException {
+        FilterUtil.generateExpiredToken(token, response, objectMapper, messageService);
+    }
+
+    @Override
+    public void generateInvalid(String key, String value, ApiCode code, HttpServletResponse response) throws IOException {
+        FilterUtil.generateInvalid(key, value, code, response, objectMapper, messageService);
     }
 }

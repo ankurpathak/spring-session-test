@@ -28,7 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.mail.internet.MimeMessage;
 
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.*;
+import static com.github.ankurpathak.api.constant.ApiPaths.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -99,7 +99,7 @@ public class PasswordControllerTests extends AbstractRestIntegrationTest<Passwor
                             .andExpect(status().isOk());
                 });
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "password1");
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -124,7 +124,7 @@ public class PasswordControllerTests extends AbstractRestIntegrationTest<Passwor
                 .andExpect(status().isOk());
 
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "password2");
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )

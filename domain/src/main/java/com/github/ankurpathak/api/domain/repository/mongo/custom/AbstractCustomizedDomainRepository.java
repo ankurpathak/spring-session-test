@@ -2,7 +2,7 @@ package com.github.ankurpathak.api.domain.repository.mongo.custom;
 
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.repository.mongo.ICustomizedDomainRepository;
-import com.github.ankurpathak.api.mongo.SingleFieldSearchAggregation;
+import com.github.ankurpathak.api.domain.mongo.SingleFieldSearchAggregation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

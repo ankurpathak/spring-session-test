@@ -4,11 +4,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 import java.util.Collections;
 
-public class PreOtpAuthenticationToken extends UsernamePasswordAuthenticationToken {
+public class PreLoginTokenAuthenticationToken extends UsernamePasswordAuthenticationToken {
 
     private final UsernamePasswordAuthenticationToken authentication;
 
-    public PreOtpAuthenticationToken(UsernamePasswordAuthenticationToken authentication) {
+    public PreLoginTokenAuthenticationToken(UsernamePasswordAuthenticationToken authentication) {
         super(authentication.getPrincipal(), null, Collections.emptySet());
         this.authentication = authentication;
     }
@@ -38,7 +38,7 @@ public class PreOtpAuthenticationToken extends UsernamePasswordAuthenticationTok
         authentication.setAuthenticated(isAuthenticated);
     }
 
-    public static PreOtpAuthenticationToken getInstance(UsernamePasswordAuthenticationToken authentication){
-        return new PreOtpAuthenticationToken(authentication);
+    public static PreLoginTokenAuthenticationToken getInstance(UsernamePasswordAuthenticationToken authentication){
+        return new PreLoginTokenAuthenticationToken(authentication);
     }
 }

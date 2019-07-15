@@ -1,10 +1,8 @@
 package com.github.ankurpathak.api.config;
 
-import com.github.ankurpathak.api.security.authentication.provider.OtpGeneratingAuthenticationProvider;
+import com.github.ankurpathak.api.security.authentication.provider.LoginTokenGeneratorAuthenticationProvider;
 import com.github.ankurpathak.api.security.authentication.provider.SocialApplicationAuthenticationProvider;
 import com.github.ankurpathak.api.security.authentication.provider.SocialWebAuthenticationProvider;
-import com.github.ankurpathak.api.security.authentication.token.PreOtpAuthenticationToken;
-import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IFacebookService;
 import com.github.ankurpathak.api.service.IGoogleService;
@@ -50,8 +48,8 @@ public class AuthenticationProviderConfig {
     }
 
     @Bean
-    public OtpGeneratingAuthenticationProvider otpGeneratingAuthenticationProvider(DaoAuthenticationProvider daoAuthenticationProvider, ApplicationEventPublisher applicationEventPublisher, CustomUserDetailsService userDetailsService){
-        return new OtpGeneratingAuthenticationProvider(daoAuthenticationProvider, applicationEventPublisher,  userDetailsService);
+    public LoginTokenGeneratorAuthenticationProvider otpGeneratingAuthenticationProvider(DaoAuthenticationProvider daoAuthenticationProvider, ApplicationEventPublisher applicationEventPublisher, CustomUserDetailsService userDetailsService){
+        return new LoginTokenGeneratorAuthenticationProvider(daoAuthenticationProvider, applicationEventPublisher,  userDetailsService);
     }
 
     @Bean

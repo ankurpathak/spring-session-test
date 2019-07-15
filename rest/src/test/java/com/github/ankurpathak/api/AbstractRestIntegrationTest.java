@@ -1,7 +1,7 @@
 package com.github.ankurpathak.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ankurpathak.api.mongo.MongoDataRule;
+import com.github.ankurpathak.api.domain.mongo.MongoDataRule;
 import com.github.ankurpathak.api.redis.RedisDataRule;
 import com.github.ankurpathak.api.security.DomainContextRule;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;

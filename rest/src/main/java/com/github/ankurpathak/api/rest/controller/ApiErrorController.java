@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.PATH_GET_ERROR;
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.apiPath;
+import static com.github.ankurpathak.api.constant.ApiPaths.PATH_ERROR;
+import static com.github.ankurpathak.api.constant.ApiPaths.apiPath;
 
 
 @ApiController
@@ -30,11 +30,11 @@ public class ApiErrorController extends AbstractErrorController {
 
     @Override
     public String getErrorPath() {
-        return apiPath(PATH_GET_ERROR);
+        return apiPath(PATH_ERROR);
     }
 
 
-    @GetMapping(PATH_GET_ERROR)
+    @GetMapping(PATH_ERROR)
     public ResponseEntity<?> error(HttpServletRequest request) {
         Map<String, Object> errorAttributes = this.getErrorAttributes(request, false);
         return ControllerUtil.processError(messageService, errorAttributes);

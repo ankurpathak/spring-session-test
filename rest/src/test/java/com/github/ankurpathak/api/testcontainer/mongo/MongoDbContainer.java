@@ -72,7 +72,7 @@ public class MongoDbContainer extends GenericContainer<MongoDbContainer> impleme
                 try {
                     statement.evaluate();
                 }finally {
-                  //  close();
+                  // close();
                 }
             }
         };

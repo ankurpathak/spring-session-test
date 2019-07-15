@@ -5,7 +5,7 @@ import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.event.RegistrationCompleteEvent;
 import com.github.ankurpathak.api.event.SendLoginTokenEvent;
-import com.github.ankurpathak.api.security.authentication.token.PreOtpAuthenticationToken;
+import com.github.ankurpathak.api.security.authentication.token.PreLoginTokenAuthenticationToken;
 import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.security.dto.DomainContext;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
@@ -23,13 +23,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.Collections;
 import java.util.Optional;
 
-public class OtpGeneratingAuthenticationProvider implements AuthenticationProvider {
+public class LoginTokenGeneratorAuthenticationProvider implements AuthenticationProvider {
     private  final AuthenticationProvider authenticationProvider;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final CustomUserDetailsService userDetailsService;
 
 
-    public OtpGeneratingAuthenticationProvider(AuthenticationProvider authenticationProvider, ApplicationEventPublisher applicationEventPublisher, CustomUserDetailsService userDetailsService) {
+    public LoginTokenGeneratorAuthenticationProvider(AuthenticationProvider authenticationProvider, ApplicationEventPublisher applicationEventPublisher, CustomUserDetailsService userDetailsService) {
         this.authenticationProvider = authenticationProvider;
         this.applicationEventPublisher = applicationEventPublisher;
         this.userDetailsService = userDetailsService;
@@ -69,7 +69,7 @@ public class OtpGeneratingAuthenticationProvider implements AuthenticationProvid
                     CustomUserDetails userDetails = CustomUserDetails.getInstance(user.get(), userDetailsService.getPrivileges(user.get().getRoles()));
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     applicationEventPublisher.publishEvent(new SendLoginTokenEvent(user.get()));
-                    return PreOtpAuthenticationToken.getInstance(usernamePasswordAuthenticationToken);
+                    return PreLoginTokenAuthenticationToken.getInstance(usernamePasswordAuthenticationToken);
                 }else {
                     throw aEx;
                 }
@@ -88,7 +88,7 @@ public class OtpGeneratingAuthenticationProvider implements AuthenticationProvid
                 User user = registerNewContact(candidateKeyValue);
                 CustomUserDetails userDetails = CustomUserDetails.getInstance(user, userDetailsService.getPrivileges(user.getRoles()));
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                return PreOtpAuthenticationToken.getInstance(usernamePasswordAuthenticationToken);
+                return PreLoginTokenAuthenticationToken.getInstance(usernamePasswordAuthenticationToken);
             }else {
                 throw uEx;
             }
@@ -104,7 +104,7 @@ public class OtpGeneratingAuthenticationProvider implements AuthenticationProvid
                 .roles(Collections.singleton(Role.ROLE_ADMIN))
                 .enabled(false);
         userDetailsService.getUserService().create(user);
-        applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user, true));
+        applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user));
         return user;
     }
 

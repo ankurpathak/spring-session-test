@@ -50,7 +50,7 @@ public class RegistrationCompleteListener implements ApplicationListener<Registr
 
     private void confirmRegistration(final RegistrationCompleteEvent event) {
         require(event, notNullValue());
-        Optional.ofNullable(event.getUser())
+        Optional.ofNullable(event.getSource())
                 .ifPresentOrElse(user -> {
                     Optional.ofNullable(user.getEmail())
                             .ifPresentOrElse(email -> {
@@ -61,7 +61,7 @@ public class RegistrationCompleteListener implements ApplicationListener<Registr
                                                         if (Instant.now().isBefore(token.getExpiry())) {
                                                             tokenService.findAccountToken(token.getValue())
                                                                     .ifPresentOrElse(reverseToken -> {
-                                                                        emailService.sendForAccountEnable(user, reverseToken, event.isAsync());
+                                                                        emailService.sendForAccountEnable(user, reverseToken);
                                                                     }, () -> LogUtil.logNull(log, Token.class.getSimpleName()));
                                                         } else {
                                                             log.info("Token: {} expired", token.getId());
@@ -72,7 +72,7 @@ public class RegistrationCompleteListener implements ApplicationListener<Registr
                                                                 .ifPresentOrElse(token -> {
                                                                     tokenService.findAccountToken(token.getValue())
                                                                             .ifPresentOrElse(reverseToken -> {
-                                                                                emailService.sendForAccountEnable(user, reverseToken, event.isAsync());
+                                                                                emailService.sendForAccountEnable(user, reverseToken);
                                                                             }, () -> LogUtil.logNull(log, Token.class.getSimpleName()));
                                                                 }, () -> LogUtil.logNull(log, Token.class.getSimpleName()));
                                                     });

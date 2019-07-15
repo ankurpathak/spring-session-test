@@ -6,7 +6,6 @@ import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
 import com.github.ankurpathak.api.util.WebUtil;
-import org.apache.commons.compress.utils.Sets;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -25,13 +24,10 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.PATH_GET_ME;
-import static com.github.ankurpathak.api.constant.RequestMappingPaths.apiPath;
+import static com.github.ankurpathak.api.constant.ApiPaths.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -51,7 +47,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void loginWithEmailAndCorrectPassword() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "password");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
@@ -66,7 +62,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void loginWithEmailAndIncorrectPassword() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "incorrectpassword");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
@@ -80,10 +76,28 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
 
     }
 
+
+    @Test
+    public void loginWithNotExistingUser() throws Exception {
+        LoginRequestDto dto = new LoginRequestDto("ankurpathak.ap@gmail.com", "incorrectpassword");
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(cookie().doesNotExist("SESSION"))
+                .andExpect(cookie().exists("remember-me"))
+                .andExpect(cookie().value("remember-me", Matchers.nullValue()))
+                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
+                .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(jsonPath("$.code", is(ApiCode.USER_NOT_FOUND.getCode())));
+
+
+    }
+
     @Test
     public void loginWithFullContactAndCorrectPassword() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("+917385500660", "password");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
@@ -98,7 +112,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void loginWithFullContactAndIncorrectPassword() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("+917385500660", "incorrectpassword");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
@@ -114,7 +128,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void loginWithContactAndCorrectPassword() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("7385500660", "password");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
@@ -129,7 +143,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void loginWithIdAndCorrectPassword() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("2", "password");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
@@ -144,7 +158,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void loginWithContactAndIncorrectPassword() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("7385500660", "incorrectpassword");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
@@ -160,7 +174,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void loginWithIdAndIncorrectPassword() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("2", "incorrectpassword");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
@@ -177,7 +191,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void anonymousUserCanNotLogin() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("1", "password");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
@@ -192,7 +206,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void disabledUserCanNotLogin() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("amarmule@live.in", "password");
-        mockMvc.perform(post("/login").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isUnauthorized())
                 .andExpect(cookie().doesNotExist("SESSION"))
@@ -208,7 +222,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void loginWithEmailAndCorrectPasswordRememberMe() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "password");
-        mockMvc.perform(post("/login").header(WebUtil.HEADER_X_REMEMBER_ME, true).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).header(WebUtil.HEADER_X_REMEMBER_ME, true).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
@@ -227,7 +241,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void loginWithRememberMe() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "password");
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .header(WebUtil.HEADER_X_REMEMBER_ME, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
@@ -244,7 +258,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
         .andDo(result -> {
             String remeberMeTokenValue = result.getResponse().getHeader(WebUtil.HEADER_X_REMEMBER_ME_TOKEN);
             remeberMeTokenValue = remeberMeTokenValue != null ? remeberMeTokenValue : "";
-            mockMvc.perform(get(apiPath(PATH_GET_ME))
+            mockMvc.perform(get(apiPath(PATH_ME))
                     .header(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, remeberMeTokenValue )
             )
             .andDo(print())
@@ -265,7 +279,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void accessWithRememberMeSession() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "password");
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .header(WebUtil.HEADER_X_REMEMBER_ME, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
@@ -281,7 +295,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
         .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
         .andDo(rememberMeLoginResult -> {
             String rememberMeTokenValue = rememberMeLoginResult.getResponse().getHeader(WebUtil.HEADER_X_REMEMBER_ME_TOKEN);
-            mockMvc.perform(get(apiPath(PATH_GET_ME))
+            mockMvc.perform(get(apiPath(PATH_ME))
                     .header(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, StringUtils.defaultString(rememberMeTokenValue))
             )
             .andDo(print())
@@ -297,7 +311,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
             .andExpect(jsonPath("$.id", greaterThan(1)))
             .andDo(rememberMeSessionResult -> {
                 String xAuthTokenValue = rememberMeSessionResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN);
-                mockMvc.perform(get(apiPath(PATH_GET_ME))
+                mockMvc.perform(get(apiPath(PATH_ME))
                         .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(xAuthTokenValue))
                 )
                 .andDo(print())
@@ -312,7 +326,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void existingPhoneGetOtpForLogin() throws Exception{
         LoginRequestDto dto = new LoginRequestDto("+917385500660", null);
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
                 .header(WebUtil.HEADER_X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -327,7 +341,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
                 .andDo(otpResult -> {
-                    mockMvc.perform(get(apiPath(PATH_GET_ME))
+                    mockMvc.perform(get(apiPath(PATH_ME))
                             .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
 
                     )
@@ -344,7 +358,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void  existingPhoneAllSameOtpTillExpiry() throws Exception{
         LoginRequestDto dto = new LoginRequestDto("+917385500660", null);
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
                 .header(WebUtil.HEADER_X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -359,7 +373,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
                 .header(WebUtil.HEADER_X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -374,7 +388,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
                 .header(WebUtil.HEADER_X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -405,7 +419,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void newPhoneGetOtpForLogin() throws Exception{
         LoginRequestDto dto = new LoginRequestDto("+917588011779", null);
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
                 .header(WebUtil.HEADER_X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -420,7 +434,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
                 .andExpect(newPhoneContactResult-> {
-                    mockMvc.perform(get(apiPath(PATH_GET_ME))
+                    mockMvc.perform(get(apiPath(PATH_ME))
                             .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(newPhoneContactResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
                     )
                             .andDo(print())
@@ -441,7 +455,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void  newPhoneAllSameOtpTillExpiry() throws Exception{
         LoginRequestDto dto = new LoginRequestDto("+917588011779", null);
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
                 .header(WebUtil.HEADER_X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -456,7 +470,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
                 .header(WebUtil.HEADER_X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -471,7 +485,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
                 .header(WebUtil.HEADER_X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -506,7 +520,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void existingPhoneLoginWithOtp() throws Exception{
         LoginRequestDto dto = new LoginRequestDto("+917385500660", null);
-        mockMvc.perform(post("/login")
+        mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
                 .header(WebUtil.HEADER_X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -521,7 +535,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
                 .andDo(otpResult -> {
-                    mockMvc.perform(get(apiPath(PATH_GET_ME))
+                    mockMvc.perform(get(apiPath(PATH_ME))
                             .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
 
                     )
@@ -536,15 +550,14 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                     String output = outputCapture.toString();
                     String otpToken = StringUtils.substringBetween(output, "Text: ", " is your otp for login.");
 
-                    mockMvc.perform(post("/otp")
+                    mockMvc.perform(post(apiPath(PATH_LOGIN_OTP), otpToken)
                             .param("async", String.valueOf(false))
-                            .param("otptoken", otpToken)
                             .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
                     )
                             .andDo(print())
                             .andExpect(status().isOk())
                             .andDo(loginResult -> {
-                                mockMvc.perform(get(apiPath(PATH_GET_ME))
+                                mockMvc.perform(get(apiPath(PATH_ME))
                                         .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
 
                                 )

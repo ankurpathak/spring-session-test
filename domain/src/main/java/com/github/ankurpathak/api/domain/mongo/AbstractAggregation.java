@@ -1,4 +1,4 @@
-package com.github.ankurpathak.api.mongo;
+package com.github.ankurpathak.api.domain.mongo;
 
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.Domain;

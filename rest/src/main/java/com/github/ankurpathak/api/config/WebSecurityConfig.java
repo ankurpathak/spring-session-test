@@ -1,6 +1,6 @@
 package com.github.ankurpathak.api.config;
 
-import com.github.ankurpathak.api.constant.RequestMappingPaths;
+import com.github.ankurpathak.api.constant.ApiPaths;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.security.core.RestAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,22 +81,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anonymous().authenticationFilter(filterConfig.anonymousAuthenticationFilter())
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_GET_ME)).hasAuthority(Role.Privilege.PRIV_ADMIN)
-                .antMatchers(HttpMethod.POST, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CREATE_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
-                .antMatchers(HttpMethod.POST, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_ACCOUNT)).hasAuthority(Role.Privilege.PRIV_ACCOUNT)
-                .antMatchers(HttpMethod.GET, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_SEARCH_BY_FIEND_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
-                .antMatchers(HttpMethod.GET, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_LIST_FIELD_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
-                .antMatchers(HttpMethod.PUT, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_ACCOUNT_EMAIL)).hasAuthority(Role.Privilege.PRIV_ACCOUNT_EMAIL)
-                .antMatchers(HttpMethod.PUT, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_ACCOUNT_ENABLE)).hasAuthority(Role.Privilege.PRIV_ACCOUNT_ENABLE)
-                .antMatchers(HttpMethod.PUT, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_FORGET_PASSWORD_EMAIL)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD_EMAIL)
-                .antMatchers(HttpMethod.PUT, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_FORGET_PASSWORD_ENABLE)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD_ENABLE)
-                .antMatchers(HttpMethod.PUT, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_FORGET_PASSWORD)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD)
-                .antMatchers(HttpMethod.GET, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_SEARCH_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
-                .antMatchers(HttpMethod.PATCH, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CHANGE_PASSWORD)).hasAnyAuthority(Role.Privilege.PRIV_CHANGE_PASSWORD, Role.Privilege.PRIV_ADMIN)
-                .antMatchers(HttpMethod.PUT, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CHANGE_PROFILE)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
-                .antMatchers(HttpMethod.PATCH, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_CHANGE_PROFILE)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
-                .mvcMatchers(HttpMethod.GET, RequestMappingPaths.PATH_FAVICON).permitAll()
-                .mvcMatchers(HttpMethod.GET, RequestMappingPaths.apiPath(RequestMappingPaths.PATH_REMEMBER_ME)).rememberMe()
+                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_ME)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_ACCOUNT)).hasAuthority(Role.Privilege.PRIV_ACCOUNT)
+                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_SEARCH_BY_FIEND_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_LIST_FIELD_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.PUT, ApiPaths.apiPath(ApiPaths.PATH_ACCOUNT_EMAIL)).hasAuthority(Role.Privilege.PRIV_ACCOUNT_EMAIL)
+                .antMatchers(HttpMethod.PUT, ApiPaths.apiPath(ApiPaths.PATH_ACCOUNT_ENABLE)).hasAuthority(Role.Privilege.PRIV_ACCOUNT_ENABLE)
+                .antMatchers(HttpMethod.PUT, ApiPaths.apiPath(ApiPaths.PATH_FORGET_PASSWORD_EMAIL)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD_EMAIL)
+                .antMatchers(HttpMethod.PUT, ApiPaths.apiPath(ApiPaths.PATH_FORGET_PASSWORD_ENABLE)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD_ENABLE)
+                .antMatchers(HttpMethod.PUT, ApiPaths.apiPath(ApiPaths.PATH_FORGET_PASSWORD)).hasAuthority(Role.Privilege.PRIV_FORGET_PASSWORD)
+                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_SEARCH_USER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.PATCH, ApiPaths.apiPath(ApiPaths.PATH_CHANGE_PASSWORD)).hasAnyAuthority(Role.Privilege.PRIV_CHANGE_PASSWORD, Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.PUT, ApiPaths.apiPath(ApiPaths.PATH_USER)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
+                .antMatchers(HttpMethod.PATCH, ApiPaths.apiPath(ApiPaths.PATH_USER)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
+                .mvcMatchers(HttpMethod.GET, ApiPaths.PATH_FAVICON).permitAll()
+                .mvcMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_REMEMBER_ME)).rememberMe()
                 .anyRequest()
                 .denyAll()
 
@@ -113,7 +113,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
               //  .permitAll()
                 .and()
                 .logout()
-                .logoutUrl(RequestMappingPaths.PATH_LOGOUT)
+                .logoutUrl(ApiPaths.apiPath(ApiPaths.PATH_LOGOUT))
                 .permitAll()
                 .deleteCookies("JSESSIONID", "SESSION")
                 .logoutSuccessHandler(restLogoutSuccessHandler)

@@ -1,8 +1,5 @@
 package com.github.ankurpathak.api.config;
 
-import com.github.ankurpathak.api.rest.controllor.dto.converter.DtoConverters;
-import com.github.ankurpathak.api.domain.converter.DomainConverters;
-import com.github.ankurpathak.api.domain.updater.DomainUpdaters;
 import com.google.gson.Gson;
 import com.maxmind.db.CHMCache;
 import com.maxmind.geoip2.DatabaseReader;
@@ -73,21 +70,6 @@ public class AppConfig {
         return new Gson();
     }
 
-    @Bean
-    public DomainConverters domainConverters(){
-        return new DomainConverters();
-    }
-
-
-    @Bean
-    public DomainUpdaters domainUpdaters(){
-        return new DomainUpdaters();
-    }
-
-    @Bean
-    public DtoConverters dtoConverters(){
-        return new DtoConverters();
-    }
 
 }
 

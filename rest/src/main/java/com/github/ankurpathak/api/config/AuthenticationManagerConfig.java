@@ -1,6 +1,6 @@
 package com.github.ankurpathak.api.config;
 
-import com.github.ankurpathak.api.security.authentication.provider.OtpGeneratingAuthenticationProvider;
+import com.github.ankurpathak.api.security.authentication.provider.LoginTokenGeneratorAuthenticationProvider;
 import com.github.ankurpathak.api.security.authentication.provider.SocialApplicationAuthenticationProvider;
 import com.github.ankurpathak.api.security.authentication.provider.SocialWebAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,20 +16,20 @@ public class AuthenticationManagerConfig {
     private final RememberMeAuthenticationProvider rememberMeAuthenticationProvider;
     private final SocialWebAuthenticationProvider socialWebAuthenticationProvider;
     private final SocialApplicationAuthenticationProvider socialApplicationAuthenticationProvider;
-    private final OtpGeneratingAuthenticationProvider otpGeneratingAuthenticationProvider;
+    private final LoginTokenGeneratorAuthenticationProvider loginTokenGeneratorAuthenticationProvider;
 
-    public AuthenticationManagerConfig(DaoAuthenticationProvider daoAuthenticationProvider, RememberMeAuthenticationProvider rememberMeAuthenticationProvider, SocialWebAuthenticationProvider socialWebAuthenticationProvider, SocialApplicationAuthenticationProvider socialApplicationAuthenticationProvider, OtpGeneratingAuthenticationProvider otpGeneratingAuthenticationProvider) {
+    public AuthenticationManagerConfig(DaoAuthenticationProvider daoAuthenticationProvider, RememberMeAuthenticationProvider rememberMeAuthenticationProvider, SocialWebAuthenticationProvider socialWebAuthenticationProvider, SocialApplicationAuthenticationProvider socialApplicationAuthenticationProvider, LoginTokenGeneratorAuthenticationProvider loginTokenGeneratorAuthenticationProvider) {
         this.daoAuthenticationProvider = daoAuthenticationProvider;
         this.rememberMeAuthenticationProvider = rememberMeAuthenticationProvider;
         this.socialWebAuthenticationProvider = socialWebAuthenticationProvider;
         this.socialApplicationAuthenticationProvider = socialApplicationAuthenticationProvider;
-        this.otpGeneratingAuthenticationProvider = otpGeneratingAuthenticationProvider;
+        this.loginTokenGeneratorAuthenticationProvider = loginTokenGeneratorAuthenticationProvider;
     }
 
 
     @Autowired
     void globalConfigure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(otpGeneratingAuthenticationProvider)
+        auth.authenticationProvider(loginTokenGeneratorAuthenticationProvider)
                 .authenticationProvider(rememberMeAuthenticationProvider)
                 .authenticationProvider(socialWebAuthenticationProvider)
                 .authenticationProvider(socialApplicationAuthenticationProvider);

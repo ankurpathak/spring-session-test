@@ -13,6 +13,8 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 
 import java.util.UUID;
 
+import static com.github.ankurpathak.api.constant.ApiPaths.*;
+
 @Configuration
 public class FilterConfig {
 
@@ -66,7 +68,7 @@ public class FilterConfig {
 
 
     protected RestUsernamePasswordAuthenticationFilter usernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
-        RestUsernamePasswordAuthenticationFilter filter = new RestUsernamePasswordAuthenticationFilter(objectMapper);
+        RestUsernamePasswordAuthenticationFilter filter = new RestUsernamePasswordAuthenticationFilter(apiPath(PATH_LOGIN), objectMapper);
         filter.setAuthenticationManager(authenticationManager);
         filter.setRememberMeServices(persistentTokenBasedRememberMeServices);
         filter.setAuthenticationFailureHandler(restAuthenticationFailureHandler);
@@ -74,8 +76,9 @@ public class FilterConfig {
         return filter;
     }
 
-    protected OtpValidationFilter otpValidationFilter() {
-        return new OtpValidationFilter(filterService, tokenService);
+    protected LoginTokenValidationFilter otpValidationFilter() {
+
+        return new LoginTokenValidationFilter(apiPath(PATH_LOGIN_OTP),filterService, tokenService);
     }
 
 

@@ -1,4 +1,4 @@
-package com.github.ankurpathak.api.mongo;
+package com.github.ankurpathak.api.domain.mongo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
@@ -188,7 +188,7 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
 
     public void after() throws Exception{
         dropDatabase();
-        //dropCollections();
+                //dropCollections();
     }
 
     @Override
