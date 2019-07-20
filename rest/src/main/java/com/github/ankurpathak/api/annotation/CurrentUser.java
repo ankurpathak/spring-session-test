@@ -8,6 +8,6 @@ import java.lang.annotation.*;
 @Target({ ElementType.PARAMETER, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@AuthenticationPrincipal(expression = Params.USER)
+@AuthenticationPrincipal(expression = Params.USER, errorOnInvalidType = true)
 public @interface CurrentUser {
 }

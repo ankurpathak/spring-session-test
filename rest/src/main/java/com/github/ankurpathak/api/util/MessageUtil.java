@@ -1,7 +1,7 @@
 package com.github.ankurpathak.api.util;
 
-import com.github.ankurpathak.api.security.util.SecurityUtil;
 import com.github.ankurpathak.api.security.dto.DomainContext;
+import com.github.ankurpathak.api.security.util.SecurityUtil;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.validation.FieldError;

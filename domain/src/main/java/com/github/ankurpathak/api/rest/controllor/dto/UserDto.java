@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-@PasswordMatches(groups = {UserDto.Register.class, UserDto.ForgetPassword.class, UserDto.ChangePassword.class})
+@PasswordMatches(groups = {UserDto.Account.class, UserDto.ForgetPassword.class, UserDto.ChangePassword.class})
 public class UserDto extends DomainDto<User, BigInteger> implements Serializable {
 
     @NotBlank(groups = Default.class)
@@ -19,19 +19,19 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
     @NotContainWhitespace(groups = Default.class)
     @NotBlank(groups = Default.class)
     private String lastName;
-    @NotBlank(groups = Register.class)
-    @com.github.ankurpathak.primitive.bean.constraints.string.Email(groups = {Register.class})
+    @NotBlank(groups = Account.class)
+    @com.github.ankurpathak.primitive.bean.constraints.string.Email(groups = {Account.class})
     private String email;
     private String username;
     @NotContainWhitespace(groups = Default.class)
     private String middleName;
 
-    @NotBlank(groups = {Register.class, ForgetPassword.class, ChangePassword.class})
-    @NotContainWhitespace(groups = {Register.class, ForgetPassword.class, ChangePassword.class})
+    @NotBlank(groups = {Account.class, ForgetPassword.class, ChangePassword.class})
+    @NotContainWhitespace(groups = {Account.class, ForgetPassword.class, ChangePassword.class})
     private String password;
     private String confirmPassword;
 
-    @Contact(groups = Register.class)
+    @Contact(groups = Account.class)
     private String contact;
 
 
@@ -173,7 +173,7 @@ public class UserDto extends DomainDto<User, BigInteger> implements Serializable
     }
 
 
-    public interface Register {}
+    public interface Account {}
     public interface ForgetPassword {}
     public interface ChangePassword {}
 

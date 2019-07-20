@@ -1,9 +1,9 @@
 package com.github.ankurpathak.api.service.impl;
 
-import com.github.ankurpathak.api.service.dto.SocialProperties;
 import com.github.ankurpathak.api.service.ILinkedinService;
 import com.github.ankurpathak.api.service.dto.LinkedinProperties;
 import com.github.ankurpathak.api.service.dto.SocialProfile;
+import com.github.ankurpathak.api.service.dto.SocialProperties;
 import com.github.scribejava.apis.LinkedInApi20;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;

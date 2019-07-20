@@ -9,6 +9,7 @@ import com.github.ankurpathak.api.testcontainer.mongo.MongoDbContainer;
 import com.github.ankurpathak.api.testcontainer.redis.RedisContainer;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.rules.TestRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
@@ -32,11 +33,17 @@ public class AbstractRestIntegrationTest<SELF extends AbstractRestIntegrationTes
 
     //@RegisterExtension
     @Rule
-    public MongoDataRule<SELF> mongoDataRule = new MongoDataRule<>(this);
+    public TestRule mongoDataRule(){
+        return new MongoDataRule<>(this);
+    }
+
+
 
     //@RegisterExtension
     @Rule
-    public RedisDataRule<SELF> redisDataRule = new RedisDataRule<>(this);
+    public TestRule redisDataRule(){
+        return new RedisDataRule<>(this);
+    }
 
 
     //@RegisterExtension

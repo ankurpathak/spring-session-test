@@ -1,7 +1,9 @@
 package com.github.ankurpathak.api.rsql;
 
 
-import cz.jirutka.rsql.parser.ast.*;
+import cz.jirutka.rsql.parser.ast.AndNode;
+import cz.jirutka.rsql.parser.ast.ComparisonNode;
+import cz.jirutka.rsql.parser.ast.OrNode;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;

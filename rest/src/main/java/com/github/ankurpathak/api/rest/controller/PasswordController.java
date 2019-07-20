@@ -1,14 +1,14 @@
 package com.github.ankurpathak.api.rest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentUser;
 import com.github.ankurpathak.api.config.ControllerUtil;
-import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
+import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.updater.UserUpdaters;
+import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.IPasswordService;

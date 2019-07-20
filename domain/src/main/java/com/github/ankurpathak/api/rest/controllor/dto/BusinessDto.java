@@ -3,15 +3,16 @@ package com.github.ankurpathak.api.rest.controllor.dto;
 import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.primitive.bean.constraints.string.Any;
+import com.github.ankurpathak.primitive.bean.constraints.string.Email;
 
 import javax.validation.constraints.NotBlank;
 import java.math.BigInteger;
 
 public class BusinessDto extends DomainDto<Business, BigInteger> {
-    @NotBlank(groups = {DomainDto.Default.class})
+    @NotBlank(groups = {Default.class})
     private String name;
-    @Any(value = {}, groups = {DomainDto.Default.class})
-    @NotBlank(groups = {DomainDto.Default.class})
+    @Any(value = {}, groups = {Default.class})
+    @NotBlank(groups = {Default.class})
     private String type;
 
 
@@ -31,6 +32,19 @@ public class BusinessDto extends DomainDto<Business, BigInteger> {
         this.name = name;
     }
 
+    @Email(groups = {Account.class})
+    public String email;
+
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public BusinessDto name(String name) {
         this.name = name;
         return this;
@@ -40,4 +54,12 @@ public class BusinessDto extends DomainDto<Business, BigInteger> {
         this.type = type;
         return this;
     }
+
+    public BusinessDto email(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public interface Account {}
+
 }

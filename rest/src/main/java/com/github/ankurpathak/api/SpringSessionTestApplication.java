@@ -1,5 +1,9 @@
 package com.github.ankurpathak.api;
 
+import com.github.ankurpathak.api.domain.repository.mongo.ICityEtlRepository;
+import com.github.ankurpathak.api.service.IBankService;
+import com.github.ankurpathak.api.service.ICityEtlService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,8 +25,11 @@ public class SpringSessionTestApplication {
 @Component
 class ApplicationRunnerImpl implements ApplicationRunner{
 
+    @Autowired
+    private ICityEtlService cityEtlService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+        cityEtlService.process();
     }
 }

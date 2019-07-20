@@ -1,10 +1,10 @@
 package com.github.ankurpathak.api.security.util;
 
 import com.github.ankurpathak.api.domain.model.User;
-import com.github.ankurpathak.api.security.dto.DomainContextHolder;
-import com.github.ankurpathak.api.security.dto.ExtendedSecurityContextImpl;
 import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.security.dto.DomainContext;
+import com.github.ankurpathak.api.security.dto.DomainContextHolder;
+import com.github.ankurpathak.api.security.dto.ExtendedSecurityContextImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;

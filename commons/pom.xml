@@ -26,6 +26,19 @@
             <version>${jackson.version}</version>
         </dependency>
         <!--Jackson Annotations -->
+        <!-- Method Preconditions Check -->
+        <dependency>
+            <groupId>org.valid4j</groupId>
+            <artifactId>valid4j</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Method Preconditions Check -->
     </dependencies>
 
 

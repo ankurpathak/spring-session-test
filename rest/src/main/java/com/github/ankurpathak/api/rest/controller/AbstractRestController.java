@@ -6,13 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.zjsonpatch.*;
 import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.rest.controller.callback.IPostCreateOne;
-import com.github.ankurpathak.api.rest.controller.callback.IPreCreateOne;
-import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
-import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
-import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;
-import com.github.ankurpathak.api.rest.controller.util.DuplicateKeyExceptionProcessor;
-import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.updater.IUpdateDomain;
@@ -22,6 +15,13 @@ import com.github.ankurpathak.api.event.util.PagingUtil;
 import com.github.ankurpathak.api.exception.FoundException;
 import com.github.ankurpathak.api.exception.InvalidException;
 import com.github.ankurpathak.api.exception.NotFoundException;
+import com.github.ankurpathak.api.rest.controller.callback.IPostCreateOne;
+import com.github.ankurpathak.api.rest.controller.callback.IPreCreateOne;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
+import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;
+import com.github.ankurpathak.api.rest.controller.util.DuplicateKeyExceptionProcessor;
+import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
 import org.springframework.context.ApplicationEventPublisher;
@@ -60,7 +60,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
     protected ResponseEntity<T> byId(ID id, Class<T> type) {
-        return getDomainService().findById(id).map(ResponseEntity::ok).orElseThrow(() -> new NotFoundException(String.valueOf(id), Params.ID, type.getSimpleName(), ApiCode.NOT_FOUND));
+        return ControllerUtil.processOptional(getDomainService().findById(id), type, null, String.valueOf(id), messageService);
     }
 
 

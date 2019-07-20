@@ -1,8 +1,8 @@
 package com.github.ankurpathak.api.security.service;
 
 
-import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;

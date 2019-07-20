@@ -123,11 +123,11 @@ public class RedisDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                RedisDataRule.this.before();
+                before();
                 try {
                     statement.evaluate();
                 }finally {
-                    RedisDataRule.this.after();
+                    after();
                 }
             }
         };

@@ -4,7 +4,7 @@ import com.github.ankurpathak.api.domain.model.Contact;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.event.RegistrationCompleteEvent;
-import com.github.ankurpathak.api.event.SendLoginTokenEvent;
+import com.github.ankurpathak.api.event.LoginTokenEvent;
 import com.github.ankurpathak.api.security.authentication.token.PreLoginTokenAuthenticationToken;
 import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.security.dto.DomainContext;
@@ -68,7 +68,7 @@ public class LoginTokenGeneratorAuthenticationProvider implements Authentication
                 if(user.isPresent()){
                     CustomUserDetails userDetails = CustomUserDetails.getInstance(user.get(), userDetailsService.getPrivileges(user.get().getRoles()));
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    applicationEventPublisher.publishEvent(new SendLoginTokenEvent(user.get()));
+                    applicationEventPublisher.publishEvent(new LoginTokenEvent(user.get()));
                     return PreLoginTokenAuthenticationToken.getInstance(usernamePasswordAuthenticationToken);
                 }else {
                     throw aEx;

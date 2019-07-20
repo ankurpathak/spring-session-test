@@ -10,7 +10,7 @@
         <module>domain</module>
         <module>commons</module>
         <module>rest</module>
-        <module>bank-ifsc</module>
+        <module>etl</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -368,10 +368,18 @@
             </dependency>
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
-                <artifactId>bank-ifsc</artifactId>
+                <artifactId>etl</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <!--Modules -->
+
+            <!--Open CSV -->
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${opencsv.version}</version>
+            </dependency>
+            <!--Open CSV -->
 
             <!--Jackson Annotations -->
             <dependency>
@@ -427,6 +435,14 @@
                 <version>${jedis.version}</version>
             </dependency>
             <!-- Redis Client -->
+            <!-- Jackson CSV -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-csv</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <!-- Jackson CSV -->
+
         </dependencies>
     </dependencyManagement>
     <!--Spring Data Release Train -->
@@ -473,6 +489,7 @@
         <testcontainer.version>1.11.3</testcontainer.version>
         <reflections.version>0.9.11</reflections.version>
         <greenmail.version>1.5.10</greenmail.version>
+        <opencsv.version>4.6</opencsv.version>
     </properties>
 
     <repositories>

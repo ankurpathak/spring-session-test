@@ -1,11 +1,11 @@
 package com.github.ankurpathak.api.rest.controller.advice;
 
 
-import com.github.ankurpathak.api.rest.controller.dto.ValidationErrorDto;
+import com.github.ankurpathak.api.exception.ValidationException;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
-import com.github.ankurpathak.api.exception.ValidationException;
+import com.github.ankurpathak.api.rest.controller.dto.ValidationErrorDto;
 import com.github.ankurpathak.api.util.MessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

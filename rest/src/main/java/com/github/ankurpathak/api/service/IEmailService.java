@@ -1,10 +1,12 @@
 package com.github.ankurpathak.api.service;
 
+import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.domain.model.User;
 
 public interface IEmailService {
     void sendForAccountEnable(User user, Token token);
+    void sendForBusinessAdded(User user, Business business);
 
     void sendForForgetPassword(User user, Token token);
 

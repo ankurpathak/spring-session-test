@@ -1,10 +1,10 @@
 package com.github.ankurpathak.api.security.service;
 
-import com.github.ankurpathak.api.security.dto.CustomUserDetails;
+import com.github.ankurpathak.api.domain.model.Contact;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
-import com.github.ankurpathak.api.domain.model.Contact;
+import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.require;
 
 

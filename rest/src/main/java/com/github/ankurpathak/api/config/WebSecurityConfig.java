@@ -12,13 +12,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.*;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
-
-import static org.hamcrest.Matchers.notNullValue;
-import static org.valid4j.Assertive.ensure;
 
 
 @Configuration
@@ -95,6 +94,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PATCH, ApiPaths.apiPath(ApiPaths.PATH_CHANGE_PASSWORD)).hasAnyAuthority(Role.Privilege.PRIV_CHANGE_PASSWORD, Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.PUT, ApiPaths.apiPath(ApiPaths.PATH_USER)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
                 .antMatchers(HttpMethod.PATCH, ApiPaths.apiPath(ApiPaths.PATH_USER)).hasAuthority(Role.Privilege.PRIV_CHANGE_PROFILE)
+                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_BANK)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_BANK_STATE)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_BANK_DISTRICT)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_BANK_BRANCH)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_BANK_IFSC)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .mvcMatchers(HttpMethod.GET, ApiPaths.PATH_FAVICON).permitAll()
                 .mvcMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_REMEMBER_ME)).rememberMe()
                 .anyRequest()

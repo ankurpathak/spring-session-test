@@ -1,10 +1,10 @@
 package com.github.ankurpathak.api.rest.controller.util;
 
 import com.github.ankurpathak.api.constant.Model;
-import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
-import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.exception.FoundException;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
+import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;

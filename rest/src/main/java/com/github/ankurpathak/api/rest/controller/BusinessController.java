@@ -5,13 +5,16 @@ import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentUser;
 import com.github.ankurpathak.api.domain.converter.BusinessConverters;
 import com.github.ankurpathak.api.domain.model.Business;
+import com.github.ankurpathak.api.domain.model.Contact;
 import com.github.ankurpathak.api.domain.model.User;
-import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
+import com.github.ankurpathak.api.event.BusinessAddedEvent;
+import com.github.ankurpathak.api.event.EmailTokenEvent;
 import com.github.ankurpathak.api.rest.controllor.dto.BusinessDto;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IBusinessService;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -45,10 +48,20 @@ public class BusinessController extends AbstractRestController<Business, BigInte
 
 
     @PostMapping(PATH_BUSINESS)
-    public ResponseEntity<?> createOne(@CurrentUser User user, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({DomainDto.Default.class}) BusinessDto dto, BindingResult result){
+    public ResponseEntity<?> createOne(@CurrentUser User user, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({BusinessDto.Default.class, BusinessDto.Account.class}) BusinessDto dto, BindingResult result){
         return createOne(dto, result, request, response, BusinessConverters.businessDtoCreateOneDomain, (rest, tDto) -> {}, (rest,t ,tDto) -> {
             user.addBusinessId(t.getId());
+            if(CollectionUtils.isEmpty(user.getBusinessIds()) && dto.getEmail() != null && user.getEmail() != null){
+                user.email(Contact.getInstance(dto.getEmail()));
+                applicationEventPublisher.publishEvent(new EmailTokenEvent(user));
+            }
             userDetailsService.getUserService().update(user);
+            if(user.getEmail() != null){
+                applicationEventPublisher.publishEvent(new BusinessAddedEvent(t, user));
+            }
         });
     }
+
+
+
 }

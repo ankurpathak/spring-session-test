@@ -1,6 +1,5 @@
 package com.github.ankurpathak.api.config;
 
-import com.github.ankurpathak.api.security.core.RememberMeTokenResolver;
 import com.github.ankurpathak.api.security.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

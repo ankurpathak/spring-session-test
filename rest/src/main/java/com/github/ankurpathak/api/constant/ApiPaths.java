@@ -24,6 +24,11 @@ public interface ApiPaths {
     String PATH_LOGIN = "login";
     String PATH_LOGIN_OTP = "/login/{token}";
     String PATH_BUSINESS = "/business";
+    String PATH_BANK_STATE = "/bank/state";
+    String PATH_BANK_DISTRICT = "/bank/state/district";
+    String PATH_BANK_BRANCH = "/bank/state/district/branch";
+    String PATH_BANK_IFSC = "/bank/{bank}";
+    String PATH_BANK = "/bank";
     static String apiPath(String path){
         return Paths.get(PATH_API, path).toString();
     }

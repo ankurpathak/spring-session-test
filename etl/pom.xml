@@ -7,26 +7,28 @@
         <groupId>com.github.ankurpathak.api</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>bank-ifsc</artifactId>
+    <artifactId>etl</artifactId>
     <packaging>jar</packaging>
     <dependencies>
         <!-- Spring Boot Data MongoDB -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- Spring Boot Data MongoDB -->
         <!-- Spring Boot Data Json -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-json</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- Spring Boot Data Json -->
         <!-- Spring Boot Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
@@ -51,46 +53,54 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
         <!-- Junit 5 -->
         <!-- Apache Commons -->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- Apache Commons -->
         <!-- Modules -->
         <dependency>
             <groupId>com.github.ankurpathak.api</groupId>
             <artifactId>commons</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <!-- Modules -->
         <!-- Google Guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- Google Guava -->
+        <!-- Jackson CSV -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Jackson CSV -->
+        <!--Open CSV -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--Open CSV -->
+
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

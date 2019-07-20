@@ -28,6 +28,10 @@ public interface Params {
     String ASYNC = "async";
     String TRUE = "true";
     String FALSE = "false";
+    String STATE = "state";
+    String DISTRICT = "district";
+    String CODE = "code";
+    String IFSC = "bank";
 
 
 

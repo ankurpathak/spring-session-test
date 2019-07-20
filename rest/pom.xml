@@ -396,6 +396,10 @@
             <groupId>com.github.ankurpathak.api</groupId>
             <artifactId>domain</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ankurpathak.api</groupId>
+            <artifactId>etl</artifactId>
+        </dependency>
         <!--Modules -->
         <!-- Reactor Core -->
         <dependency>
@@ -433,6 +437,12 @@
             <artifactId>jsoup</artifactId>
         </dependency>
         <!-- JSoup -->
+        <!-- Jackson CSV -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
+        </dependency>
+        <!-- Jackson CSV -->
 
     </dependencies>
 

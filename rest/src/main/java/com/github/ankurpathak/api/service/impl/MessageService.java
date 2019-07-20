@@ -1,7 +1,7 @@
 package com.github.ankurpathak.api.service.impl;
 
-import com.github.ankurpathak.api.util.MessageUtil;
 import com.github.ankurpathak.api.service.IMessageService;
+import com.github.ankurpathak.api.util.MessageUtil;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.FieldError;

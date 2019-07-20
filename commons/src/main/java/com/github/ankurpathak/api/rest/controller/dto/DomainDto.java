@@ -29,9 +29,7 @@ public abstract class DomainDto<T extends Domain<ID>, ID extends Serializable> i
     }
 
 
-    public interface Default {
-
-    }
+    public interface Default { }
 
 
 

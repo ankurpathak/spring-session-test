@@ -1,9 +1,9 @@
 package com.github.ankurpathak.api.service.impl;
 
+import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.repository.mongo.ExtendedMongoRepository;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.util.MatcherUtil;
-import com.github.ankurpathak.api.domain.model.Domain;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;

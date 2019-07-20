@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
@@ -69,6 +70,9 @@ public class TokenService extends AbstractDomainService<Token, String> implement
         }while (i < 10);
         return Optional.empty();
     }
+
+
+
 
 
     public Optional<Token> tryToSaveGeneratedToken(Token token){
@@ -132,7 +136,8 @@ public class TokenService extends AbstractDomainService<Token, String> implement
             }
             Optional<User> user = customUserDetailsService.getUserService().byEmail(token.get().getValue());
             if (user.isPresent()) {
-                user.get().setEnabled(true);
+                if(!user.get().isEnabled())
+                    user.get().setEnabled(true);
                 user.get().getEmail().setChecked(true);
                 customUserDetailsService.getUserService().update(user.get());
                 deleteById(token.get().getId());
@@ -185,7 +190,8 @@ public class TokenService extends AbstractDomainService<Token, String> implement
             if(Objects.equals(tokenOtp, token.get().getValue())){
                 Optional<User> user = customUserDetailsService.getUserService().byPhone(phone);
                 if (user.isPresent()) {
-                    user.get().setEnabled(true);
+                    if(!user.get().isEnabled())
+                        user.get().setEnabled(true);
                     user.get().getPhone().setChecked(true);
                     customUserDetailsService.getUserService().update(user.get());
                     deleteById(token.get().getId());
@@ -216,6 +222,8 @@ public class TokenService extends AbstractDomainService<Token, String> implement
     public Optional<Token> findAccountToken(String key){
         return findById(String.format("users:account:%s", key));
     }
+
+
 
     @Override
     public Optional<Token> findPhoneToken(String phone){

@@ -1,11 +1,11 @@
 package com.github.ankurpathak.api.service.impl;
 
-import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.security.util.SecurityUtil;
 import com.github.ankurpathak.api.constant.Model;
+import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.repository.mongo.IUserRepository;
 import com.github.ankurpathak.api.security.dto.DomainContext;
+import com.github.ankurpathak.api.security.util.SecurityUtil;
 import com.github.ankurpathak.api.service.IUserService;
 import com.github.ankurpathak.api.service.IpService;
 import com.github.ankurpathak.api.util.PrimitiveUtils;

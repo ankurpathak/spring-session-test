@@ -11,7 +11,6 @@ public class Business extends ExtendedDomain<BigInteger> implements Serializable
     private String name;
     private String type;
 
-
     public String getType() {
         return type;
     }

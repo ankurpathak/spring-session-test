@@ -2,9 +2,9 @@ package com.github.ankurpathak.api.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.service.IFacebookService;
+import com.github.ankurpathak.api.service.dto.FacebookProperties;
 import com.github.ankurpathak.api.service.dto.SocialProfile;
 import com.github.ankurpathak.api.service.dto.SocialProperties;
-import com.github.ankurpathak.api.service.dto.FacebookProperties;
 import com.github.scribejava.apis.FacebookApi;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.model.OAuthRequest;

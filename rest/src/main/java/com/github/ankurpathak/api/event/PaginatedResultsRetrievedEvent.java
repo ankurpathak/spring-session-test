@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.event;
 
 import org.springframework.data.domain.Page;
+
 import javax.servlet.http.HttpServletResponse;
 
 public final class PaginatedResultsRetrievedEvent extends ExtendedApplicationEvent<Page<?>> {

@@ -1,7 +1,7 @@
 package com.github.ankurpathak.api.security.filter;
 
-import com.github.ankurpathak.api.security.dto.DomainContextHolder;
 import com.github.ankurpathak.api.security.dto.DomainContext;
+import com.github.ankurpathak.api.security.dto.DomainContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;

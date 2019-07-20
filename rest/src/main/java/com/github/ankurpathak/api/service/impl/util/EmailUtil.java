@@ -2,11 +2,11 @@ package com.github.ankurpathak.api.service.impl.util;
 
 import com.github.ankurpathak.api.security.dto.DomainContext;
 import com.github.ankurpathak.api.security.dto.DomainContextHolder;
-import com.github.ankurpathak.api.util.PropertyUtil;
-import com.github.ankurpathak.api.service.dto.SmtpContext;
-import com.github.ankurpathak.api.service.dto.SmtpCredential;
 import com.github.ankurpathak.api.service.dto.EmailAttachmentContext;
 import com.github.ankurpathak.api.service.dto.EmailContext;
+import com.github.ankurpathak.api.service.dto.SmtpContext;
+import com.github.ankurpathak.api.service.dto.SmtpCredential;
+import com.github.ankurpathak.api.util.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
