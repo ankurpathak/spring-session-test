@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Registration Template</title>
+</head>
+<body>
+    <h1 th:text="${token}" id="otp">Token</h1>
+    <a href="#" th:href="@{${link}(token=${token})}">Complete Registration</a>
+</body>
+</html>
