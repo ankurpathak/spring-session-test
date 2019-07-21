@@ -119,7 +119,8 @@ public class Role extends Domain<String> implements Serializable {
                 Privilege.PRIV_ACCOUNT_EMAIL,
                 Privilege.PRIV_ACCOUNT_ENABLE,
                 Privilege.PRIV_FORGET_PASSWORD_EMAIL,
-                Privilege.PRIV_FORGET_PASSWORD_ENABLE
+                Privilege.PRIV_FORGET_PASSWORD_ENABLE,
+                Privilege.PRIV_ANONYMOUS
         );
     }
 

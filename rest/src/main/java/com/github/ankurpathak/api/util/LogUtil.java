@@ -1,5 +1,6 @@
 package com.github.ankurpathak.api.util;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 
 public class LogUtil {
@@ -22,6 +23,11 @@ public class LogUtil {
         log.error(MESSAGE_LOG_EMPTY, key);
     }
 
+    public static void logStackTrace(Logger log, Throwable ex){
+        String stacktrace = ExceptionUtils.getStackTrace(ex);
+        log.error(MESSAGE_EXCEPTION, stacktrace);
+    }
+
 
 
     public static String MESSAGE_LOG_FIELD_NULL = "{}.{} is null for id {}";
@@ -30,5 +36,6 @@ public class LogUtil {
 
 public static String MESSAGE_LOG_NULL = "{}.{} is null";
     public static String MESSAGE_LOG_EMPTY = "{}.{} is empty";
+    public static String MESSAGE_EXCEPTION = "Exception: {}";
 
 }

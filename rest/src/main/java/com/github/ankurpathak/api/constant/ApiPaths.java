@@ -29,6 +29,11 @@ public interface ApiPaths {
     String PATH_BANK_BRANCH = "/bank/state/district/branch";
     String PATH_BANK_IFSC = "/bank/{bank}";
     String PATH_BANK = "/bank";
+    String PATH_STATE = "/state";
+    String PATH_PIN_CODE = "/state/{pinCode}";
+    String PATH_STATE_DISTRICT = "/state/district";
+    String PATH_STATE_PINCODE = "/state/district/pin-code";
+    String PATH_DISTRICT= "/district";
     static String apiPath(String path){
         return Paths.get(PATH_API, path).toString();
     }

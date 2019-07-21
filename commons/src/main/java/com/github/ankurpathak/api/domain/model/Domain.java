@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controller.dto.View;
 import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;
+import org.bson.Document;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.util.CollectionUtils;

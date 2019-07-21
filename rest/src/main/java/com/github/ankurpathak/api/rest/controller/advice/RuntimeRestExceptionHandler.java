@@ -6,6 +6,7 @@ import com.github.ankurpathak.api.exception.NotFoundException;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
+import com.github.ankurpathak.api.util.LogUtil;
 import com.github.ankurpathak.api.util.MessageUtil;
 import cz.jirutka.rsql.parser.RSQLParserException;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<?> handleNotFoundException(NotFoundException ex, WebRequest request) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
-        ex.printStackTrace();
+        LogUtil.logStackTrace(log, ex);
         return handleExceptionInternal(
                 ex,
                 ApiResponse.getInstance(
@@ -60,7 +61,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler({FoundException.class})
     public ResponseEntity<?> handleFoundException(FoundException ex, WebRequest request) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
-        ex.printStackTrace();
+        LogUtil.logStackTrace(log, ex);
         return handleExceptionInternal(
                 ex,
                 ApiResponse.getInstance(
@@ -77,7 +78,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler({EnsureViolation.class, RequireViolation.class})
     public ResponseEntity<?> handleFoundException(ContractViolation ex, WebRequest request) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
-        ex.printStackTrace();
+        LogUtil.logStackTrace(log, ex);
         return handleExceptionInternal(
                 new Exception(ex.getMessage(), ex),
                 ApiResponse.getInstance(
@@ -94,7 +95,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler({DuplicateKeyException.class})
     public ResponseEntity<?> handleDuplicateKeyException(DuplicateKeyException ex, WebRequest request) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
-        ex.printStackTrace();
+        LogUtil.logStackTrace(log, ex);
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ApiCode.FOUND,
@@ -109,7 +110,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler({InvalidException.class})
     public ResponseEntity<?> handleInvalidTokenException(InvalidException ex, WebRequest request) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
-        ex.printStackTrace();
+        LogUtil.logStackTrace(log, ex);
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ex.getCode(),
@@ -124,7 +125,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler({RSQLParserException.class})
     public ResponseEntity<?> handleRSQLParserException(RSQLParserException ex, WebRequest request) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
-        ex.printStackTrace();
+        LogUtil.logStackTrace(log, ex);
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ApiCode.INVALID_RSQL,
@@ -140,7 +141,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
-        ex.printStackTrace();
+        LogUtil.logStackTrace(log, ex);
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ApiCode.INVALID_JSON,
@@ -162,7 +163,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @Override
     protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
-        ex.printStackTrace();
+        LogUtil.logStackTrace(log, ex);
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ApiCode.BAD_REQUEST,
@@ -178,7 +179,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
-        ex.printStackTrace();
+        LogUtil.logStackTrace(log, ex);
         return handleExceptionInternal(
                 ex,
                 ApiResponse.getInstance(ApiCode.REQUIRED_QUERY_PARAM, MessageUtil.getMessage(messageSource, ApiMessages.REQUIRED_QUERY_PARAM, ex.getParameterName())),

@@ -2,7 +2,7 @@ package com.github.ankurpathak.api.constant;
 
 public interface BankEtlConstants {
     interface Property {
-        String PATH = "city.path";
+        String PATH = "bank.path";
     }
 
 
@@ -19,7 +19,7 @@ public interface BankEtlConstants {
 
     interface Columns {
         String ID = "_id";
-        String IFSC = "bank";
+        String IFSC = "ifsc";
         String STATE = "STATE";
         String DISTRICT = "DISTRICT";
     }

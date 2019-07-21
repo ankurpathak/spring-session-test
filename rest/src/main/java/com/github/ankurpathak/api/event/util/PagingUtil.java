@@ -111,7 +111,7 @@ public class PagingUtil {
     }
 
     public static void pagePreCheck(int block) {
-        if (block < 1)
+        if (block < 0)
             throw new NotFoundException(String.valueOf(block), Params.BLOCK, Page.class.getSimpleName(), ApiCode.PAGE_NOT_FOUND);
 
     }

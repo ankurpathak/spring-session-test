@@ -16,15 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Serializable> extends AbstractAggregation<T, ID> {
+public class DomainSingleFieldSearchTypedAggregation<T extends Domain<ID>, ID extends Serializable> extends DomainAbstractTypedAggregation<T, ID> {
 
 
-    public SingleFieldSearchAggregation(MongoTemplate mongoTemplate) {
+    public DomainSingleFieldSearchTypedAggregation(MongoTemplate mongoTemplate) {
         super(mongoTemplate);
     }
 
 
-    private TypedAggregation<T> getListAggregation(String field, String value, Pageable pageable, Class<T> type, boolean project) {
+    private TypedAggregation<T> getPageAggregation(String field, String value, Pageable pageable, Class<T> type, boolean project) {
         long skip = (long) pageable.getPageNumber() * (long) pageable.getPageSize();
         long limit = pageable.getPageSize();
         List<AggregationOperation> operations = new ArrayList<>(getCombinedAggregation(field, value));
@@ -32,6 +32,15 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
             operations.add(TypedAggregation.sort(pageable.getSort()));
         operations.add(Aggregation.skip(skip));
         operations.add(Aggregation.limit(limit));
+        if(project)
+            operations.add(Aggregation.project(field).andExclude(Params.MONGO_ID));
+
+        return Aggregation.newAggregation(type, operations);
+    }
+
+
+    private TypedAggregation<T> getListAggregation(String field, String value, Class<T> type, boolean project) {
+        List<AggregationOperation> operations = new ArrayList<>(getCombinedAggregation(field, value));
         if(project)
             operations.add(Aggregation.project(field).andExclude(Params.MONGO_ID));
 
@@ -92,15 +101,26 @@ public class SingleFieldSearchAggregation<T extends Domain<ID>, ID extends Seria
 
 
     public Page<T> getPage(String field, String value, Pageable pageable, Class<T> type) {
-        List<T> list = getList(getListAggregation(field, value, pageable, type, false), type);
+        List<T> list = getList(getPageAggregation(field, value, pageable, type, false), type);
         long count = getCount(field, value, type);
         return new PageImpl<>(list, pageable, count);
 
     }
 
 
+    public List<T> getList(String field, String value, Class<T> type) {
+        return getList(getListAggregation(field, value, type, false), type);
+    }
+
+
+    public List<String> getFieldList(String field, String value, Class<T> type) {
+        return getFieldList(getListAggregation(field, value, type, true), type, field);
+    }
+
+
+
     public Page<String> getFieldPage(String field, String value, Pageable pageable, Class<T> type) {
-        List<String> list = getFieldList(getListAggregation(field, value, pageable, type, true), type, field);
+        List<String> list = getFieldList(getPageAggregation(field, value, pageable, type, true), type, field);
         long count = getCount(field, value, type);
         return new PageImpl<>(list, pageable, count);
     }

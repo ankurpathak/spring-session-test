@@ -13,6 +13,8 @@ public interface CityEtlConstants {
     interface Columns {
         String ID = "_id";
         String PINCODE = "pincode";
+        String STATE = "statename";
+        String DISTRICT = "Districtname";
     }
 
     interface Collection {

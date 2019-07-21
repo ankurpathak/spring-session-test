@@ -2,7 +2,7 @@ package com.github.ankurpathak.api.domain.repository.mongo.custom;
 
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.repository.mongo.ICustomizedDomainRepository;
-import com.github.ankurpathak.api.domain.mongo.SingleFieldSearchAggregation;
+import com.github.ankurpathak.api.domain.mongo.DomainSingleFieldSearchTypedAggregation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,13 +25,13 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
 
     @Override
     public Page<T> findByField(String field, String value, Pageable pageable, Class<T> type) {
-        SingleFieldSearchAggregation<T, ID> aggregation = new SingleFieldSearchAggregation<>(template);
+        DomainSingleFieldSearchTypedAggregation<T, ID> aggregation = new DomainSingleFieldSearchTypedAggregation<>(template);
         return aggregation.getPage(field, value, pageable, type);
     }
 
     @Override
     public Page<String> listField(String field, String value, Pageable pageable, Class<T> type) {
-        SingleFieldSearchAggregation<T, ID> aggregation = new SingleFieldSearchAggregation<>(template);
+        DomainSingleFieldSearchTypedAggregation<T, ID> aggregation = new DomainSingleFieldSearchTypedAggregation<>(template);
         return aggregation.getFieldPage(field, value, pageable, type);
     }
 

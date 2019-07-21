@@ -32,6 +32,9 @@ public interface Params {
     String DISTRICT = "district";
     String CODE = "code";
     String IFSC = "bank";
+    String PIN_CODE = "pinCode";
+    String PAGE = "page";
+    String SIZE = "size";
 
 
 
