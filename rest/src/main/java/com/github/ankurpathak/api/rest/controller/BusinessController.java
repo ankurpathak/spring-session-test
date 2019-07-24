@@ -3,12 +3,16 @@ package com.github.ankurpathak.api.rest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentUser;
+import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.domain.converter.BusinessConverters;
 import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Contact;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.event.BusinessAddedEvent;
 import com.github.ankurpathak.api.event.EmailTokenEvent;
+import com.github.ankurpathak.api.exception.NotAllowedException;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controllor.dto.BusinessDto;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IBusinessService;
@@ -48,20 +52,25 @@ public class BusinessController extends AbstractRestController<Business, BigInte
 
 
     @PostMapping(PATH_BUSINESS)
-    public ResponseEntity<?> createOne(@CurrentUser User user, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({BusinessDto.Default.class, BusinessDto.Account.class}) BusinessDto dto, BindingResult result){
-        return createOne(dto, result, request, response, BusinessConverters.businessDtoCreateOneDomain, (rest, tDto) -> {}, (rest,t ,tDto) -> {
-            user.addBusinessId(t.getId());
-            if(CollectionUtils.isEmpty(user.getBusinessIds()) && dto.getEmail() != null && user.getEmail() != null){
-                user.email(Contact.getInstance(dto.getEmail()));
-                applicationEventPublisher.publishEvent(new EmailTokenEvent(user));
-            }
-            userDetailsService.getUserService().update(user);
-            if(user.getEmail() != null){
-                applicationEventPublisher.publishEvent(new BusinessAddedEvent(t, user));
-            }
-        });
-    }
+    public ResponseEntity<?> createOne(@CurrentUser User user, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({BusinessDto.Default.class, BusinessDto.Account.class}) BusinessDto dto, BindingResult result) {
+        return createOne(dto, result, request, response, BusinessConverters.businessDtoCreateOneDomain,
+                (rest, tDto) -> {
+                    if(CollectionUtils.isNotEmpty(user.getBusinessIds()) && user.getBusinessIds().size() > 0)
+                        ControllerUtil.processNotAllowed(messageService, ApiCode.MULTIPLE_BUSINESS_NOT_ALLOWED);
+                },
 
+                (rest, t, tDto) -> {
+                    if (dto.getEmail() != null && (CollectionUtils.isEmpty(user.getBusinessIds()) && user.getEmail() == null)) {
+                        user.email(Contact.getInstance(dto.getEmail()));
+                        applicationEventPublisher.publishEvent(new EmailTokenEvent(user));
+                    }
+                    user.addBusinessId(t.getId());
+                    userDetailsService.getUserService().update(user);
+                    if (user.getEmail() != null) {
+                        applicationEventPublisher.publishEvent(new BusinessAddedEvent(t, user));
+                    }
+                });
+    }
 
 
 }

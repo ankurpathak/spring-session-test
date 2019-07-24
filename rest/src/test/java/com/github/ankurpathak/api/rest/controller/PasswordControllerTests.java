@@ -1,10 +1,10 @@
 package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
 import com.github.ankurpathak.api.service.IEmailService;
-import com.github.ankurpathak.api.util.WebUtil;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.GreenMailUtil;
@@ -83,15 +83,15 @@ public class PasswordControllerTests extends AbstractRestIntegrationTest<Passwor
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
                 .andDo(forgetPasswordEnableResult -> {
                     UserDto userDto = UserDto.getInstance()
                             .password("password1")
                             .confirmPassword("password1");
 
                     mockMvc.perform(put(apiPath(PATH_FORGET_PASSWORD))
-                            .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(forgetPasswordEnableResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+                            .header(Params.Header.X_AUTH_TOKEN, StringUtils.defaultString(forgetPasswordEnableResult.getResponse().getHeader(Params.Header.X_AUTH_TOKEN)))
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(userDto))
                     )

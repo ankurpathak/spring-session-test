@@ -2,6 +2,7 @@ package com.github.ankurpathak.api.rest.controller.advice;
 
 import com.github.ankurpathak.api.exception.FoundException;
 import com.github.ankurpathak.api.exception.InvalidException;
+import com.github.ankurpathak.api.exception.NotAllowedException;
 import com.github.ankurpathak.api.exception.NotFoundException;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
@@ -65,8 +66,25 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
         return handleExceptionInternal(
                 ex,
                 ApiResponse.getInstance(
-                        ex.getCode(),
-                        MessageUtil.getMessage(messageSource, ApiMessages.FOUND, ex.getEntity(), ex.getProperty(), ex.getId())
+                        ex.getFound().getCode(),
+                        MessageUtil.getMessage(messageSource, ApiMessages.FOUND, ex.getFound().getEntity(), ex.getFound().getProperty(), ex.getFound().getId())
+                ),
+                new HttpHeaders(),
+                HttpStatus.CONFLICT,
+                request
+        );
+    }
+
+
+    @ExceptionHandler({NotAllowedException.class})
+    public ResponseEntity<?> handleNotAllowedException(NotAllowedException ex, WebRequest request) {
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
+        LogUtil.logStackTrace(log, ex);
+        return handleExceptionInternal(
+                new Exception(ex.getMessage(), ex),
+                ApiResponse.getInstance(
+                        ex.getApiCode(),
+                        MessageUtil.getMessage(messageSource, ApiMessages.NOT_ALLOWED)
                 ),
                 new HttpHeaders(),
                 HttpStatus.CONFLICT,

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.security.core.RestSavedRequestAwareAuthenticationSuccessHandler;
 import com.github.ankurpathak.api.security.core.RestSimpleUrlAuthenticationFailureHandler;
 import com.github.ankurpathak.api.security.filter.*;
+import com.github.ankurpathak.api.service.IBusinessService;
 import com.github.ankurpathak.api.service.IFilterService;
 import com.github.ankurpathak.api.service.ITokenService;
 import org.springframework.context.annotation.Configuration;
@@ -24,17 +25,19 @@ public class FilterConfig {
     private final ObjectMapper objectMapper;
     private final IFilterService filterService;
     private final ITokenService tokenService;
+    private final IBusinessService businessService;
 
 
     public static final String ANNONYMOUS_KEY = UUID.randomUUID().toString();
 
-    public FilterConfig(PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices, RestSimpleUrlAuthenticationFailureHandler restAuthenticationFailureHandler, RestSavedRequestAwareAuthenticationSuccessHandler restAuthenticationSuccessHandler, ObjectMapper objectMapper, IFilterService filterService, ITokenService tokenService) {
+    public FilterConfig(PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices, RestSimpleUrlAuthenticationFailureHandler restAuthenticationFailureHandler, RestSavedRequestAwareAuthenticationSuccessHandler restAuthenticationSuccessHandler, ObjectMapper objectMapper, IFilterService filterService, ITokenService tokenService, IBusinessService businessService) {
         this.persistentTokenBasedRememberMeServices = persistentTokenBasedRememberMeServices;
         this.restAuthenticationFailureHandler = restAuthenticationFailureHandler;
         this.restAuthenticationSuccessHandler = restAuthenticationSuccessHandler;
         this.objectMapper = objectMapper;
         this.filterService = filterService;
         this.tokenService = tokenService;
+        this.businessService = businessService;
     }
 
 
@@ -77,8 +80,12 @@ public class FilterConfig {
     }
 
     protected LoginTokenValidationFilter otpValidationFilter() {
-
         return new LoginTokenValidationFilter(apiPath(PATH_LOGIN_OTP),filterService, tokenService);
+    }
+
+
+    protected BusinessDetailsFilter businessDetailsFilter(){
+        return new BusinessDetailsFilter(businessService);
     }
 
 

@@ -1,11 +1,13 @@
 package com.github.ankurpathak.api.domain.repository.mongo;
 
 import com.github.ankurpathak.api.domain.model.Domain;
+import com.github.ankurpathak.api.domain.repository.mongo.custom.dto.BulkOperationResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.stream.Stream;
 
 public interface ICustomizedDomainRepository<T extends Domain<ID>, ID extends Serializable> {
@@ -14,4 +16,5 @@ public interface ICustomizedDomainRepository<T extends Domain<ID>, ID extends Se
     Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type);
     Stream<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
     long countByCriteria(Criteria criteria, Class<T> type);
+    BulkOperationResult<ID> bulkInsertMany(Class<T> type, List<T> domains);
 }

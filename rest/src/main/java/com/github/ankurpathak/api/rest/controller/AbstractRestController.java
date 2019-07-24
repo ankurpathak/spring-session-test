@@ -8,6 +8,7 @@ import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
+import com.github.ankurpathak.api.domain.repository.mongo.custom.dto.BulkOperationResult;
 import com.github.ankurpathak.api.domain.updater.IUpdateDomain;
 import com.github.ankurpathak.api.event.DomainCreatedEvent;
 import com.github.ankurpathak.api.event.PaginatedResultsRetrievedEvent;
@@ -28,6 +29,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,12 +71,21 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
+    protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
+        try{
+            BulkOperationResult<ID> res = tryCreateMany(dtoList, type, result, request, converter);
+            return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of(Params.ID, res.getIds(), Params.COUNT, res.getCount()));
+        }catch (DuplicateKeyException ex){
+            catchCreateMany(dtoList, ex, result, request);
+            throw ex;
+        }
+    }
+
+    protected BulkOperationResult<ID> tryCreateMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
         ControllerUtil.processValidation(result, messageService);
-        Iterable<T> domains = getDomainService().createAll(dtoList.getDtos().stream().map(dto -> dto.toDomain(converter)).collect(Collectors.toList()));
-        List<ID> ids = new ArrayList<>();
-        domains.forEach(domain -> ids.add(domain.getId()));
-        return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of(Params.ID, ids));
+        List<T> ts = dtoList.getDtos().stream().map(dto -> dto.toDomain(converter)).collect(Collectors.toList());
+        return getDomainService().bulkInsertMany(type, ts);
+        //applicationEventPublisher.publishEvent(new DomainCreatedEvent<>(t, response));
     }
 
     protected T tryCreateOne(TDto dto, BindingResult result, HttpServletResponse response, IToDomain<T, ID, TDto> converter) {
@@ -86,13 +97,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
 
     protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter) {
-        try {
-            T t = tryCreateOne(dto, result, response, converter);
-            return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of(Params.ID, t.getId()));
-        } catch (DuplicateKeyException ex) {
-            catchCreateOne(dto, ex, result, request);
-            throw ex;
-        }
+        return createOne(dto, result, request, response, converter, (rest, tDto) -> {}, (rest, tDto, t) -> {});
     }
 
 
@@ -108,11 +113,14 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         }
     }
 
+
+    protected void catchCreateMany(DomainDtoList<T, ID, TDto> dtoList, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
+        DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dtoList.getDto()).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
+    }
+
+
     protected void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
-        FoundException foundEx = DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dto);
-        if (foundEx != null) {
-            ControllerUtil.processValidationForFound(messageService, foundEx);
-        }
+        DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dto).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
     }
 
 
@@ -139,7 +147,11 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
     protected ResponseEntity<?> update(TDto dto, T t, ID id, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request) {
         if (t != null) {
-            getDomainService().update(dto.updateDomain(t, updater));
+            try{
+                getDomainService().update(dto.updateDomain(t, updater));
+            }catch (DuplicateKeyException ex){
+
+            }
             return ControllerUtil.processSuccess(messageService);
         } else {
             throw new NotFoundException(String.valueOf(id), Params.ID, dto.domainName(), ApiCode.NOT_FOUND);

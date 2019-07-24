@@ -16,7 +16,7 @@ public class Token extends Domain<String> implements Serializable {
 
     private String value;
 
-    @Indexed(name = Model.Token.Index.TOKEN_EXPIRY_IDX, expireAfterSeconds= EXPIRATION_IN_SECONDS)
+    @Indexed(name = Model.Token.Index.EXPIRY_IDX, expireAfterSeconds= EXPIRATION_IN_SECONDS)
     private Instant expiry;
     private static final int EXPIRATION_IN_MINUTES = 30;
 

@@ -42,7 +42,7 @@ public class LoginTokenGeneratorAuthenticationProvider implements Authentication
             throws AuthenticationException {
         Optional<DomainContext> domainContext = SecurityUtil.getDomainContext();
         if(domainContext.isPresent()){
-            if(domainContext.get().getOtpFlow()){
+            if(domainContext.get().isOtpFlow()){
                 try{
                     return authenticationProvider.authenticate(authentication);
                 }catch (UsernameNotFoundException uEx) {

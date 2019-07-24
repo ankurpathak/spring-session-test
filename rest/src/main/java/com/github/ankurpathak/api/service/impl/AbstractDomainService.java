@@ -2,6 +2,7 @@ package com.github.ankurpathak.api.service.impl;
 
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.repository.mongo.ExtendedMongoRepository;
+import com.github.ankurpathak.api.domain.repository.mongo.custom.dto.BulkOperationResult;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import org.springframework.data.domain.Page;
@@ -132,8 +133,14 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
 
     @Override
     public void deleteAll(Iterable<T> domains) {
-        Assertive.require(domains, MatcherUtil.notIterableEmpty());
+        require(domains, MatcherUtil.notIterableEmpty());
         dao.deleteAll(domains);
     }
 
+    @Override
+    public BulkOperationResult<ID> bulkInsertMany(Class<T> type, List<T> domains) {
+        require(type, notNullValue(Class.class));
+        require(domains, MatcherUtil.notCollectionEmpty());
+        return dao.bulkInsertMany(type, domains);
+    }
 }

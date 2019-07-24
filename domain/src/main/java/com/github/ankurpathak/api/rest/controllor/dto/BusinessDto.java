@@ -11,7 +11,7 @@ import java.math.BigInteger;
 public class BusinessDto extends DomainDto<Business, BigInteger> {
     @NotBlank(groups = {Default.class})
     private String name;
-    @Any(value = {}, groups = {Default.class})
+    @Any(value = {"RENTAL", "GYM", "PG", "ED", "HS" }, groups = {Default.class})
     @NotBlank(groups = {Default.class})
     private String type;
 
@@ -34,6 +34,10 @@ public class BusinessDto extends DomainDto<Business, BigInteger> {
 
     @Email(groups = {Account.class})
     public String email;
+
+    public static BusinessDto getInstance(){
+        return new BusinessDto();
+    }
 
 
 

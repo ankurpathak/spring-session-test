@@ -29,7 +29,7 @@ public class SpringSessionTestApplication {
 }
 
 
-@Component
+//@Component
 class ApplicationRunnerImpl implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(ApplicationRunnerImpl.class);

@@ -32,5 +32,17 @@
   },
   "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
   "enabled":  false
-}
+},
+  {
+    "_id" : "4",
+    "firstName": "Virat",
+    "lastName": "Kohli",
+    "roles" : "ROLE_ADMIN",
+    "phone" : {
+      "tag" : "primary",
+      "value" : "+919000000000"
+    },
+    "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
+    "enabled":  true
+  }
 ]

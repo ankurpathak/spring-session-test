@@ -1,47 +1,47 @@
 package com.github.ankurpathak.api.exception;
 
-import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.exception.dto.FoundDto;
+import com.github.ankurpathak.api.util.MatcherUtil;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.validation.BindingResult;
+import org.valid4j.Assertive.*;
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.notNullValue;
+import static org.valid4j.Assertive.require;
 
 public class FoundException extends RuntimeException {
-    private final String entity;
-    private final ApiCode code;
-    private final String id;
-    private final String property;
+    private final List<FoundDto> fondDtos;
     private final DuplicateKeyException duplicateKeyException;
     private final BindingResult bindingResult;
 
-    public FoundException(DuplicateKeyException duplicateKeyException, BindingResult bindingResult, String id , String property, String entity, ApiCode code) {
+    public FoundException(DuplicateKeyException duplicateKeyException, BindingResult bindingResult, List<FoundDto> foundDtos) {
         super(duplicateKeyException.getMessage(), duplicateKeyException.getCause());
+        require(duplicateKeyException, notNullValue());
+        require(bindingResult, notNullValue());
+        require(foundDtos, MatcherUtil.notCollectionEmpty());
         this.duplicateKeyException = duplicateKeyException;
         this.bindingResult = bindingResult;
-        this.id = id;
-        this.property = property;
-        this.entity = entity;
-        this.code = code;
-    }
-    public String getEntity() {
-        return entity;
+        this.fondDtos = foundDtos;
+
     }
 
-    public ApiCode getCode() {
-        return code;
+
+    public FoundDto getFound() {
+        return fondDtos.get(0);
     }
 
-    public String getId() {
-        return id;
-    }
 
-    public BindingResult getBindingResult() {
-        return bindingResult;
-    }
-
-    public String getProperty() {
-        return property;
+    public List<FoundDto> getFounds() {
+        return fondDtos;
     }
 
     public DuplicateKeyException getDuplicateKeyException() {
         return duplicateKeyException;
+    }
+
+    public BindingResult getBindingResult() {
+        return bindingResult;
     }
 }

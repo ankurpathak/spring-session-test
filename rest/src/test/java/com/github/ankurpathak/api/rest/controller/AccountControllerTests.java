@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
 import com.icegreen.greenmail.configuration.GreenMailConfiguration;
@@ -24,9 +25,11 @@ import javax.mail.internet.MimeMessage;
 
 import static com.github.ankurpathak.api.constant.ApiPaths.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -67,7 +70,8 @@ public class AccountControllerTests extends AbstractRestIntegrationTest<AccountC
                 .content(objectMapper.writeValueAsString(userDto))
         )
                 .andDo(print())
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code", is(ApiCode.EMAIL_FOUND.getCode())));
 
         System.out.println();
     }

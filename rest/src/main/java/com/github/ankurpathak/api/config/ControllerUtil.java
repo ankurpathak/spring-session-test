@@ -2,10 +2,7 @@ package com.github.ankurpathak.api.config;
 
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.Token;
-import com.github.ankurpathak.api.exception.FoundException;
-import com.github.ankurpathak.api.exception.InvalidException;
-import com.github.ankurpathak.api.exception.NotFoundException;
-import com.github.ankurpathak.api.exception.ValidationException;
+import com.github.ankurpathak.api.exception.*;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
@@ -30,6 +27,10 @@ public class ControllerUtil {
         }
     }
 
+    public static void processNotAllowed(IMessageService messageService, ApiCode code){
+        throw new NotAllowedException(code);
+    }
+
     @SuppressWarnings("all")
     public static <T> ResponseEntity<T> processOptional(Optional<T> t, Class<T> type, String typeNeme, String id, IMessageService messageService) {
         return t.map(ResponseEntity::ok).orElseThrow(() -> new NotFoundException(String.valueOf(id), Params.ID, typeNeme != null ? typeNeme: type.getSimpleName(), ApiCode.NOT_FOUND));
@@ -46,8 +47,8 @@ public class ControllerUtil {
         if (ex.getBindingResult().hasErrors()) {
             throw new ValidationException(
                     ex.getBindingResult(),
-                    messageService.getMessage(ApiMessages.FOUND, ex.getEntity(), ex.getProperty(), ex.getId()),
-                    ex.getCode()
+                    messageService.getMessage(ApiMessages.FOUND, ex.getFound().getEntity(), ex.getFound().getProperty(), ex.getFound().getId()),
+                    ex.getFound().getCode()
             );
         }
     }

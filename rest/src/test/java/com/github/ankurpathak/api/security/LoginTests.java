@@ -2,10 +2,10 @@ package com.github.ankurpathak.api.security;
 
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
-import com.github.ankurpathak.api.util.WebUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -52,9 +52,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
     }
@@ -68,9 +68,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(cookie().doesNotExist("SESSION"))
                 .andExpect(cookie().exists("remember-me"))
                 .andExpect(cookie().value("remember-me", Matchers.nullValue()))
-                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().exists(Params.Header.X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
+                .andExpect(header().doesNotExist(Params.Header.X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.BAD_CREDENTIALS.getCode())));
 
 
@@ -86,9 +86,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(cookie().doesNotExist("SESSION"))
                 .andExpect(cookie().exists("remember-me"))
                 .andExpect(cookie().value("remember-me", Matchers.nullValue()))
-                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().exists(Params.Header.X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
+                .andExpect(header().doesNotExist(Params.Header.X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.USER_NOT_FOUND.getCode())));
 
 
@@ -102,9 +102,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
     }
@@ -118,9 +118,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(cookie().doesNotExist("SESSION"))
                 .andExpect(cookie().exists("remember-me"))
                 .andExpect(cookie().value("remember-me", Matchers.nullValue()))
-                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().exists(Params.Header.X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
+                .andExpect(header().doesNotExist(Params.Header.X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.BAD_CREDENTIALS.getCode())));
 
     }
@@ -133,9 +133,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
     }
@@ -148,9 +148,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
     }
@@ -164,9 +164,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(cookie().doesNotExist("SESSION"))
                 .andExpect(cookie().exists("remember-me"))
                 .andExpect(cookie().value("remember-me", Matchers.nullValue()))
-                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().exists(Params.Header.X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
+                .andExpect(header().doesNotExist(Params.Header.X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.BAD_CREDENTIALS.getCode())));
 
     }
@@ -180,9 +180,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(cookie().doesNotExist("SESSION"))
                 .andExpect(cookie().exists("remember-me"))
                 .andExpect(cookie().value("remember-me", Matchers.nullValue()))
-                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().exists(Params.Header.X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
+                .andExpect(header().doesNotExist(Params.Header.X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.BAD_CREDENTIALS.getCode())));
 
 
@@ -197,9 +197,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(cookie().doesNotExist("SESSION"))
                 .andExpect(cookie().exists("remember-me"))
                 .andExpect(cookie().value("remember-me", Matchers.nullValue()))
-                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().exists(Params.Header.X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
+                .andExpect(header().doesNotExist(Params.Header.X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.ACCOUNT_DISABLED.getCode())));
     }
 
@@ -212,9 +212,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(cookie().doesNotExist("SESSION"))
                 .andExpect(cookie().exists("remember-me"))
                 .andExpect(cookie().value("remember-me", Matchers.nullValue()))
-                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_AUTH_TOKEN))
+                .andExpect(header().exists(Params.Header.X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.emptyString()))
+                .andExpect(header().doesNotExist(Params.Header.X_AUTH_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.ACCOUNT_DISABLED.getCode())));
     }
 
@@ -222,16 +222,16 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Test
     public void loginWithEmailAndCorrectPasswordRememberMe() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "password");
-        mockMvc.perform(post(apiPath(PATH_LOGIN)).header(WebUtil.HEADER_X_REMEMBER_ME, true).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
+        mockMvc.perform(post(apiPath(PATH_LOGIN)).header(Params.Header.X_REMEMBER_ME, true).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(dto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
                 .andExpect(cookie().exists("remember-me"))
                 .andExpect(cookie().value("remember-me", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().exists(Params.Header.X_REMEMBER_ME_TOKEN))
+                .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.not(Matchers.emptyString())))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
     }
@@ -242,7 +242,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     public void loginWithRememberMe() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "password");
         mockMvc.perform(post(apiPath(PATH_LOGIN))
-                .header(WebUtil.HEADER_X_REMEMBER_ME, true)
+                .header(Params.Header.X_REMEMBER_ME, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -252,14 +252,14 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
         .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
         .andExpect(cookie().exists("remember-me"))
         .andExpect(cookie().value("remember-me", Matchers.not(Matchers.emptyString())))
-        .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-        .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.not(Matchers.emptyString())))
+        .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+        .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.not(Matchers.emptyString())))
         .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
         .andDo(result -> {
-            String remeberMeTokenValue = result.getResponse().getHeader(WebUtil.HEADER_X_REMEMBER_ME_TOKEN);
+            String remeberMeTokenValue = result.getResponse().getHeader(Params.Header.X_REMEMBER_ME_TOKEN);
             remeberMeTokenValue = remeberMeTokenValue != null ? remeberMeTokenValue : "";
             mockMvc.perform(get(apiPath(PATH_ME))
-                    .header(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, remeberMeTokenValue )
+                    .header(Params.Header.X_REMEMBER_ME_TOKEN, remeberMeTokenValue )
             )
             .andDo(print())
             .andExpect(status().isOk())
@@ -267,10 +267,10 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
             .andExpect(cookie().path("SESSION", Matchers.not(Matchers.emptyString())))
             .andExpect(cookie().exists("remember-me"))
             .andExpect(cookie().path("remember-me", Matchers.not(Matchers.emptyString())))
-            .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-            .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-            .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
-            .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.not(Matchers.emptyString())));
+            .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+            .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+            .andExpect(header().exists(Params.Header.X_REMEMBER_ME_TOKEN))
+            .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.not(Matchers.emptyString())));
         });
 
     }
@@ -280,7 +280,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     public void accessWithRememberMeSession() throws Exception {
         LoginRequestDto dto = new LoginRequestDto("ankurpathak@live.in", "password");
         mockMvc.perform(post(apiPath(PATH_LOGIN))
-                .header(WebUtil.HEADER_X_REMEMBER_ME, true)
+                .header(Params.Header.X_REMEMBER_ME, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -290,13 +290,13 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
         .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
         .andExpect(cookie().exists("remember-me"))
         .andExpect(cookie().value("remember-me", Matchers.not(Matchers.emptyString())))
-        .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-        .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.not(Matchers.emptyString())))
+        .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+        .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.not(Matchers.emptyString())))
         .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
         .andDo(rememberMeLoginResult -> {
-            String rememberMeTokenValue = rememberMeLoginResult.getResponse().getHeader(WebUtil.HEADER_X_REMEMBER_ME_TOKEN);
+            String rememberMeTokenValue = rememberMeLoginResult.getResponse().getHeader(Params.Header.X_REMEMBER_ME_TOKEN);
             mockMvc.perform(get(apiPath(PATH_ME))
-                    .header(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, StringUtils.defaultString(rememberMeTokenValue))
+                    .header(Params.Header.X_REMEMBER_ME_TOKEN, StringUtils.defaultString(rememberMeTokenValue))
             )
             .andDo(print())
             .andExpect(status().isOk())
@@ -304,15 +304,15 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
             .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
             .andExpect(cookie().exists("remember-me"))
             .andExpect(cookie().value("remember-me", Matchers.not(Matchers.emptyString())))
-            .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-            .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-            .andExpect(header().exists(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
-            .andExpect(header().string(WebUtil.HEADER_X_REMEMBER_ME_TOKEN, Matchers.not(Matchers.emptyString())))
+            .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+            .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+            .andExpect(header().exists(Params.Header.X_REMEMBER_ME_TOKEN))
+            .andExpect(header().string(Params.Header.X_REMEMBER_ME_TOKEN, Matchers.not(Matchers.emptyString())))
             .andExpect(jsonPath("$.id", greaterThan(1)))
             .andDo(rememberMeSessionResult -> {
-                String xAuthTokenValue = rememberMeSessionResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN);
+                String xAuthTokenValue = rememberMeSessionResult.getResponse().getHeader(Params.Header.X_AUTH_TOKEN);
                 mockMvc.perform(get(apiPath(PATH_ME))
-                        .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(xAuthTokenValue))
+                        .header(Params.Header.X_AUTH_TOKEN, StringUtils.defaultString(xAuthTokenValue))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -328,7 +328,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
         LoginRequestDto dto = new LoginRequestDto("+917385500660", null);
         mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
-                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .header(Params.Header.X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -336,13 +336,13 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
                 .andDo(otpResult -> {
                     mockMvc.perform(get(apiPath(PATH_ME))
-                            .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+                            .header(Params.Header.X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(Params.Header.X_AUTH_TOKEN)))
 
                     )
                             .andDo(print())
@@ -360,7 +360,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
         LoginRequestDto dto = new LoginRequestDto("+917385500660", null);
         mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
-                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .header(Params.Header.X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -368,14 +368,14 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
         mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
-                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .header(Params.Header.X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -383,14 +383,14 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
         mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
-                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .header(Params.Header.X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -398,9 +398,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
         String output = outputCapture.toString();
@@ -421,7 +421,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
         LoginRequestDto dto = new LoginRequestDto("+917588011779", null);
         mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
-                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .header(Params.Header.X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -429,13 +429,13 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
                 .andExpect(newPhoneContactResult-> {
                     mockMvc.perform(get(apiPath(PATH_ME))
-                            .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(newPhoneContactResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+                            .header(Params.Header.X_AUTH_TOKEN, StringUtils.defaultString(newPhoneContactResult.getResponse().getHeader(Params.Header.X_AUTH_TOKEN)))
                     )
                             .andDo(print())
                             .andExpect(status().isForbidden());
@@ -457,7 +457,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
         LoginRequestDto dto = new LoginRequestDto("+917588011779", null);
         mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
-                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .header(Params.Header.X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -465,14 +465,14 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
         mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
-                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .header(Params.Header.X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -480,14 +480,14 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
         mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
-                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .header(Params.Header.X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -495,9 +495,9 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
         Optional<User> user = userDetailsService.getUserService().byPhone("+917588011779");
@@ -522,7 +522,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
         LoginRequestDto dto = new LoginRequestDto("+917385500660", null);
         mockMvc.perform(post(apiPath(PATH_LOGIN))
                 .param("async", String.valueOf(false))
-                .header(WebUtil.HEADER_X_OTP_FLOW, true)
+                .header(Params.Header.X_OTP_FLOW, true)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
         )
@@ -530,13 +530,13 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(status().isOk())
                 .andExpect(cookie().exists("SESSION"))
                 .andExpect(cookie().value("SESSION", Matchers.not(Matchers.emptyString())))
-                .andExpect(header().exists(WebUtil.HEADER_X_AUTH_TOKEN))
-                .andExpect(header().string(WebUtil.HEADER_X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
-                .andExpect(header().doesNotExist(WebUtil.HEADER_X_REMEMBER_ME_TOKEN))
+                .andExpect(header().exists(Params.Header.X_AUTH_TOKEN))
+                .andExpect(header().string(Params.Header.X_AUTH_TOKEN, Matchers.not(Matchers.emptyString())))
+                .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())))
                 .andDo(otpResult -> {
                     mockMvc.perform(get(apiPath(PATH_ME))
-                            .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+                            .header(Params.Header.X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(Params.Header.X_AUTH_TOKEN)))
 
                     )
                             .andDo(print())
@@ -552,13 +552,13 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
 
                     mockMvc.perform(post(apiPath(PATH_LOGIN_OTP), otpToken)
                             .param("async", String.valueOf(false))
-                            .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+                            .header(Params.Header.X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(Params.Header.X_AUTH_TOKEN)))
                     )
                             .andDo(print())
                             .andExpect(status().isOk())
                             .andDo(loginResult -> {
                                 mockMvc.perform(get(apiPath(PATH_ME))
-                                        .header(WebUtil.HEADER_X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(WebUtil.HEADER_X_AUTH_TOKEN)))
+                                        .header(Params.Header.X_AUTH_TOKEN, StringUtils.defaultString(otpResult.getResponse().getHeader(Params.Header.X_AUTH_TOKEN)))
 
                                 )
                                         .andDo(print())

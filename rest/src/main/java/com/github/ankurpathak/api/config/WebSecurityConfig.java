@@ -12,11 +12,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 
@@ -104,6 +106,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_STATE_PINCODE)).hasAuthority(Role.Privilege.PRIV_ANONYMOUS)
                 .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_DISTRICT)).hasAuthority(Role.Privilege.PRIV_ANONYMOUS)
                 .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_PIN_CODE)).hasAuthority(Role.Privilege.PRIV_ANONYMOUS)
+                .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_BUSINESS)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .mvcMatchers(HttpMethod.GET, ApiPaths.PATH_FAVICON).permitAll()
                 .mvcMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_REMEMBER_ME)).rememberMe()
                 .anyRequest()
@@ -139,6 +142,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //  .addFilterAfter(socialApplicationAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 //  .addFilterAfter(socialWebAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(filterConfig.securityContextCompositeFilter(), SecurityContextPersistenceFilter.class)
+                .addFilterAfter(filterConfig.businessDetailsFilter(), AnonymousAuthenticationFilter.class)
                 .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint).accessDeniedHandler(restAccessDeniedHandler)
                 .and()

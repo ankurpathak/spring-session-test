@@ -25,7 +25,11 @@ public enum ApiCode {
     INVALID_PASSWORD(16),
     INVALID_PATCH(20),
     OAUTH_LOGIN_ERROR(21),
-    BAD_CREDENTIALS(22);
+    BAD_CREDENTIALS(22),
+    BUSINESS_NOT_FOUND(23),
+    NOT_ALLOWED(24),
+    MULTIPLE_BUSINESS_NOT_ALLOWED(25)
+    ;
     private int code;
 
     ApiCode(int code){

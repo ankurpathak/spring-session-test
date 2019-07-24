@@ -9,7 +9,7 @@ public interface Model {
 
         interface Index {
 
-            interface Defination {
+            interface Definition {
 
             }
         }
@@ -31,15 +31,14 @@ public interface Model {
         }
 
         interface Index {
-            String USER_EMAIL_IDX = "usersEmailIdx";
-            String ROLE_NAME_IDX = "rolesNameIdx";
-            String USER_USERNAME_IDX = "usersUsernameIdx";
-            String USER_PHONE_IDX = "usersPhoneIdx";
+            String EMAIL_IDX = "usersEmailIdx";
+            String USERNAME_IDX = "usersUsernameIdx";
+            String PHONE_IDX = "usersPhoneIdx";
 
 
-            interface Defination extends Domain.Index.Defination{
-                String USER_EMAIL_IDX_DEF = "{ 'email.value' : 1}";
-                String USER_PHONE_IDX_DEF = "{ 'phone.value' : 1}";
+            interface Definition extends Domain.Index.Definition {
+                String EMAIL_IDX_DEF = "{ 'email.value' : 1}";
+                String PHONE_IDX_DEF = "{ 'phone.value' : 1}";
             }
         }
 
@@ -56,7 +55,7 @@ public interface Model {
         interface Index extends Domain.Index{
             String ROLE_NAME_IDX = "rolesNameIdx";
 
-            interface Defination extends Domain.Index.Defination{ }
+            interface Definition extends Domain.Index.Definition { }
         }
 
         interface Query extends Domain.Query{ }
@@ -72,9 +71,9 @@ public interface Model {
         }
 
         interface Index extends Domain.Index{
-            String TOKEN_EXPIRY_IDX  = "tokensExpiryIdx";
+            String EXPIRY_IDX = "tokensExpiryIdx";
 
-            interface Defination extends Domain.Index.Defination{ }
+            interface Definition extends Domain.Index.Definition { }
         }
 
         interface Query extends Domain.Query{ }
@@ -89,7 +88,7 @@ public interface Model {
         }
 
         interface Index extends Domain.Index{
-            interface Defination extends Domain.Index.Defination{ }
+            interface Definition extends Domain.Index.Definition { }
         }
 
         interface Query extends Domain.Query{ }
@@ -105,7 +104,7 @@ public interface Model {
         }
 
         interface Index extends Domain.Index{
-            interface Defination extends Domain.Index.Defination{ }
+            interface Definition extends Domain.Index.Definition { }
         }
 
         interface Query extends Domain.Query{ }
@@ -119,7 +118,24 @@ public interface Model {
         }
 
         interface Index extends Domain.Index{
-            interface Defination extends Domain.Index.Defination{ }
+            interface Definition extends Domain.Index.Definition { }
+        }
+
+        interface Query extends Domain.Query{ }
+
+    }
+
+
+    interface Product {
+        String PRODUCT = "products";
+
+        interface Field extends Domain.Field{
+        }
+
+        interface Index extends Domain.Index{
+            String NAME_IDX = "productsNameIdx";
+
+            interface Definition extends Domain.Index.Definition { }
         }
 
         interface Query extends Domain.Query{ }
@@ -133,7 +149,7 @@ public interface Model {
         }
 
         interface Index extends Domain.Index{
-            interface Defination extends Domain.Index.Defination{ }
+            interface Definition extends Domain.Index.Definition { }
         }
 
         interface Query extends Domain.Query{ }

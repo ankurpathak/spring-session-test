@@ -1,5 +1,6 @@
 package com.github.ankurpathak.api.config;
 
+import com.github.ankurpathak.api.web.CurrentBusinessArgumentResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
@@ -29,13 +30,19 @@ public class WebConfig implements WebMvcConfigurer {
 
 
     @Bean
-    public AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver() {
+    public HandlerMethodArgumentResolver authenticationPrincipalArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver();
+    }
+
+    @Bean
+    public HandlerMethodArgumentResolver currentBusinessArgumentResolver() {
+        return new CurrentBusinessArgumentResolver();
     }
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(authenticationPrincipalArgumentResolver());
+        argumentResolvers.add(currentBusinessArgumentResolver());
     }
 
     @Override

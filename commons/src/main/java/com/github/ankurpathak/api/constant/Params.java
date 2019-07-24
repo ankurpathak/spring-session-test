@@ -53,4 +53,16 @@ public interface Params {
     interface Default extends Params {
 
     }
+
+
+    interface Header  {
+
+        String XML_HTTP_REQUEST = "XMLHttpRequest";
+        String X_REQUESTED_WITH = "X-Requested-With";
+        String X_REMEMBER_ME_TOKEN = "X-Remember-Me-Token";
+        String X_REMEMBER_ME = "X-Remember-Me";
+        String X_AUTH_TOKEN = "X-Auth-Token";
+        String X_OTP_FLOW = "X-OTP-FLOW";
+        String X_REQUESTED_MY_ORGANIZATION = "X-REQUESTED-MY-ORGANIZATION";
+    }
 }

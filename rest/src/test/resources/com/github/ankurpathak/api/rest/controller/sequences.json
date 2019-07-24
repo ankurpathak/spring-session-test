@@ -2,5 +2,9 @@
   {
     "_id" : "user_seq",
     "curr" : "3"
+  },
+  {
+    "_id" : "business_seq",
+    "curr" : "0"
   }
 ]

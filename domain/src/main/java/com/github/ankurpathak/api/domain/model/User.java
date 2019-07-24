@@ -20,8 +20,8 @@ import java.util.Set;
 
 
 @Document(collection = Model.User.USER)
-@CompoundIndex(name = Model.User.Index.USER_EMAIL_IDX, sparse = true, unique = true, def = Model.User.Index.Defination.USER_EMAIL_IDX_DEF)
-@CompoundIndex(name = Model.User.Index.USER_PHONE_IDX, sparse = true, unique = true, def = Model.User.Index.Defination.USER_PHONE_IDX_DEF)
+@CompoundIndex(name = Model.User.Index.EMAIL_IDX, sparse = true, unique = true, def = Model.User.Index.Definition.EMAIL_IDX_DEF)
+@CompoundIndex(name = Model.User.Index.PHONE_IDX, sparse = true, unique = true, def = Model.User.Index.Definition.PHONE_IDX_DEF)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User extends ExtendedDomain<BigInteger> implements Serializable {
 
@@ -29,7 +29,7 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     private String firstName;
     private String lastName;
     private Contact email;
-    @Indexed(name = Model.User.Index.USER_USERNAME_IDX, unique = true, sparse = true)
+    @Indexed(name = Model.User.Index.USERNAME_IDX, unique = true, sparse = true)
     private String username;
     private Contact phone;
     private Set<String> roles;
@@ -277,6 +277,8 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
         this.businessIds = businessIds;
         return this;
     }
+
+
 }
 
 
