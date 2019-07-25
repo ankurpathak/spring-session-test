@@ -2,8 +2,11 @@ package com.github.ankurpathak.api.rest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
+import com.github.ankurpathak.api.annotation.CurrentBusiness;
 import com.github.ankurpathak.api.annotation.CurrentUser;
+import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.domain.converter.BusinessConverters;
+import com.github.ankurpathak.api.domain.converter.ProductConverters;
 import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Contact;
 import com.github.ankurpathak.api.domain.model.Product;
@@ -19,6 +22,7 @@ import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.IProductService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -31,17 +35,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.math.BigInteger;
 
 import static com.github.ankurpathak.api.constant.ApiPaths.PATH_BUSINESS;
+import static com.github.ankurpathak.api.constant.ApiPaths.PATH_SERVICE;
 
 @ApiController
 public class ProductController extends AbstractRestController<Product, String, ProductDto> {
 
     private final IProductService service;
-    private final CustomUserDetailsService userDetailsService;
 
-    public ProductController(IProductService service, ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, CustomUserDetailsService userDetailsService) {
+    public ProductController(IProductService service, ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator) {
         super(applicationEventPublisher, messageService, objectMapper, validator);
         this.service = service;
-        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -49,25 +52,9 @@ public class ProductController extends AbstractRestController<Product, String, P
         return service;
     }
 
-/*
-    @PostMapping(PATH_BUSINESS)
-    public ResponseEntity<?> createOne(@CurrentUser User user, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({BusinessDto.Default.class, BusinessDto.Account.class}) BusinessDto dto, BindingResult result){
-        return createOne(dto, result, request, response, BusinessConverters.businessDtoCreateOneDomain, (rest, tDto) -> {}, (rest,t ,tDto) -> {
-            user.addBusinessId(t.getId());
-            if(dto.getEmail() != null && (CollectionUtils.isEmpty(user.getBusinessIds())  && user.getEmail() != null)){
-                user.email(Contact.getInstance(dto.getEmail()));
-                applicationEventPublisher.publishEvent(new EmailTokenEvent(user));
-            }
-            userDetailsService.getUserService().update(user);
-            if(user.getEmail() != null){
-                applicationEventPublisher.publishEvent(new BusinessAddedEvent(t, user));
-            }
-        });
+
+    @PostMapping(PATH_SERVICE)
+    public ResponseEntity<?> createOne(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({ProductDto.Default.class}) ProductDto dto, BindingResult result){
+         return createOne(dto,result, request,response, ProductConverters.createOne);
     }
-
-
- */
-
-
-
 }

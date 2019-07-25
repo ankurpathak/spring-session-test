@@ -22,7 +22,7 @@ public class ExtendedDomain<ID extends Serializable> extends Domain<ID> {
 
 
     public ExtendedDomain() {
-        createdBy = updatedBy = SecurityUtil.getMe().map(User::getId).orElse(User.ANONYMOUS_ID);
+        //createdBy = updatedBy = SecurityUtil.getMe().map(User::getId).orElse(User.ANONYMOUS_ID);
     }
 
     public BigInteger getCreatedBy() {

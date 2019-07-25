@@ -11,7 +11,7 @@ import java.util.Collections;
 public class UserConverters {
 
 
-    public static IToDomain<User, BigInteger, UserDto> userDtoCreateToDomain = dto -> User.getInstance()
+    public static IToDomain<User, BigInteger, UserDto> createOne = dto -> User.getInstance()
             .firstName(dto.getFirstName())
             .lastName(dto.getLastName())
             .middleName(dto.getMiddleName())
@@ -19,7 +19,7 @@ public class UserConverters {
             .roles(Collections.singleton(Role.ROLE_ADMIN));
 
 
-    public static IToDomain<User, BigInteger, UserDto> userDtoRegisterToDomain() {
+    public static IToDomain<User, BigInteger, UserDto> createAccount() {
         return dto -> User.getInstance()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())

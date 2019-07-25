@@ -29,7 +29,7 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
     }
 
     public Domain() {
-        created = updated = Instant.now();
+        //created = updated = Instant.now();
     }
 
     @Override

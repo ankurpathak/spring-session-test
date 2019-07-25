@@ -18,7 +18,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 
@@ -103,10 +102,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_BANK_IFSC)).hasAuthority(Role.Privilege.PRIV_ANONYMOUS)
                 .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_STATE)).hasAuthority(Role.Privilege.PRIV_ANONYMOUS)
                 .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_STATE_DISTRICT)).hasAuthority(Role.Privilege.PRIV_ANONYMOUS)
-                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_STATE_PINCODE)).hasAuthority(Role.Privilege.PRIV_ANONYMOUS)
+                .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_STATE_PIN_CODE)).hasAuthority(Role.Privilege.PRIV_ANONYMOUS)
                 .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_DISTRICT)).hasAuthority(Role.Privilege.PRIV_ANONYMOUS)
                 .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_PIN_CODE)).hasAuthority(Role.Privilege.PRIV_ANONYMOUS)
                 .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_BUSINESS)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.PUT, ApiPaths.apiPath(ApiPaths.PATH_BUSINESS)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_SERVICE)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .mvcMatchers(HttpMethod.GET, ApiPaths.PATH_FAVICON).permitAll()
                 .mvcMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_REMEMBER_ME)).rememberMe()
                 .anyRequest()

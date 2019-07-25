@@ -58,7 +58,7 @@ public class UserController extends AbstractRestController<User,BigInteger, User
 
     @PostMapping(ApiPaths.PATH_USER)
     public ResponseEntity<?> createOne(HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({DomainDto.Default.class}) UserDto dto, BindingResult result){
-        return createOne(dto, result, request, response, UserConverters.userDtoCreateToDomain);
+        return createOne(dto, result, request, response, UserConverters.createOne);
     }
 
     /*
@@ -109,8 +109,8 @@ public class UserController extends AbstractRestController<User,BigInteger, User
 
     @PutMapping(ApiPaths.PATH_USER)
     public ResponseEntity<?> update(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({DomainDto.Default.class}) UserDto dto, BindingResult result){
-        ControllerUtil.processValidation(result, messageService);
-        return update(dto, user, UserUpdaters.profileUpdater, request);
+        //ControllerUtil.processValidation(result, messageService); To be removed
+        return update(dto, user, UserUpdaters.profileUpdater, request, result); // Added Result
     }
 
 

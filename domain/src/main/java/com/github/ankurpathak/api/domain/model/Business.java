@@ -9,15 +9,6 @@ import java.math.BigInteger;
 @Document(collection = Model.Business.BUSINESS)
 public class Business extends ExtendedDomain<BigInteger> implements Serializable {
     private String name;
-    private String type;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public String getName() {
         return name;
@@ -32,8 +23,10 @@ public class Business extends ExtendedDomain<BigInteger> implements Serializable
         return this;
     }
 
-    public Business type(String type) {
-        this.type = type;
+
+    @Override
+    public Business addTag(String tag) {
+        super.addTag(tag);
         return this;
     }
 
@@ -41,7 +34,4 @@ public class Business extends ExtendedDomain<BigInteger> implements Serializable
         return new Business();
     }
 
-
-    public interface BusinessType {
-    }
 }

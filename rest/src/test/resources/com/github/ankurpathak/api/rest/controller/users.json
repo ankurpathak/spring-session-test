@@ -12,11 +12,14 @@
   "roles" : "ROLE_ADMIN",
   "email" : {
     "tag" : "primary",
-    "value" : "ankurpathak@live.in"
+    "value" : "ankurpathak@live.in",
+    "checked" : true
   },
   "phone" : {
     "tag" : "primary",
-    "value" : "+917385500660"
+    "value" : "+917385500660",
+    "checked" : true
+
   },
   "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
   "enabled":  true
@@ -28,7 +31,9 @@
   "roles" : "ROLE_ADMIN",
   "email" : {
     "tag" : "primary",
-    "value" : "amarmule@live.in"
+    "value" : "amarmule@live.in",
+    "checked" : true
+
   },
   "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
   "enabled":  false
@@ -40,9 +45,25 @@
     "roles" : "ROLE_ADMIN",
     "phone" : {
       "tag" : "primary",
-      "value" : "+919000000000"
+      "value" : "+919000000000",
+      "checked" : true
+
     },
     "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
     "enabled":  true
+  },
+  {
+    "_id" : "5",
+    "firstName": "Virat",
+    "lastName": "Kohli",
+    "roles" : "ROLE_ADMIN",
+    "phone" : {
+      "tag" : "primary",
+      "value" : "+918000000000",
+      "checked" : true
+    },
+    "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
+    "enabled":  true,
+    "businessIds" : ["1"]
   }
 ]

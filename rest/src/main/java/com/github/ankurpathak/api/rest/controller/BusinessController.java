@@ -2,17 +2,18 @@ package com.github.ankurpathak.api.rest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
+import com.github.ankurpathak.api.annotation.CurrentBusiness;
 import com.github.ankurpathak.api.annotation.CurrentUser;
 import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.domain.converter.BusinessConverters;
 import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Contact;
 import com.github.ankurpathak.api.domain.model.User;
+import com.github.ankurpathak.api.domain.updater.BusinessUpdaters;
 import com.github.ankurpathak.api.event.BusinessAddedEvent;
 import com.github.ankurpathak.api.event.EmailTokenEvent;
-import com.github.ankurpathak.api.exception.NotAllowedException;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
-import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
+import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controllor.dto.BusinessDto;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IBusinessService;
@@ -25,6 +26,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +55,7 @@ public class BusinessController extends AbstractRestController<Business, BigInte
 
     @PostMapping(PATH_BUSINESS)
     public ResponseEntity<?> createOne(@CurrentUser User user, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({BusinessDto.Default.class, BusinessDto.Account.class}) BusinessDto dto, BindingResult result) {
-        return createOne(dto, result, request, response, BusinessConverters.businessDtoCreateOneDomain,
+        return createOne(dto, result, request, response, BusinessConverters.createOne,
                 (rest, tDto) -> {
                     if(CollectionUtils.isNotEmpty(user.getBusinessIds()) && user.getBusinessIds().size() > 0)
                         ControllerUtil.processNotAllowed(messageService, ApiCode.MULTIPLE_BUSINESS_NOT_ALLOWED);
@@ -70,6 +72,12 @@ public class BusinessController extends AbstractRestController<Business, BigInte
                         applicationEventPublisher.publishEvent(new BusinessAddedEvent(t, user));
                     }
                 });
+    }
+
+
+    @PutMapping(PATH_BUSINESS)
+    public ResponseEntity<?> update(@CurrentBusiness Business business, HttpServletRequest request,  @RequestBody @Validated({DomainDto.Default.class}) BusinessDto dto, BindingResult result){
+        return update(dto, business, BusinessUpdaters.updateBusiness, request, result);
     }
 
 

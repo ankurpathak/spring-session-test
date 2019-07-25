@@ -50,7 +50,7 @@ public class AccountController extends AbstractRestController<User, BigInteger, 
 
     @PostMapping(ApiPaths.PATH_ACCOUNT)
     public ResponseEntity<?> account(HttpServletRequest request, HttpServletResponse response, @Validated({UserDto.Default.class, UserDto.Account.class}) @RequestBody UserDto dto, BindingResult result) {
-        return createOne(dto, result, request, response, UserConverters.userDtoRegisterToDomain(),
+        return createOne(dto, result, request, response, UserConverters.createAccount(),
                 (rest, tDto) -> {
                     tDto.encodedPassword(passwordEncoder.encode(tDto.getPassword()));
                 }, (rest, t, tDto) -> {

@@ -49,7 +49,7 @@ public class CityController {
         return service.findDistricts(state);
     }
 
-    @GetMapping(ApiPaths.PATH_STATE_PINCODE)
+    @GetMapping(ApiPaths.PATH_STATE_PIN_CODE)
     public List<String> findPinCodes(HttpServletResponse response,  @QueryParam(Params.Query.STATE) String state, @QueryParam(Params.Query.DISTRICT) String district, Pageable pageable){
         PagingUtil.pagePreCheck(pageable.getPageNumber());
         Page<String> page = service.findPinCodes(state, district, pageable);

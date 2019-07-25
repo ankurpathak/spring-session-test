@@ -65,7 +65,7 @@ public class CityControllerTests {
 
     @Test
     public void testPinCodes() throws Exception {
-        mockMvc.perform(get(apiPath(PATH_STATE_PINCODE))
+        mockMvc.perform(get(apiPath(PATH_STATE_PIN_CODE))
                 .param(Params.Query.STATE, "MAHARASHTRA")
                 .param(Params.Query.DISTRICT, "Pune")
                 .param(Params.Query.PAGE, String.valueOf(0))

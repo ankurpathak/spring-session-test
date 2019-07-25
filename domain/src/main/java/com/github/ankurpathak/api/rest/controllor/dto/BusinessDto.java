@@ -12,7 +12,7 @@ public class BusinessDto extends DomainDto<Business, BigInteger> {
     @NotBlank(groups = {Default.class})
     private String name;
     @Any(value = {"RENTAL", "GYM", "PG", "ED", "HS" }, groups = {Default.class})
-    @NotBlank(groups = {Default.class})
+    @NotBlank(groups = {Account.class})
     private String type;
 
 

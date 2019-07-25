@@ -14,18 +14,25 @@ public class Product extends BusinessExtendedDomain<String> {
     @Indexed(name = Model.Product.Index.NAME_IDX , sparse = true, unique = true)
     private String name;
     private String description;
-    private BigDecimal amount;
-    private BigInteger tax;
+    private BigDecimal amount = BigDecimal.ZERO;
+    private BigDecimal tax = BigDecimal.ZERO;
+    private Boolean variable = false;
 
-    
 
-
-    public BigInteger getTax() {
+    public BigDecimal getTax() {
         return tax;
     }
 
-    public void setTax(BigInteger tax) {
+    public void setTax(BigDecimal tax) {
         this.tax = tax;
+    }
+
+    public Boolean getVariable() {
+        return variable;
+    }
+
+    public void setVariable(Boolean variable) {
+        this.variable = variable;
     }
 
     public String getDescription() {
@@ -80,8 +87,14 @@ public class Product extends BusinessExtendedDomain<String> {
         return this;
     }
 
-    public Product tax(BigInteger tax) {
+    public Product tax(BigDecimal tax) {
         this.tax = tax;
+        return this;
+    }
+
+
+    public Product variable(Boolean variable) {
+        this.variable = variable;
         return this;
     }
 }
