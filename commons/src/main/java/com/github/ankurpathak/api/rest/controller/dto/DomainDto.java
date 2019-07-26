@@ -40,10 +40,6 @@ public class DomainDto<T extends Domain<ID>, ID extends Serializable> implements
 
 
 
-
-    public interface Default { }
-
-
   /*  public MultiValuedMap<String, String> getFields() {
         return fields;
     }

@@ -6,6 +6,7 @@ import com.github.ankurpathak.primitive.bean.constraints.string.Any;
 import com.github.ankurpathak.primitive.bean.constraints.string.Email;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.groups.Default;
 import java.math.BigInteger;
 
 public class BusinessDto extends DomainDto<Business, BigInteger> {

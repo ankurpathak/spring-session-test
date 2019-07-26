@@ -7,6 +7,7 @@ import com.github.ankurpathak.password.bean.constraints.PasswordMatches;
 import com.github.ankurpathak.primitive.bean.constraints.string.Contact;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.groups.Default;
 import java.io.Serializable;
 import java.math.BigInteger;
 

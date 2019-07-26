@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.groups.Default;
 import java.math.BigInteger;
 
 
@@ -57,7 +58,7 @@ public class UserController extends AbstractRestController<User,BigInteger, User
 
 
     @PostMapping(ApiPaths.PATH_USER)
-    public ResponseEntity<?> createOne(HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({DomainDto.Default.class}) UserDto dto, BindingResult result){
+    public ResponseEntity<?> createOne(HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({Default.class}) UserDto dto, BindingResult result){
         return createOne(dto, result, request, response, UserConverters.createOne);
     }
 
@@ -108,16 +109,15 @@ public class UserController extends AbstractRestController<User,BigInteger, User
 
 
     @PutMapping(ApiPaths.PATH_USER)
-    public ResponseEntity<?> update(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({DomainDto.Default.class}) UserDto dto, BindingResult result){
-        //ControllerUtil.processValidation(result, messageService); To be removed
-        return update(dto, user, UserUpdaters.profileUpdater, request, result); // Added Result
+    public ResponseEntity<?> update(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({Default.class}) UserDto dto, BindingResult result){
+        return update(dto, user, UserUpdaters.profileUpdater, request, result);
     }
 
 
     @PatchMapping(ApiPaths.PATH_USER)
     public ResponseEntity<?> patch(HttpServletRequest request, @CurrentUser User user, @RequestBody JsonNode patch, BindingResult result){
         ControllerUtil.processValidation(result, messageService);
-        return patch(patch, user, UserDtoConverters.userToUserDto, UserUpdaters.profileUpdater, UserDto.class, DomainDto.Default.class);
+        return patch(patch, user, UserDtoConverters.userToUserDto, UserUpdaters.profileUpdater, UserDto.class, Default.class);
     }
 
 }

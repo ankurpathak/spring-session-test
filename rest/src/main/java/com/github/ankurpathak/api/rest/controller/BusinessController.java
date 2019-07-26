@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.groups.Default;
 import java.math.BigInteger;
 
 import static com.github.ankurpathak.api.constant.ApiPaths.PATH_BUSINESS;
@@ -54,7 +55,7 @@ public class BusinessController extends AbstractRestController<Business, BigInte
 
 
     @PostMapping(PATH_BUSINESS)
-    public ResponseEntity<?> createOne(@CurrentUser User user, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({BusinessDto.Default.class, BusinessDto.Account.class}) BusinessDto dto, BindingResult result) {
+    public ResponseEntity<?> createOne(@CurrentUser User user, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({Default.class, BusinessDto.Account.class}) BusinessDto dto, BindingResult result) {
         return createOne(dto, result, request, response, BusinessConverters.createOne,
                 (rest, tDto) -> {
                     if(CollectionUtils.isNotEmpty(user.getBusinessIds()) && user.getBusinessIds().size() > 0)
@@ -76,7 +77,7 @@ public class BusinessController extends AbstractRestController<Business, BigInte
 
 
     @PutMapping(PATH_BUSINESS)
-    public ResponseEntity<?> update(@CurrentBusiness Business business, HttpServletRequest request,  @RequestBody @Validated({DomainDto.Default.class}) BusinessDto dto, BindingResult result){
+    public ResponseEntity<?> update(@CurrentBusiness Business business, HttpServletRequest request,  @RequestBody @Validated({Default.class}) BusinessDto dto, BindingResult result){
         return update(dto, business, BusinessUpdaters.updateBusiness, request, result);
     }
 

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.groups.Default;
 import java.math.BigInteger;
 
 @ApiController
@@ -49,7 +50,7 @@ public class AccountController extends AbstractRestController<User, BigInteger, 
 
 
     @PostMapping(ApiPaths.PATH_ACCOUNT)
-    public ResponseEntity<?> account(HttpServletRequest request, HttpServletResponse response, @Validated({UserDto.Default.class, UserDto.Account.class}) @RequestBody UserDto dto, BindingResult result) {
+    public ResponseEntity<?> account(HttpServletRequest request, HttpServletResponse response, @Validated({Default.class, UserDto.Account.class}) @RequestBody UserDto dto, BindingResult result) {
         return createOne(dto, result, request, response, UserConverters.createAccount(),
                 (rest, tDto) -> {
                     tDto.encodedPassword(passwordEncoder.encode(tDto.getPassword()));

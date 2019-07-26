@@ -6,7 +6,6 @@ import com.github.ankurpathak.api.annotation.CurrentBusiness;
 import com.github.ankurpathak.api.domain.converter.ProductConverters;
 import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Product;
-import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
 import com.github.ankurpathak.api.service.IDomainService;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.groups.Default;
 
 import static com.github.ankurpathak.api.constant.ApiPaths.PATH_SERVICE;
 import static com.github.ankurpathak.api.constant.ApiPaths.PATH_SERVICE_UPLOAD;
@@ -49,7 +49,7 @@ public class ProductController extends AbstractRestController<Product, String, P
 
 
     @PostMapping(PATH_SERVICE)
-    public ResponseEntity<?> createOne(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({ProductDto.Default.class}) ProductDto dto, BindingResult result){
+    public ResponseEntity<?> createOne(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({Default.class}) ProductDto dto, BindingResult result){
          return createOne(dto,result, request,response, ProductConverters.createOne);
     }
 
@@ -57,7 +57,7 @@ public class ProductController extends AbstractRestController<Product, String, P
 
     @PostMapping(PATH_SERVICE_UPLOAD)
     public ResponseEntity<?> createMany(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Product, String, ProductDto> csvList, BindingResult result){
-        return createManyByCsv(csvList, ProductDto.class, Product.class, request, ProductConverters.createOne, log,result, DomainDto.Default.class);
+        return createManyByCsv(csvList, ProductDto.class, Product.class, request, ProductConverters.createOne, log,result, Default.class);
     }
 
 

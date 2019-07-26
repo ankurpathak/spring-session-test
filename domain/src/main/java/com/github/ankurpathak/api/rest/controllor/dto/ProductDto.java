@@ -12,9 +12,10 @@ import com.opencsv.bean.CsvCustomBindByName;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.groups.Default;
 import java.math.BigDecimal;
 
-@VariableOrAmount(groups = {DomainDto.Default.class})
+@VariableOrAmount(groups = {Default.class})
 public class ProductDto extends DomainDto<Product, String> {
     @NotBlank(groups = {Default.class})
     @CsvBindByName(column = CsvConstant.Product.NAME)
