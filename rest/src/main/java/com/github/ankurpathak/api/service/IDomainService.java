@@ -1,7 +1,7 @@
 package com.github.ankurpathak.api.service;
 
 import com.github.ankurpathak.api.domain.model.Domain;
-import com.github.ankurpathak.api.domain.repository.mongo.custom.dto.BulkOperationResult;
+import com.mongodb.bulk.BulkWriteResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -52,7 +52,7 @@ public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
 
     void deleteAll();
 
-    BulkOperationResult<ID> bulkInsertMany(Class<T> type, List<T> domains);
+    BulkWriteResult bulkInsertMany(Class<T> type, List<T> domains);
 
 
 }

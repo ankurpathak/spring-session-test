@@ -108,6 +108,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_BUSINESS)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.PUT, ApiPaths.apiPath(ApiPaths.PATH_BUSINESS)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_SERVICE)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_SERVICE_UPLOAD)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .mvcMatchers(HttpMethod.GET, ApiPaths.PATH_FAVICON).permitAll()
                 .mvcMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_REMEMBER_ME)).rememberMe()
                 .anyRequest()

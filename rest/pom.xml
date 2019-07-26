@@ -72,6 +72,10 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-email</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
         <!-- Apache Commons -->
 
 
@@ -443,6 +447,13 @@
             <artifactId>jackson-dataformat-csv</artifactId>
         </dependency>
         <!-- Jackson CSV -->
+        <!-- Open CSV -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+        </dependency>
+        <!-- Open CSV -->
+
 
     </dependencies>
 

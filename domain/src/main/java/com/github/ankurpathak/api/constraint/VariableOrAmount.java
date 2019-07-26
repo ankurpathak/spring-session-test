@@ -22,6 +22,8 @@ public @interface VariableOrAmount {
 
     Class<? extends Payload>[] payload() default {};
 
+    boolean ignoreBlankVariable() default true;
+
     @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Documented

@@ -35,6 +35,7 @@ public interface ApiPaths {
     String PATH_STATE_PIN_CODE = "/state/district/pin-code";
     String PATH_DISTRICT= "/district";
     String PATH_SERVICE = "/service";
+    String PATH_SERVICE_UPLOAD = "/service/upload";
     static String apiPath(String path){
         return Paths.get(PATH_API, path).toString();
     }

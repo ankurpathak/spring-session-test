@@ -8,7 +8,6 @@ import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
-import com.github.ankurpathak.api.domain.repository.mongo.custom.dto.BulkOperationResult;
 import com.github.ankurpathak.api.domain.updater.IUpdateDomain;
 import com.github.ankurpathak.api.event.DomainCreatedEvent;
 import com.github.ankurpathak.api.event.PaginatedResultsRetrievedEvent;
@@ -26,6 +25,13 @@ import com.github.ankurpathak.api.rest.controller.util.DuplicateKeyExceptionProc
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
+import com.github.ankurpathak.api.util.LogUtil;
+import com.mongodb.bulk.BulkWriteResult;
+import com.opencsv.CSVReader;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.HeaderColumnNameMappingStrategy;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
@@ -36,14 +42,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractRestController<T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> {
@@ -64,6 +71,12 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         this.validator = validator;
     }
 
+
+
+
+
+
+
     protected ResponseEntity<T> byId(ID id, Class<T> type) {
         return ControllerUtil.processOptional(getDomainService().findById(id), type, null, String.valueOf(id), messageService);
     }
@@ -76,15 +89,15 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
     protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
         try {
-            BulkOperationResult<ID> res = tryCreateMany(dtoList, type, result, request, converter);
-            return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of(Params.ID, res.getIds(), Params.COUNT, res.getCount()));
+            BulkWriteResult res = tryCreateMany(dtoList, type, result, request, converter);
+            return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of( Params.COUNT, res.getInsertedCount()));
         } catch (DuplicateKeyException ex) {
             catchCreateMany(dtoList, ex, result, request);
             throw ex;
         }
     }
 
-    private BulkOperationResult<ID> tryCreateMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
+    private BulkWriteResult tryCreateMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
         ControllerUtil.processValidation(result, messageService);
         List<T> ts = dtoList.getDtos().stream().map(dto -> dto.toDomain(converter)).collect(Collectors.toList());
         return getDomainService().bulkInsertMany(type, ts);
@@ -315,4 +328,40 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     public LocalValidatorFactoryBean getValidator() {
         return validator;
     }
+
+    public DomainDtoList<T, ID, TDto> csvToDomainDtoList(MultipartFile csv, Class<TDto> dtoType, Logger log) {
+        HeaderColumnNameMappingStrategy<TDto> ms = new HeaderColumnNameMappingStrategy<>();
+        ms.setType(dtoType);
+        List<TDto> dtos = Collections.emptyList();
+        try (CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(csv.getInputStream())))
+        ){
+            CsvToBean<TDto> cb = new CsvToBeanBuilder<TDto>(reader)
+                    .withType(dtoType)
+                    .withMappingStrategy(ms)
+                    .build();
+           dtos = cb.parse();
+        }catch (IOException ex){
+            LogUtil.logStackTrace(log, ex);
+        }
+
+        DomainDtoList<T, ID, TDto> dtoList =  new DomainDtoList<>();
+        return dtoList.dtos(dtos);
+    }
+
+    public ResponseEntity<?> createManyByCsv(DomainDtoList<T,ID,TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T,ID, TDto> converter, Logger log, BindingResult result, Class<?>...hints){
+        ControllerUtil.processValidation(result, messageService);
+        DomainDtoList<T, ID, TDto> list = csvToDomainDtoList(csvList.getCsv(), dtoType, log);
+        BindException exception = new BindException(list, list.getClass().getSimpleName());
+        processValidation(list, exception, hints);
+        return createMany(list, type, exception, request, converter);
+    }
+
+
+    public void processValidation(Object object, BindingResult result, Class<?>...hints){
+        validator.validate(object, result, hints);
+    }
+
+
+
+
 }

@@ -3,10 +3,15 @@ package com.github.ankurpathak.api.rest.controller.dto;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.updater.IUpdateDomain;
+import com.github.ankurpathak.api.util.CombinedUtils;
+import com.opencsv.bean.CsvBindAndJoinByName;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import java.io.Serializable;
+import java.util.Map;
 
-public abstract class DomainDto<T extends Domain<ID>, ID extends Serializable> implements  Serializable {
+public class DomainDto<T extends Domain<ID>, ID extends Serializable> implements  Serializable {
 
     @SuppressWarnings("unchecked")
     public  <TDto extends DomainDto<T, ID>> T toDomain(IToDomain<T, ID, TDto> converter){
@@ -20,6 +25,10 @@ public abstract class DomainDto<T extends Domain<ID>, ID extends Serializable> i
         return updater.doUpdate(t, dto);
     }
 
+
+   // @CsvBindAndJoinByName(column = ".*", elementType = String.class, mapType = ArrayListValuedHashMap.class)
+   // private MultiValuedMap<String, String> fields;
+
     public String domainName(){
         String name = this.getClass().getSimpleName();
         name = name != null ? name : "";
@@ -29,8 +38,20 @@ public abstract class DomainDto<T extends Domain<ID>, ID extends Serializable> i
     }
 
 
+
+
+
     public interface Default { }
 
 
+  /*  public MultiValuedMap<String, String> getFields() {
+        return fields;
+    }
 
+    public void setFields(MultiValuedMap<String, String> fields) {
+        this.fields = fields;
+    }
+
+   */
 }
+

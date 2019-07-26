@@ -43,6 +43,14 @@ public class AppConfig {
         return threadPoolTaskExecutor;
 
     }
+    /*
+
+    @Bean
+    public ExtendedLocalValidatorFactoryBean localValidatorFactoryBean(){
+        return new ExtendedLocalValidatorFactoryBean();
+    }
+
+     */
 
 
     @Bean

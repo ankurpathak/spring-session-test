@@ -1,11 +1,9 @@
 package com.github.ankurpathak.api.domain.repository.mongo.custom;
 
 import com.github.ankurpathak.api.domain.model.Domain;
-import com.github.ankurpathak.api.domain.repository.mongo.ICustomizedDomainRepository;
 import com.github.ankurpathak.api.domain.mongo.DomainSingleFieldSearchTypedAggregation;
-import com.github.ankurpathak.api.domain.repository.mongo.custom.dto.BulkOperationResult;
+import com.github.ankurpathak.api.domain.repository.mongo.ICustomizedDomainRepository;
 import com.mongodb.bulk.BulkWriteResult;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +13,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, ID extends Serializable> implements ICustomizedDomainRepository<T, ID> {
@@ -73,16 +68,9 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
 
 
     @Override
-    public BulkOperationResult<ID> bulkInsertMany(final Class<T> type, final List<T> domains) {
-        BulkOperations ops = template.bulkOps(BulkOperations.BulkMode.UNORDERED, type);
+    public BulkWriteResult bulkInsertMany(final Class<T> type, final List<T> domains) {
+        BulkOperations ops = template.bulkOps(BulkOperations.BulkMode.ORDERED, type);
         ops.insert(domains);
-        BulkWriteResult result = ops.execute();
-        Criteria criteria = new Criteria();
-        for(T domain: domains){
-           Example<T> example = Example.of(domain);
-           criteria.orOperator(Criteria.byExample(example));
-        }
-       List<T> domainsWithId =  template.find(new Query().addCriteria(criteria), type);
-        return new BulkOperationResult<>(domainsWithId.stream().map(Domain::getId).collect(Collectors.toList()), result.getInsertedCount());
+        return ops.execute();
     }
 }

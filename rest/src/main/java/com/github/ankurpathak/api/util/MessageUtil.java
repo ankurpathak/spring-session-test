@@ -30,13 +30,6 @@ public class MessageUtil {
     }
 
     public static final Locale getLocale() {
-        Optional<DomainContext> context = SecurityUtil.getDomainContext();
-        if (context.isPresent()) {
-            return context.get().getLocale();
-        } else {
-            return Locale.getDefault();
-        }
-
-
+        return WebUtil.getLocale();
     }
 }

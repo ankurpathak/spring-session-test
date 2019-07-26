@@ -2,9 +2,9 @@ package com.github.ankurpathak.api.service.impl;
 
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.repository.mongo.ExtendedMongoRepository;
-import com.github.ankurpathak.api.domain.repository.mongo.custom.dto.BulkOperationResult;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.util.MatcherUtil;
+import com.mongodb.bulk.BulkWriteResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -138,7 +138,7 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
     }
 
     @Override
-    public BulkOperationResult<ID> bulkInsertMany(Class<T> type, List<T> domains) {
+    public BulkWriteResult bulkInsertMany(Class<T> type, List<T> domains) {
         require(type, notNullValue(Class.class));
         require(domains, MatcherUtil.notCollectionEmpty());
         return dao.bulkInsertMany(type, domains);

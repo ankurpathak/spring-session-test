@@ -2,12 +2,18 @@ package com.github.ankurpathak.api.util;
 
 
 import com.github.ankurpathak.api.constant.Params;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.LocaleContextResolver;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigInteger;
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  *
@@ -56,6 +62,27 @@ public class WebUtil {
 
     public static Locale getLocale(HttpServletRequest request){
         return request.getLocale();
+    }
+
+
+    public static Optional<HttpServletRequest> getRequest(){
+        return Optional.ofNullable(RequestContextHolder.getRequestAttributes())
+                .filter(attr -> ServletRequestAttributes.class.isAssignableFrom(attr.getClass()))
+                .map(ServletRequestAttributes.class::cast)
+                .map(ServletRequestAttributes::getRequest);
+    }
+
+
+    public static Optional<HttpServletResponse> getResponse(){
+        return Optional.ofNullable(RequestContextHolder.getRequestAttributes())
+                .filter(attr -> ServletRequestAttributes.class.isAssignableFrom(attr.getClass()))
+                .map(ServletRequestAttributes.class::cast)
+                .map(ServletRequestAttributes::getResponse);
+    }
+
+
+    public static Locale getLocale(){
+        return LocaleContextHolder.getLocale();
     }
 
 

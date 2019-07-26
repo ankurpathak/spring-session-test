@@ -17,6 +17,6 @@ public class VariableOrAmountValidator implements ConstraintValidator<VariableOr
 
     @Override
     public boolean isValid(ProductDto productDto, ConstraintValidatorContext context) {
-        return productDto.getAmount() != null ^ productDto.getVariable() != null;
+       return (productDto.getVariable() == null) ? config.ignoreBlankVariable() : (productDto.getAmount() != null && !productDto.getVariable()) ^ productDto.getVariable();
     }
 }

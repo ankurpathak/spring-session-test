@@ -73,8 +73,20 @@
                 <artifactId>commons-email</artifactId>
                 <version>${commons-email.version}</version>
             </dependency>
-            <!-- Apache Commons -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons-collection.version}</version>
+            </dependency>
 
+            <!-- Apache Commons -->
+            <!-- Open CSV -->
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${opencsv.version}</version>
+            </dependency>
+            <!-- Open CSV -->
 
 
             <!-- Method Preconditions Check -->
@@ -490,6 +502,7 @@
         <reflections.version>0.9.11</reflections.version>
         <greenmail.version>1.5.10</greenmail.version>
         <opencsv.version>4.6</opencsv.version>
+        <commons-collection.version>4.4</commons-collection.version>
     </properties>
 
     <repositories>

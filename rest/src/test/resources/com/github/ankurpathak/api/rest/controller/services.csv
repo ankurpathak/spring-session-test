@@ -1,0 +1,4 @@
+NAME,VARIABLE(y/n),AMOUNT
+service 1,y,
+service 2,y,
+service 3,n,20
