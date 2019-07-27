@@ -3,9 +3,14 @@ package com.github.ankurpathak.api.rest.controller.dto;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.ankurpathak.api.util.MatcherUtil;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.hamcrest.Matchers.*;
+import static org.valid4j.Assertive.require;
 
 public class ApiResponse {
 
@@ -35,13 +40,24 @@ public class ApiResponse {
     }
 
 
-    private ApiResponse(ApiCode code, String message){
+    private ApiResponse(ApiCode code, String... messages){
+        require(code, notNullValue(ApiCode.class));
+        require(messages, not(emptyArray()));
         this.extras.put("code", code.getCode());
-        this.extras.put("message", message);
+        if(ArrayUtils.isNotEmpty(messages)){
+            if(messages.length > 1){
+                this.extras.put("messages", messages);
+            }else {
+                this.extras.put("message", messages[0]);
+            }
+        }
+
     }
 
-    public static ApiResponse getInstance(@JsonProperty("code") ApiCode code, @JsonProperty("message") String message){
-        return new ApiResponse(code, message);
+
+
+    public static ApiResponse getInstance(ApiCode code, String... messages){
+        return new ApiResponse(code, messages);
     }
 
 

@@ -7,6 +7,8 @@ import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
 import com.github.ankurpathak.api.rest.controller.dto.ValidationErrorDto;
 import com.github.ankurpathak.api.util.MessageUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,34 +113,39 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
 
 
     private ResponseEntity<Object> handleValidationErrors(Exception ex, WebRequest request) {
-        String message = null;
+        String[] messages = {};
         ApiCode code = null;
-        BindingResult result = null;
-        if (ex instanceof BindException) {
-            result = ((BindException) ex).getBindingResult();
-        } else if (ex instanceof MethodArgumentNotValidException) {
-            result = ((MethodArgumentNotValidException) ex).getBindingResult();
+        List<BindingResult> results = new ArrayList<>();
+        if (BindException.class.isAssignableFrom(ex.getClass())) {
+            results.add(((BindException) ex).getBindingResult());
+        } else if (MethodArgumentNotValidException.class.isAssignableFrom(ex.getClass())) {
+            results.add(((MethodArgumentNotValidException) ex).getBindingResult());
         } else if (ex instanceof ValidationException) {
             ValidationException vEx = (ValidationException) ex;
-            result = vEx.getBindingResult();
-            message = vEx.getMessage();
+            results.addAll(vEx.getBindingResults());
+            messages = ArrayUtils.addAll(messages, vEx.getMessages());
             code = vEx.getCode();
         }
-        if(message == null)
-            message = MessageUtil.getMessage(messageSource, ApiMessages.VALIDATION);
+        if(ArrayUtils.isEmpty(messages))
+            messages = ArrayUtils.add(messages, MessageUtil.getMessage(messageSource, ApiMessages.VALIDATION));
         if(code == null)
             code = ApiCode.VALIDATION;
 
-        ApiResponse dto = ApiResponse.getInstance(code, message);
-        if (result != null) {
-            List<FieldError> fieldErrors = result.getFieldErrors();
-            ValidationErrorDto validationErrorDto = processFieldErrors(fieldErrors);
-            List<ObjectError> objectErrors = result.getGlobalErrors();
-            List<String> starErrors = processGlobalErrors(objectErrors);
-            for (String starError : starErrors) {
-                validationErrorDto.addError("*", starError);
+        ApiResponse dto = ApiResponse.getInstance(code, messages);
+        ValidationErrorDto mainDto = ValidationErrorDto.getInstance();
+        if (CollectionUtils.isNotEmpty(results)) {
+            for(BindingResult result: results){
+                List<FieldError> fieldErrors = result.getFieldErrors();
+                ValidationErrorDto validationErrorDto = processFieldErrors(fieldErrors);
+                List<ObjectError> objectErrors = result.getGlobalErrors();
+                List<String> starErrors = processGlobalErrors(objectErrors);
+                for (String starError : starErrors) {
+                    validationErrorDto.addError("*", starError);
+                }
+                mainDto.addErrors(validationErrorDto.getErrors());
             }
-            dto.addExtra("hints", validationErrorDto);
+
+            dto.addExtra("hints", mainDto);
 
         }
         return handleExceptionInternal(ex, dto, new HttpHeaders(), HttpStatus.CONFLICT, request);

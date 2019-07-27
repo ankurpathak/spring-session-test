@@ -1,23 +1,37 @@
 package com.github.ankurpathak.api.exception;
 
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.util.MatcherUtil;
 import org.springframework.validation.BindingResult;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
+import static org.valid4j.Assertive.require;
+
 public class ValidationException extends RuntimeException {
-    private BindingResult bindingResult;
+    private List<BindingResult> bindingResults;
     private ApiCode code;
-    public ValidationException(BindingResult bindingResult, String message, ApiCode code) {
-        super(message);
-        this.bindingResult = bindingResult;
+    private String[] messages;
+    public ValidationException(List<BindingResult> bindingResults, ApiCode code, String...messages) {
+        require(bindingResults, MatcherUtil.notCollectionEmpty());
+        require(code, notNullValue(ApiCode.class));
+        require(messages, not(emptyArray()));
+        this.bindingResults = bindingResults;
         this.code = code;
+        this.messages = messages;
     }
 
 
-    public BindingResult getBindingResult() {
-        return bindingResult;
+    public List<BindingResult> getBindingResults() {
+        return bindingResults;
     }
 
     public ApiCode getCode() {
         return code;
+    }
+
+    public String[] getMessages() {
+        return messages;
     }
 }

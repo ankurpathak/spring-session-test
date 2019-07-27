@@ -133,7 +133,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
 
     private void catchCreateMany(DomainDtoList<T, ID, TDto> dtoList, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
-        DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dtoList.getDto()).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
+        DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dtoList).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
     }
 
 

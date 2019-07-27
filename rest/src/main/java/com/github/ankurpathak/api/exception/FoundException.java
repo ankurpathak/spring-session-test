@@ -14,15 +14,15 @@ import static org.valid4j.Assertive.require;
 public class FoundException extends RuntimeException {
     private final List<FoundDto> fondDtos;
     private final DuplicateKeyException duplicateKeyException;
-    private final BindingResult bindingResult;
+    private final List<BindingResult> bindingResults;
 
-    public FoundException(DuplicateKeyException duplicateKeyException, BindingResult bindingResult, List<FoundDto> foundDtos) {
+    public FoundException(DuplicateKeyException duplicateKeyException, List<BindingResult> bindingResults, List<FoundDto> foundDtos) {
         super(duplicateKeyException.getMessage(), duplicateKeyException.getCause());
         require(duplicateKeyException, notNullValue());
-        require(bindingResult, notNullValue());
+        require(bindingResults, MatcherUtil.notCollectionEmpty());
         require(foundDtos, MatcherUtil.notCollectionEmpty());
         this.duplicateKeyException = duplicateKeyException;
-        this.bindingResult = bindingResult;
+        this.bindingResults = bindingResults;
         this.fondDtos = foundDtos;
 
     }
@@ -41,7 +41,11 @@ public class FoundException extends RuntimeException {
         return duplicateKeyException;
     }
 
-    public BindingResult getBindingResult() {
-        return bindingResult;
+    public List<BindingResult> getBindingResults() {
+        return bindingResults;
+    }
+
+    public boolean hasErrors(){
+        return bindingResults.stream().allMatch(BindingResult::hasErrors);
     }
 }

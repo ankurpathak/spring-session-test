@@ -20,9 +20,9 @@ public class ControllerUtil {
     private static void processValidation(BindingResult result, IMessageService messageService, ApiCode code, String message) {
         if (result.hasErrors()) {
             throw new ValidationException(
-                    result,
-                    messageService.getMessage(message),
-                    code
+                    Collections.singletonList(result),
+                    code,
+                    messageService.getMessage(message)
             );
         }
     }
@@ -44,12 +44,12 @@ public class ControllerUtil {
 
 
     public static void processValidationForFound(IMessageService messageService, FoundException ex) {
-        if (ex.getBindingResult().hasErrors()) {
+        if (ex.hasErrors()) {
             throw new ValidationException(
-                    ex.getBindingResult(),
-                    messageService.getMessage(ApiMessages.FOUND, ex.getFound().getEntity(), ex.getFound().getProperty(), ex.getFound().getId()),
-                    ex.getFound().getCode()
-            );
+                    ex.getBindingResults(),
+                    ex.getFound().getCode(),
+                    messageService.getMessage(ApiMessages.FOUND, ex.getFound().getEntity(), ex.getFound().getProperty(), ex.getFound().getId())
+                    );
         }
     }
 
