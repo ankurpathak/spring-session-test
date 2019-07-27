@@ -65,7 +65,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             criteria.orOperator(criteriaList.toArray(new Criteria[]{}));
 
         // if you want to filter anonymous user in query
-        //criteria.andOperator(Criteria.where(Model.User.Field.ENABLED).is(true));
+        //criteria.andOperator(Criteria.where(Model.User.CustomField.ENABLED).is(true));
         return userService.findByCriteriaPaginated(criteria, PageRequest.of(0, 1), User.class)
                 .stream()
           // if you want to filter anonymous user

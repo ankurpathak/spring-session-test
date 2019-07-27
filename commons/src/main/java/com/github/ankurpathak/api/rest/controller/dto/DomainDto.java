@@ -26,8 +26,8 @@ public class DomainDto<T extends Domain<ID>, ID extends Serializable> implements
     }
 
 
-   // @CsvBindAndJoinByName(column = ".*", elementType = String.class, mapType = ArrayListValuedHashMap.class)
-   // private MultiValuedMap<String, String> fields;
+    @CsvBindAndJoinByName(column = ".*", elementType = String.class, mapType = ArrayListValuedHashMap.class)
+    private MultiValuedMap<String, String> fields;
 
     public String domainName(){
         String name = this.getClass().getSimpleName();
@@ -39,15 +39,9 @@ public class DomainDto<T extends Domain<ID>, ID extends Serializable> implements
 
 
 
-
-  /*  public MultiValuedMap<String, String> getFields() {
-        return fields;
+    public Map<String, String> fields(){
+        return CombinedUtils.toMap(fields);
     }
 
-    public void setFields(MultiValuedMap<String, String> fields) {
-        this.fields = fields;
-    }
-
-   */
 }
 

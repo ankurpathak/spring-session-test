@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controller.dto.View;
 import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -74,11 +74,26 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
         return this;
     }
 
+    public Domain<ID> removeField(CustomField field){
+        if(!org.apache.commons.collections4.CollectionUtils.isEmpty(fields))
+            fields.add(field);
+        return this;
+    }
+
+    public Domain<ID> addField(CustomField field){
+        if(fields == null)
+            fields = new HashSet<>();
+        if(field!=null)
+            fields.add(field);
+        return this;
+    }
+
     public Domain<ID> removeTag(String tag){
         if(!CollectionUtils.isEmpty(tags))
             tags.remove(tag);
         return this;
     }
+
 
     public Set<String> getTags() {
         return tags;
@@ -122,6 +137,15 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
 
 
 
+    private Set<CustomField> fields;
+
+    public Set<CustomField> getFields() {
+        return fields;
+    }
+
+    public void setFields(Set<CustomField> fields) {
+        this.fields = fields;
+    }
 
     @SuppressWarnings("unchecked")
     public  <T extends  Domain<ID>, TDto extends DomainDto<T, ID>> TDto toDto(IToDto<T, ID, TDto> converter){
@@ -129,4 +153,8 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
         return converter.toDto(t);
     }
 
+    public Domain fields(Set<CustomField> fields) {
+        this.fields = fields;
+        return this;
+    }
 }
