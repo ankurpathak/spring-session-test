@@ -74,8 +74,34 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
                 .andExpect(status().isCreated())
                 .andExpect(authenticated())
                 .andExpect(jsonPath("$.code", equalTo(0)));
+    }
 
-        System.out.println("");
 
+    @Test
+    public void testEmptyCsvFile() throws Exception{
+        Resource csv = new ClassPathResource("services-empty.csv", this.getClass());
+        MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
+
+        mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD)).file(csvFile)
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(5)));
+    }
+
+    @Test
+    public void testMissingHeaderCsvFile() throws Exception{
+        Resource csv = new ClassPathResource("services-missing-header.csv", this.getClass());
+        MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
+
+        mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD)).file(csvFile)
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(5)));
     }
 }

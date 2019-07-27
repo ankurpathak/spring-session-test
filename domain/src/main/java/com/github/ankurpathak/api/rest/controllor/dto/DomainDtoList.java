@@ -6,6 +6,7 @@ import com.github.ankurpathak.primitive.bean.constraints.springframework.web.fil
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.Default;
 import java.io.Serializable;
@@ -14,7 +15,7 @@ import java.util.List;
 @Valid
 public class DomainDtoList<T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> {
 
-    @NotNull(groups = {Default.class})
+    @NotEmpty(groups = {Default.class})
     private List<@NotNull(groups = Default.class)  @Valid TDto> dtos;
 
     @NotNull(groups = {Upload.class})
