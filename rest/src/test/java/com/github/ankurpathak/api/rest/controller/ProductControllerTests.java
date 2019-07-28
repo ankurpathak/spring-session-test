@@ -5,6 +5,7 @@ import com.github.ankurpathak.api.domain.model.Product;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,12 +60,58 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
                 .andExpect(jsonPath("$.code", equalTo(0)));
     }
 
+    @Test // Enable Name Index on product To Test
+    @Ignore
+    public void testTwoAddProductWithSameName() throws Exception {
+        ProductDto dto = ProductDto
+                .getInstance()
+                .name("My Product")
+                .variable(true);
+
+        mockMvc.perform(post(apiPath(PATH_SERVICE))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(0)));
+
+        mockMvc.perform(post(apiPath(PATH_SERVICE))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto))
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(0)));
+    }
+
+
+
     @Autowired
     private LocalValidatorFactoryBean validatorFactoryBean;
 
     @Test
     public void testServicesCsv() throws Exception {
         Resource csv = new ClassPathResource("services.csv", this.getClass());
+        MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
+
+        mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD)).file(csvFile)
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(0)));
+    }
+
+    @Test // Enable Name Index on product To Test
+    @Ignore
+    public void testServicesCsvWithDuplicates() throws Exception {
+        Resource csv = new ClassPathResource("services-duplicates.csv", this.getClass());
         MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
 
         mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD)).file(csvFile)

@@ -119,7 +119,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter, IPreCreateOne<T, ID, TDto> preCreate, IPostCreateOne<T, ID, TDto> postCreate) {
+    private ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter, IPreCreateOne<T, ID, TDto> preCreate, IPostCreateOne<T, ID, TDto> postCreate) {
         try {
             preCreate.doPreCreateOne(this, dto);
             T t = tryCreateOne(dto, result, response, converter);
@@ -133,12 +133,12 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
 
     private void catchCreateMany(DomainDtoList<T, ID, TDto> dtoList, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
-        DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dtoList).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
+        DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dtoList.getDto().getClass()).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
     }
 
 
     private void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
-        DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dto).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
+        DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dto.getClass()).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
     }
 
 
@@ -189,56 +189,13 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
                 postUpdate.doPostUpdateOne(this, newT, dto);
                 return ControllerUtil.processSuccess(messageService);
             } catch (DuplicateKeyException ex) {
-                DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dto).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
+                DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dto.getClass()).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
                 throw ex;
             }
         } else {
             throw new NotFoundException(String.valueOf(id), Params.ID, dto.domainName(), ApiCode.NOT_FOUND);
         }
     }
-
-    /*
-
-    protected List<T> searchByField(String field, String value, int block, int size, String sort, Class<T> type, HttpServletResponse response) {
-        ControllerUtil.pagePreCheck(block);
-        Pageable pageable = ControllerUtil.getPageable(block, size, sort);
-        String parsedValue = ControllerUtil.parseFieldValue(value);
-        Page<T> page = getDomainService().findByField(field, parsedValue, pageable, type);
-        ControllerUtil.pagePostCheck(block, page);
-        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
-        return page.getContent();
-    }
-
-    protected List<String> listField(String field, String value, int block, int size, String sort, Class<T> type) {
-        ControllerUtil.pagePreCheck(block);
-        Pageable pageable = ControllerUtil.getPageable(block, size, sort);
-        String parsedValue = ControllerUtil.parseFieldValue(value);
-        Page<String> page = getDomainService().listField(field, parsedValue, pageable, type);
-        ControllerUtil.pagePostCheck(block, page);
-        return page.getContent();
-    }
-
-
-    protected List<T> search(String rsql, int block, int size, String sort, Class<T> type, HttpServletResponse response){
-        ControllerUtil.pagePreCheck(block);
-        Criteria criteria = ControllerUtil.parseRSQL(rsql, type);
-        Pageable pageable = ControllerUtil.getPageable(block, size, sort);
-        Page<T> page = getDomainService().findByCriteriaPaginated(criteria, pageable, type);
-        ControllerUtil.pagePostCheck(block, page);
-        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
-        return page.getContent();
-    }
-
-    protected ResponseEntity<?> paginated(int block, int size, String sort, HttpServletResponse response) {
-        ControllerUtil.pagePreCheck(block);
-        Pageable request = ControllerUtil.getPageable(block, size, sort);
-        Page<T> page = getDomainService().findAllPaginated(request);
-        ControllerUtil.pagePostCheck(block, page);
-        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent<>(page, response));
-        return ResponseEntity.ok(page.getContent());
-    }
-
-    */
 
 
     protected List<T> searchByField(String field, String value, Pageable pageable, Class<T> type, HttpServletResponse response) {
@@ -357,11 +314,8 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    public void processValidation(Object object, BindingResult result, Class<?>...hints){
+    private void processValidation(Object object, BindingResult result, Class<?>...hints){
         validator.validate(object, result, hints);
     }
-
-
-
 
 }

@@ -11,7 +11,7 @@ public enum ApiCode {
     REQUIRED_QUERY_PARAM(5),
     PAGE_NOT_FOUND(6),
     EMAIL_FOUND(7),
-    CONTACT_FOUND(8),
+    PHONE_FOUND(8),
     USERNAME_FOUND(9),
     UNKNOWN(17),
     VALIDATION(5),

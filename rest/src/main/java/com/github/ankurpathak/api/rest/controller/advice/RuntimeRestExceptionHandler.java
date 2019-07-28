@@ -1,18 +1,17 @@
 package com.github.ankurpathak.api.rest.controller.advice;
 
-import com.github.ankurpathak.api.exception.FoundException;
 import com.github.ankurpathak.api.exception.InvalidException;
 import com.github.ankurpathak.api.exception.NotAllowedException;
 import com.github.ankurpathak.api.exception.NotFoundException;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
+import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.util.LogUtil;
 import com.github.ankurpathak.api.util.MessageUtil;
 import cz.jirutka.rsql.parser.RSQLParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,10 +34,10 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
     private static final Logger log = LoggerFactory.getLogger(RuntimeRestExceptionHandler.class);
 
 
-    private final MessageSource messageSource;
+    private final IMessageService messageService;
 
-    public RuntimeRestExceptionHandler(MessageSource messageSource) {
-        this.messageSource = messageSource;
+    public RuntimeRestExceptionHandler(IMessageService messageService) {
+        this.messageService = messageService;
     }
 
 
@@ -50,27 +49,10 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
                 ex,
                 ApiResponse.getInstance(
                         ex.getCode(),
-                        MessageUtil.getMessage(messageSource, ApiMessages.NOT_FOUND, ex.getEntity(), ex.getProperty(), ex.getId())
+                        messageService.getMessage(ApiMessages.NOT_FOUND, ex.getEntity(), ex.getProperty(), ex.getId())
                 ),
                 new HttpHeaders(),
                 HttpStatus.NOT_FOUND,
-                request
-        );
-    }
-
-
-    @ExceptionHandler({FoundException.class})
-    public ResponseEntity<?> handleFoundException(FoundException ex, WebRequest request) {
-        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
-        LogUtil.logStackTrace(log, ex);
-        return handleExceptionInternal(
-                ex,
-                ApiResponse.getInstance(
-                        ex.getFound().getCode(),
-                        MessageUtil.getMessage(messageSource, ApiMessages.FOUND, ex.getFound().getEntity(), ex.getFound().getProperty(), ex.getFound().getId())
-                ),
-                new HttpHeaders(),
-                HttpStatus.CONFLICT,
                 request
         );
     }
@@ -84,7 +66,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
                 new Exception(ex.getMessage(), ex),
                 ApiResponse.getInstance(
                         ex.getApiCode(),
-                        MessageUtil.getMessage(messageSource, ApiMessages.NOT_ALLOWED)
+                        messageService.getMessage(ApiMessages.NOT_ALLOWED)
                 ),
                 new HttpHeaders(),
                 HttpStatus.CONFLICT,
@@ -101,7 +83,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
                 new Exception(ex.getMessage(), ex),
                 ApiResponse.getInstance(
                         ApiCode.INCORRECT_STATE,
-                        MessageUtil.getMessage(messageSource, ApiMessages.INCORRECT_STATE)
+                        messageService.getMessage(ApiMessages.INCORRECT_STATE)
                 ),
                 new HttpHeaders(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
@@ -117,7 +99,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ApiCode.FOUND,
-                        MessageUtil.getMessage(messageSource, ApiMessages.FOUND_DEFAULT)
+                        messageService.getMessage(ApiMessages.FOUND_DEFAULT)
                 ),
                 new HttpHeaders(),
                 HttpStatus.CONFLICT,
@@ -132,7 +114,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ex.getCode(),
-                        MessageUtil.getMessage(messageSource, ApiMessages.INVALID, ex.getProperty(), ex.getValue())
+                        messageService.getMessage(ApiMessages.INVALID, ex.getProperty(), ex.getValue())
                 ),
                 new HttpHeaders(),
                 HttpStatus.CONFLICT,
@@ -147,7 +129,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ApiCode.INVALID_RSQL,
-                        MessageUtil.getMessage(messageSource, ApiMessages.INVALID_RSQL)
+                        messageService.getMessage(ApiMessages.INVALID_RSQL)
                 ),
                 new HttpHeaders(),
                 HttpStatus.BAD_REQUEST,
@@ -163,7 +145,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ApiCode.INVALID_JSON,
-                        MessageUtil.getMessage(messageSource, ApiMessages.INVALID_JSON)
+                        messageService.getMessage(ApiMessages.INVALID_JSON)
                 ),
                 new HttpHeaders(),
                 HttpStatus.BAD_REQUEST,
@@ -185,7 +167,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
         return handleExceptionInternal(
                 ex, ApiResponse.getInstance(
                         ApiCode.BAD_REQUEST,
-                        MessageUtil.getMessage(messageSource, ApiMessages.BAD_REQUEST)
+                        messageService.getMessage(ApiMessages.BAD_REQUEST)
                 ),
                 new HttpHeaders(),
                 HttpStatus.UNSUPPORTED_MEDIA_TYPE,
@@ -200,7 +182,7 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
         LogUtil.logStackTrace(log, ex);
         return handleExceptionInternal(
                 ex,
-                ApiResponse.getInstance(ApiCode.REQUIRED_QUERY_PARAM, MessageUtil.getMessage(messageSource, ApiMessages.REQUIRED_QUERY_PARAM, ex.getParameterName())),
+                ApiResponse.getInstance(ApiCode.REQUIRED_QUERY_PARAM, messageService.getMessage(ApiMessages.REQUIRED_QUERY_PARAM, ex.getParameterName())),
                 new HttpHeaders(),
                 status,
                 request

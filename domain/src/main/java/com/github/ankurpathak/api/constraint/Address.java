@@ -1,7 +1,6 @@
 package com.github.ankurpathak.api.constraint;
 
 import com.github.ankurpathak.api.constraint.validator.VariableOrAmountValidator;
-import com.github.ankurpathak.password.bean.constraints.validator.PasswordMatchesValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -13,22 +12,22 @@ import java.lang.annotation.*;
         validatedBy = {VariableOrAmountValidator.class}
 )
 @Documented
-@Repeatable(VariableOrAmount.List.class)
-public @interface VariableOrAmount {
+@Repeatable(Address.List.class)
+public @interface Address {
 
-    String message() default "{com.github.ankurpathak.api.constraint.VariableOrAmount.message}";
+    String message() default "{com.github.ankurpathak.api.constraint.Address.message}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    boolean ignoreBlankVariable() default true;
+    boolean ignoreBlankAddress() default true;
 
     @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @interface List {
-        VariableOrAmount[] value();
+        Address[] value();
     }
 }
 

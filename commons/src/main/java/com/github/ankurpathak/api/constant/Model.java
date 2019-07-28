@@ -27,6 +27,7 @@ public interface Model {
             String EMAIL_VALUE = "email.value";
             String PHONE = "phone";
             String PHONE_VALUE = "phone.value";
+            String USERNAME = "username";
 
         }
 
@@ -130,6 +131,7 @@ public interface Model {
         String PRODUCT = "products";
 
         interface Field extends Domain.Field{
+            String NAME  = "name";
         }
 
         interface Index extends Domain.Index{

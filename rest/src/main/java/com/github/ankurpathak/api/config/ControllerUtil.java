@@ -44,13 +44,7 @@ public class ControllerUtil {
 
 
     public static void processValidationForFound(IMessageService messageService, FoundException ex) {
-        if (ex.hasErrors()) {
-            throw new ValidationException(
-                    ex.getBindingResults(),
-                    ex.getFound().getCode(),
-                    messageService.getMessage(ApiMessages.FOUND, ex.getFound().getEntity(), ex.getFound().getProperty(), ex.getFound().getId())
-                    );
-        }
+        throw ex;
     }
 
     public static ResponseEntity<?> processError(IMessageService messageService, Map<String, Object> extras) {

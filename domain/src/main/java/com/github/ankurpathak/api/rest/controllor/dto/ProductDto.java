@@ -1,7 +1,6 @@
 package com.github.ankurpathak.api.rest.controllor.dto;
 
 import com.github.ankurpathak.api.constant.CsvConstant;
-import com.github.ankurpathak.api.constraint.AssertTrue;
 import com.github.ankurpathak.api.constraint.BigDecimalMin;
 import com.github.ankurpathak.api.constraint.VariableOrAmount;
 import com.github.ankurpathak.api.csv.BooleanBeanField;
@@ -30,13 +29,12 @@ public class ProductDto extends DomainDto<Product, String> {
     @CsvBindByName(column = CsvConstant.Product.TAX)
     private BigDecimal tax;
 
-   @NotNull(groups = {Default.class})
-   @CsvCustomBindByName(column = CsvConstant.Product.VARIABLE, converter = BooleanBeanField.class)
-   private Boolean variable;
+    @NotNull(groups = {Default.class})
+    @CsvCustomBindByName(column = CsvConstant.Product.VARIABLE, converter = BooleanBeanField.class)
+    private Boolean variable;
 
     @CsvBindByName(column = CsvConstant.Product.DESCRIPTION)
     private String description;
-
 
 
     public String getDescription() {
@@ -55,10 +53,9 @@ public class ProductDto extends DomainDto<Product, String> {
         this.variable = variable;
     }
 
-    public static ProductDto getInstance(){
+    public static ProductDto getInstance() {
         return new ProductDto();
     }
-
 
 
     public String getName() {
@@ -113,9 +110,8 @@ public class ProductDto extends DomainDto<Product, String> {
     }
 
 
-
-
-    public interface Secondary {}
+    public interface Secondary {
+    }
 
 
 }
