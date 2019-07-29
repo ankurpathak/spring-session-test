@@ -9,20 +9,30 @@ import java.util.Objects;
 public class Contact implements Serializable {
 
     public static final String TAG_PRIMARY = "primary";
+    public static final String TAG_ADDED = "added";
 
     @JsonView({View.Me.class})
     private String value;
     private String tag;
     private boolean checked;
 
+
     public static Contact getInstance(String value){
         return new Contact(value);
     }
 
 
+
+
     public Contact(String value) {
-        this(value, null, false);
+        this(value, TAG_PRIMARY, false);
     }
+
+    public static Contact getInstance(String value, String tag) {
+        return  new Contact(value, tag, false);
+    }
+
+
 
 
     public Contact(String value, String tag) {
@@ -75,5 +85,15 @@ public class Contact implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    public Contact checked(boolean checked) {
+        this.checked = checked;
+        return this;
+    }
+
+    public Contact tag(String tag) {
+        this.tag = tag;
+        return this;
     }
 }

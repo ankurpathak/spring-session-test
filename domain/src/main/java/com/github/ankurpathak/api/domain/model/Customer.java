@@ -6,23 +6,22 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigInteger;
 
-@Document(collection = Model.Product.PRODUCT)
+@Document(collection = Model.Customer.CUSTOMER)
 public class Customer extends ExtendedDomain<CustomerId> {
-    private String name;
 
+    private Address address;
 
-
-    public String getName() {
-        return name;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
-
-    public Customer name(String name) {
-        this.name = name;
+    @Override
+    public Customer id(CustomerId customerId) {
+        super.id(customerId);
         return this;
     }
 
@@ -30,4 +29,8 @@ public class Customer extends ExtendedDomain<CustomerId> {
         return new Customer();
     }
 
+    public Customer address(Address address) {
+        this.address = address;
+        return this;
+    }
 }

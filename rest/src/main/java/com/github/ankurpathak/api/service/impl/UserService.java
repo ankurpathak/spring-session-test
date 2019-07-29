@@ -2,8 +2,11 @@ package com.github.ankurpathak.api.service.impl;
 
 import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.domain.model.User;
+import com.github.ankurpathak.api.domain.model.*;
 import com.github.ankurpathak.api.domain.repository.mongo.IUserRepository;
+import com.github.ankurpathak.api.exception.TooManyException;
+import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
+import com.github.ankurpathak.api.rest.controllor.dto.PhoneEmailPairDto;
 import com.github.ankurpathak.api.security.dto.DomainContext;
 import com.github.ankurpathak.api.security.util.SecurityUtil;
 import com.github.ankurpathak.api.service.IUserService;
@@ -11,10 +14,14 @@ import com.github.ankurpathak.api.service.IpService;
 import com.github.ankurpathak.api.util.PrimitiveUtils;
 import com.github.ankurpathak.primitive.string.StringValidator;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.mail.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -96,6 +103,31 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
                             .forEach(possibleContacts::add);
                 });
         return possibleContacts;
+    }
+
+    @Override
+    public User processUserForCustomer(Business business, CustomerDto customerDto) {
+        Query query =  new Query();
+        Criteria criteria = Criteria.where(Model.User.Field.PHONE_VALUE).is(customerDto.getPhone());
+        Page<User> page = findByCriteriaPaginated(criteria, PageRequest.of(0, 1), User.class);
+        if(page.getTotalElements() > 1)
+            throw new TooManyException(customerDto);
+        else if(page.getTotalElements() <=0 ){
+            User user = User.getInstance()
+                    .phone(Contact.getInstance(customerDto.getPhone()))
+                    .addRole(Role.ROLE_ADMIN)
+                    .enabled(false)
+                    .addAddress(Address.getInstance(customerDto).tag(String.format(Address.TAG_ADDED_BY_BUSINESS, business.getId())))
+                    .addTag(String.format(User.TAG_INVITED_BY_BUSINESS, business.getId()));
+
+           return create(user);
+        } else {
+           User user =  page.getContent().get(0);
+            Address address = Address.getInstance(customerDto)
+                    .tag(String.format(Address.TAG_ADDED_BY_BUSINESS, business.getId()));
+            user.addAddress(address);
+           return update(user);
+        }
     }
 
 

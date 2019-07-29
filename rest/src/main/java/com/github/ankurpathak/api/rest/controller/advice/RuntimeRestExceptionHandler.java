@@ -1,8 +1,10 @@
 package com.github.ankurpathak.api.rest.controller.advice;
 
+import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.exception.InvalidException;
 import com.github.ankurpathak.api.exception.NotAllowedException;
 import com.github.ankurpathak.api.exception.NotFoundException;
+import com.github.ankurpathak.api.exception.TooManyException;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
@@ -53,6 +55,23 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
                 ),
                 new HttpHeaders(),
                 HttpStatus.NOT_FOUND,
+                request
+        );
+    }
+
+
+    @ExceptionHandler({TooManyException.class})
+    public ResponseEntity<?> handleTooManyException(TooManyException ex, WebRequest request) {
+        log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
+        LogUtil.logStackTrace(log, ex);
+        return handleExceptionInternal(
+                ex,
+                ApiResponse.getInstance(
+                        ApiCode.TOO_MANY,
+                        messageService.getMessage(ApiMessages.TOO_MANY)
+                ).addExtra(Params.ID, ex.getId()),
+                new HttpHeaders(),
+                HttpStatus.CONFLICT,
                 request
         );
     }

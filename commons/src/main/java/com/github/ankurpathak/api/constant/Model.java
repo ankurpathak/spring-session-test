@@ -158,4 +158,21 @@ public interface Model {
 
     }
 
+    interface Customer {
+        String CUSTOMER = "customers";
+
+        interface Field extends Domain.Field{
+            String NAME  = "name";
+        }
+
+        interface Index extends Domain.Index{
+            String NAME_IDX = "productsNameIdx";
+
+            interface Definition extends Domain.Index.Definition { }
+        }
+
+        interface Query extends Domain.Query{ }
+
+    }
+
 }

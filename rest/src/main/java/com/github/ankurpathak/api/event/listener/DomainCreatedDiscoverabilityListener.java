@@ -16,7 +16,7 @@ class DomainCreatedDiscoverabilityListener implements ApplicationListener<Domain
 
     void addLinkHeaderOnResourceCreation(final HttpServletResponse response, final Serializable id) {
         final URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(id).toUri();
-        response.setHeader(HttpHeaders.LOCATION, uri.toASCIIString());
+        response.addHeader(HttpHeaders.LOCATION, uri.toASCIIString());
     }
 
     @Override

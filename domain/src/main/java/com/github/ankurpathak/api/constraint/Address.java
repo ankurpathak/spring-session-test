@@ -1,5 +1,6 @@
 package com.github.ankurpathak.api.constraint;
 
+import com.github.ankurpathak.api.constraint.validator.AddressValidator;
 import com.github.ankurpathak.api.constraint.validator.VariableOrAmountValidator;
 
 import javax.validation.Constraint;
@@ -9,7 +10,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(
-        validatedBy = {VariableOrAmountValidator.class}
+        validatedBy = {AddressValidator.class}
 )
 @Documented
 @Repeatable(Address.List.class)

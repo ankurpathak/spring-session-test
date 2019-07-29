@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.rest.controller.dto.View;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -14,9 +15,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 
 @Document(collection = Model.User.USER)
@@ -24,6 +23,8 @@ import java.util.Set;
 @CompoundIndex(name = Model.User.Index.PHONE_IDX, sparse = true, unique = true, def = Model.User.Index.Definition.PHONE_IDX_DEF)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User extends ExtendedDomain<BigInteger> implements Serializable {
+
+    public static final String TAG_INVITED_BY_BUSINESS = "invited_by_business_%s";
 
 
     private String firstName;
@@ -36,6 +37,22 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     private boolean enabled;
     private Set<BigInteger> businessIds;
 
+    private List<Address> addresses;
+
+
+    @Override
+    public User addTag(String tag) {
+        super.addTag(tag);
+        return this;
+    }
+
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
 
     public Set<BigInteger> getBusinessIds() {
         return businessIds;
@@ -57,7 +74,7 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
 
 
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
@@ -66,34 +83,51 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
 
 
 
+    public User addAddress(Address address) {
+        if (this.addresses == null)
+            this.addresses = new ArrayList<>();
+        if (address != null)
+            this.addresses.add(address);
+        return this;
+    }
+
+    public User removeAddress(Address address) {
+        if (!CollectionUtils.isEmpty(this.addresses))
+            if(address != null)
+                this.addresses.remove(address);
+        return this;
+    }
+
 
     public User addRole(String role) {
-        if (roles == null)
-            roles = new HashSet<>();
+        if (this.roles == null)
+            this.roles = new HashSet<>();
         if (!StringUtils.isEmpty(role))
-            roles.add(role);
+            this.roles.add(role);
         return this;
     }
 
     public User removeRole(String role) {
-        if (!CollectionUtils.isEmpty(roles))
-            roles.remove(role);
+        if (!CollectionUtils.isEmpty(this.roles))
+            if (!StringUtils.isEmpty(role))
+                this.roles.remove(role);
         return this;
     }
 
 
 
     public User addBusinessId(BigInteger businessId) {
-        if (businessIds == null)
-            businessIds = new HashSet<>();
-        if (BigInteger.ZERO.compareTo(businessId) < 0)
-            businessIds.add(businessId);
+        if (this.businessIds == null)
+            this.businessIds = new HashSet<>();
+        if (ObjectUtils.compare(BigInteger.ZERO,businessId ) < 0)
+            this.businessIds.add(businessId);
         return this;
     }
 
     public User removeRole(BigInteger businessId) {
-        if (!CollectionUtils.isEmpty(businessIds))
-            businessIds.remove(businessId);
+        if (!CollectionUtils.isEmpty(this.businessIds))
+            if (ObjectUtils.compare(BigInteger.ZERO,businessId ) < 0)
+                this.businessIds.remove(businessId);
         return this;
     }
 
@@ -279,6 +313,10 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
     }
 
 
+    public User addresses(List<Address> addresses) {
+        this.addresses = addresses;
+        return this;
+    }
 }
 
 

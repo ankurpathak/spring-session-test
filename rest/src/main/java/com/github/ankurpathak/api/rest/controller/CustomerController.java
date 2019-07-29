@@ -4,18 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentBusiness;
 import com.github.ankurpathak.api.domain.converter.CustomerConverters;
-import com.github.ankurpathak.api.domain.converter.ProductConverters;
 import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Customer;
 import com.github.ankurpathak.api.domain.model.CustomerId;
-import com.github.ankurpathak.api.domain.model.Product;
+import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
-import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
 import com.github.ankurpathak.api.service.ICustomerService;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
-import com.github.ankurpathak.api.service.IProductService;
 import com.github.ankurpathak.api.service.impl.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +33,7 @@ import static com.github.ankurpathak.api.constant.ApiPaths.*;
 @ApiController
 public class CustomerController extends AbstractRestController<Customer, CustomerId, CustomerDto> {
 
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+    private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
 
 
     private final ICustomerService service;
@@ -54,19 +51,22 @@ public class CustomerController extends AbstractRestController<Customer, Custome
 
     @PostMapping(PATH_CUSTOMER)
     public ResponseEntity<?> createOne(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({Default.class}) CustomerDto dto, BindingResult result){
-         return createOne(dto,result, request,response, CustomerConverters.createOne);
+        return createOne(dto,result, request,response, CustomerConverters.createOne, (rest, tDto) -> {
+            User user = service.processUser(business, dto);
+            tDto.businessId(business.getId());
+            tDto.userId(user.getId());
+        }, (rest, t, tDto) -> { });
     }
 
 
-    /*
 
-    @PostMapping(PATH_SERVICE_UPLOAD)
-    public ResponseEntity<?> createMany(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Product, String, ProductDto> csvList, BindingResult result){
-        return createManyByCsv(csvList, ProductDto.class, Product.class, request, ProductConverters.createOne, log,result, Default.class);
+
+    @PostMapping(PATH_CUSTOMER_UPLOAD)
+    public ResponseEntity<?> createMany(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Customer, CustomerId, CustomerDto> csvList, BindingResult result){
+        return createManyByCsv(csvList, CustomerDto.class, Customer.class, request, CustomerConverters.createOne, log,result, Default.class);
     }
 
 
-     */
 
 
 

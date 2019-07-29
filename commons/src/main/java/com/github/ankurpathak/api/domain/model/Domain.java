@@ -67,30 +67,31 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
 
 
     public Domain<ID> addTag(String tag){
-        if(tags == null)
-            tags = new HashSet<>();
+        if(this.tags == null)
+            this.tags = new HashSet<>();
         if(!StringUtils.isEmpty(tag))
-            tags.add(tag);
+            this.tags.add(tag);
         return this;
     }
 
     public Domain<ID> removeField(CustomField field){
-        if(!org.apache.commons.collections4.CollectionUtils.isEmpty(fields))
+        if(!CollectionUtils.isEmpty(fields))
             fields.add(field);
         return this;
     }
 
     public Domain<ID> addField(CustomField field){
-        if(fields == null)
-            fields = new HashSet<>();
-        if(field!=null)
-            fields.add(field);
+        if(this.fields == null)
+            this.fields = new HashSet<>();
+        if(field != null)
+            this.fields.add(field);
         return this;
     }
 
     public Domain<ID> removeTag(String tag){
-        if(!CollectionUtils.isEmpty(tags))
-            tags.remove(tag);
+        if(!CollectionUtils.isEmpty(this.tags))
+            if(!StringUtils.isEmpty(tag))
+                this.tags.remove(tag);
         return this;
     }
 

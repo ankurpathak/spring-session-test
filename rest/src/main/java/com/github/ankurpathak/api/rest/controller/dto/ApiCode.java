@@ -28,7 +28,8 @@ public enum ApiCode {
     BAD_CREDENTIALS(22),
     BUSINESS_NOT_FOUND(23),
     NOT_ALLOWED(24),
-    MULTIPLE_BUSINESS_NOT_ALLOWED(25)
+    MULTIPLE_BUSINESS_NOT_ALLOWED(25),
+    TOO_MANY(26)
     ;
     private int code;
 

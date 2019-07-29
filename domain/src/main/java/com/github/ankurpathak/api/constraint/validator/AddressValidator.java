@@ -1,9 +1,7 @@
 package com.github.ankurpathak.api.constraint.validator;
 
 import com.github.ankurpathak.api.constraint.Address;
-import com.github.ankurpathak.api.constraint.VariableOrAmount;
 import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
-import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.ConstraintValidator;
@@ -25,7 +23,7 @@ public class AddressValidator implements ConstraintValidator<Address, CustomerDt
         }else{
            boolean isStateBlank = StringUtils.isEmpty(dto.getState());
            boolean isCityBlank  = StringUtils.isEmpty(dto.getCity());
-           boolean isPincodeBlank = StringUtils.isEmpty(dto.getPincode());
+           boolean isPincodeBlank = StringUtils.isEmpty(dto.getPinCode());
 
            boolean combinedResult = !isStateBlank &&  !isCityBlank && !isPincodeBlank;
 
@@ -35,10 +33,10 @@ public class AddressValidator implements ConstraintValidator<Address, CustomerDt
                    context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate()).addPropertyNode("state").addConstraintViolation();
                }
                if(isCityBlank){
-                   context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate()).addPropertyNode("pincode").addConstraintViolation();
+                   context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate()).addPropertyNode("city").addConstraintViolation();
                }
                if(isPincodeBlank){
-                   context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate()).addPropertyNode("pincode").addConstraintViolation();
+                   context.buildConstraintViolationWithTemplate(context.getDefaultConstraintMessageTemplate()).addPropertyNode("pinCode").addConstraintViolation();
                }
            }
            return combinedResult;

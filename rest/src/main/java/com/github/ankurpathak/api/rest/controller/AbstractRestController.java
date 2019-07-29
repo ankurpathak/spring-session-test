@@ -104,9 +104,11 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         //applicationEventPublisher.publishEvent(new DomainCreatedEvent<>(t, response));
     }
 
-    private T tryCreateOne(TDto dto, BindingResult result, HttpServletResponse response, IToDomain<T, ID, TDto> converter) {
+    private T tryCreateOne(TDto dto, BindingResult result, HttpServletResponse response, IToDomain<T, ID, TDto> converter, IPreCreateOne<T, ID, TDto> preCreate, IPostCreateOne<T, ID, TDto> postCreate) {
         ControllerUtil.processValidation(result, messageService);
+        preCreate.doPreCreateOne(this, dto);
         T t = getDomainService().create(dto.toDomain(converter));
+        postCreate.doPostCreateOne(this, t, dto);
         applicationEventPublisher.publishEvent(new DomainCreatedEvent<>(t, response));
         return t;
     }
@@ -119,11 +121,9 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    private ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter, IPreCreateOne<T, ID, TDto> preCreate, IPostCreateOne<T, ID, TDto> postCreate) {
+    protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter, IPreCreateOne<T, ID, TDto> preCreate, IPostCreateOne<T, ID, TDto> postCreate) {
         try {
-            preCreate.doPreCreateOne(this, dto);
-            T t = tryCreateOne(dto, result, response, converter);
-            postCreate.doPostCreateOne(this, t, dto);
+            T t = tryCreateOne(dto, result, response, converter, preCreate, postCreate);
             return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of(Params.ID, t.getId()));
         } catch (DuplicateKeyException ex) {
             catchCreateOne(dto, ex, result, request);

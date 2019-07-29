@@ -11,7 +11,8 @@ import java.math.BigInteger;
 @Document(collection = Model.Product.PRODUCT)
 public class Product extends BusinessExtendedDomain<String> {
 
-    @Indexed(name = Model.Product.Index.NAME_IDX , sparse = true, unique = true)
+   // @Indexed(name = Model.Product.Index.NAME_IDX , sparse = true, unique = true)
+   // Uncomment for testing duplicate key exception in createMany
     private String name;
     private String description;
     private BigDecimal amount = BigDecimal.ZERO;

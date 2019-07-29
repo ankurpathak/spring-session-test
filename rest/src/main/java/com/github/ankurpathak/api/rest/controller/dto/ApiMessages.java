@@ -20,4 +20,5 @@ public interface ApiMessages {
     String INVALID_JSON = "api.message.invalid-json";
     String BAD_CREDENTIALS = "api.message.bad-credentials";
     String NOT_ALLOWED = "api.message.not-allowed";
+    String TOO_MANY = "api.message.too-many";
 }

@@ -1,5 +1,6 @@
 package com.github.ankurpathak.api.rest.controllor.dto;
 
+import com.github.ankurpathak.api.constraint.Address;
 import com.github.ankurpathak.api.domain.model.Customer;
 import com.github.ankurpathak.api.domain.model.CustomerId;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
@@ -7,7 +8,8 @@ import com.github.ankurpathak.primitive.bean.constraints.string.Contact;
 import com.github.ankurpathak.primitive.bean.constraints.string.Email;
 
 import javax.validation.constraints.NotBlank;
-
+import java.math.BigInteger;
+@Address
 public class CustomerDto extends DomainDto<Customer,CustomerId> {
 
     private String name;
@@ -26,11 +28,31 @@ public class CustomerDto extends DomainDto<Customer,CustomerId> {
 
     private String city;
 
-    private String pincode;
+    private String pinCode;
+
+    private BigInteger userId;
+
+    private BigInteger businessId;
 
 
 
-    public CustomerDto getInstance(){
+    public BigInteger getUserId() {
+        return userId;
+    }
+
+    public void setUserId(BigInteger userId) {
+        this.userId = userId;
+    }
+
+    public BigInteger getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(BigInteger businessId) {
+        this.businessId = businessId;
+    }
+
+    public static CustomerDto getInstance(){
         return new CustomerDto();
     }
 
@@ -84,12 +106,12 @@ public class CustomerDto extends DomainDto<Customer,CustomerId> {
         this.city = city;
     }
 
-    public String getPincode() {
-        return pincode;
+    public String getPinCode() {
+        return pinCode;
     }
 
-    public void setPincode(String pincode) {
-        this.pincode = pincode;
+    public void setPinCode(String pinCode) {
+        this.pinCode = pinCode;
     }
 
     public CustomerDto name(String name) {
@@ -122,8 +144,20 @@ public class CustomerDto extends DomainDto<Customer,CustomerId> {
         return this;
     }
 
-    public CustomerDto pincode(String pincode) {
-        this.pincode = pincode;
+    public CustomerDto pinCode(String pinCode) {
+        this.pinCode = pinCode;
         return this;
     }
+
+    public CustomerDto userId(BigInteger userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    public CustomerDto businessId(BigInteger businessId) {
+        this.businessId = businessId;
+        return this;
+    }
+
+
 }
