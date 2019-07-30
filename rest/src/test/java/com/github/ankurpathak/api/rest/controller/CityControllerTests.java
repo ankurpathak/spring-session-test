@@ -2,7 +2,7 @@ package com.github.ankurpathak.api.rest.controller;
 
 
 import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.service.IBankIfscEtlService;
+import com.github.ankurpathak.api.service.IBankEtlService;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +30,7 @@ public class CityControllerTests {
     private MockMvc mockMvc;
 
     @Autowired
-    private IBankIfscEtlService bankIfscEtlService;
+    private IBankEtlService bankIfscEtlService;
 
 
 

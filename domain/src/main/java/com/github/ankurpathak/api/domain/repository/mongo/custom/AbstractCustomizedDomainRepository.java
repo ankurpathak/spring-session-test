@@ -1,9 +1,12 @@
 package com.github.ankurpathak.api.domain.repository.mongo.custom;
 
 import com.github.ankurpathak.api.constant.Model;
+import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.mongo.DomainSingleFieldSearchTypedAggregation;
+import com.github.ankurpathak.api.domain.mongo.util.CriteriaUtil;
 import com.github.ankurpathak.api.domain.repository.mongo.ICustomizedDomainRepository;
+import com.github.ankurpathak.api.security.dto.DomainContext;
 import com.github.ankurpathak.api.security.util.SecurityUtil;
 import com.mongodb.bulk.BulkWriteResult;
 import org.springframework.data.domain.Page;
@@ -15,6 +18,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -50,29 +54,26 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
 
     @Override
     public Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type) {
-        List<T> list = template.find(
-                new Query().with(pageable).addCriteria(criteria),
-                type
-        );
+        List<T> list = findByCriteria(criteria, pageable, type);
         return new PageImpl<>(
                 list,
                 pageable,
-                template.count(new Query().addCriteria(criteria), type)
+                countByCriteria(criteria, type)
         );
     }
 
     @Override
-    public Stream<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type) {
+    public List<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type) {
         return template.find(
-                new Query().with(pageable).addCriteria(criteria),
+                new Query().with(pageable).addCriteria(CriteriaUtil.businessCiteria(criteria, type)),
                 type
-        ).stream();
+        );
     }
 
 
     @Override
     public long countByCriteria(Criteria criteria, Class<T> type) {
-        return template.count(new Query().addCriteria(criteria), type);
+        return template.count(new Query().addCriteria(CriteriaUtil.businessCiteria(criteria, type)), type);
     }
 
 
@@ -83,9 +84,5 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
         return ops.execute();
     }
 
-    private Criteria businessCiteria(Criteria criteria, Class<?> type){
-        if(Model.LIST_BUSINESS_DOMAIN.contains(type)){
-            criteria.and(Model.Domain.Field.BUSINESS_ID).is()
-        }
-    }
+
 }

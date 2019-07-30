@@ -17,7 +17,7 @@ public interface ICustomizedDomainRepository<T extends Domain<ID>, ID extends Se
     Page<T> findAllPaginated(Pageable pageable, Class<T> type);
 
     Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type);
-    Stream<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
+    List<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
     long countByCriteria(Criteria criteria, Class<T> type);
     BulkWriteResult bulkInsertMany(Class<T> type, List<T> domains);
 }

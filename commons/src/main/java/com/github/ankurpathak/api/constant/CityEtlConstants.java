@@ -18,6 +18,6 @@ public interface CityEtlConstants {
     }
 
     interface Collection {
-        String CITY = "cities";
+        String CITY = "city";
     }
 }

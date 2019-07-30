@@ -1,16 +1,19 @@
 package com.github.ankurpathak.api.security.util;
 
+import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.security.dto.DomainContext;
 import com.github.ankurpathak.api.security.dto.DomainContextHolder;
 import com.github.ankurpathak.api.security.dto.ExtendedSecurityContextImpl;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.util.Assert;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +28,11 @@ public class SecurityUtil {
     public static Optional<User> getMe(Authentication authentication){
         return getCustomUserDetails(authentication)
                 .map(CustomUserDetails::getUser);
+    }
+
+
+    public static Optional<Business> getRequestedMyBusiness(){
+        return getDomainContext().map(DomainContext::getBusiness);
     }
 
 

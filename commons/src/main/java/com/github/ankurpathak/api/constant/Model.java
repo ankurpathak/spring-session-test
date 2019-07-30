@@ -29,7 +29,7 @@ public interface Model {
 
     interface User {
 
-        String USER = "users";
+        String USER = "user";
 
         interface Field extends Domain.Field {
             String ENABLED = "enabled";
@@ -42,9 +42,9 @@ public interface Model {
         }
 
         interface Index {
-            String EMAIL_IDX = "usersEmailIdx";
-            String USERNAME_IDX = "usersUsernameIdx";
-            String PHONE_IDX = "usersPhoneIdx";
+            String EMAIL_IDX = "userEmailIdx";
+            String USERNAME_IDX = "userUsernameIdx";
+            String PHONE_IDX = "userPhoneIdx";
 
 
             interface Definition extends Domain.Index.Definition {
@@ -59,7 +59,7 @@ public interface Model {
 
     interface Role {
 
-        String ROLE = "roles";
+        String ROLE = "role";
 
         interface Field extends Domain.Field { }
 
@@ -75,14 +75,14 @@ public interface Model {
 
 
     interface Token {
-        String TOKEN = "tokens";
+        String TOKEN = "token";
 
         interface Field extends Domain.Field{
             String VALUE = "value";
         }
 
         interface Index extends Domain.Index{
-            String EXPIRY_IDX = "tokensExpiryIdx";
+            String EXPIRY_IDX = "tokenExpiryIdx";
 
             interface Definition extends Domain.Index.Definition { }
         }
@@ -92,7 +92,7 @@ public interface Model {
     }
 
     interface Sequence {
-        String SEQUENCE = "sequences";
+        String SEQUENCE = "sequence";
 
         interface Field extends Domain.Field{
             String CURRENT = "curr";
@@ -123,7 +123,7 @@ public interface Model {
     }
 
     interface Mail {
-        String MAIL = "mails";
+        String MAIL = "mail";
 
         interface Field extends Domain.Field{
         }
@@ -138,14 +138,14 @@ public interface Model {
 
 
     interface Product {
-        String PRODUCT = "products";
+        String PRODUCT = "product";
 
         interface Field extends Domain.Field{
             String NAME  = "name";
         }
 
         interface Index extends Domain.Index{
-            String NAME_IDX = "productsNameIdx";
+            String NAME_IDX = "productNameIdx";
 
             interface Definition extends Domain.Index.Definition { }
         }
@@ -155,7 +155,7 @@ public interface Model {
     }
 
     interface Text {
-        String TEXT = "texts";
+        String TEXT = "text";
 
         interface Field extends Domain.Field{
         }
@@ -169,14 +169,13 @@ public interface Model {
     }
 
     interface Customer {
-        String CUSTOMER = "customers";
+        String CUSTOMER = "customer";
 
         interface Field extends Domain.Field{
             String NAME  = "name";
         }
 
         interface Index extends Domain.Index{
-            String NAME_IDX = "productsNameIdx";
 
             interface Definition extends Domain.Index.Definition { }
         }

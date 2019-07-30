@@ -1,0 +1,10 @@
+[
+  {
+    "_id" : "user_seq",
+    "curr" : "5"
+  },
+  {
+    "_id" : "business_seq",
+    "curr" : "1"
+  }
+]

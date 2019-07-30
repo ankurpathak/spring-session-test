@@ -94,7 +94,7 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
 
     @Test
     public void testServicesCsv() throws Exception {
-        Resource csv = new ClassPathResource("services.csv", this.getClass());
+        Resource csv = new ClassPathResource("service.csv", this.getClass());
         MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
 
         mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD)).file(csvFile)
@@ -109,7 +109,7 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
     @Test // Enable Name Index on product To Test
     @Ignore
     public void testServicesCsvWithDuplicates() throws Exception {
-        Resource csv = new ClassPathResource("services-duplicates.csv", this.getClass());
+        Resource csv = new ClassPathResource("service-with-duplicate.csv", this.getClass());
         MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
 
         mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD)).file(csvFile)
@@ -124,7 +124,7 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
 
     @Test
     public void testEmptyCsvFile() throws Exception{
-        Resource csv = new ClassPathResource("services-empty.csv", this.getClass());
+        Resource csv = new ClassPathResource("service-empty.csv", this.getClass());
         MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
 
         mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD)).file(csvFile)
@@ -138,7 +138,7 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
 
     @Test
     public void testMissingHeaderCsvFile() throws Exception{
-        Resource csv = new ClassPathResource("services-missing-header.csv", this.getClass());
+        Resource csv = new ClassPathResource("service-missing-header.csv", this.getClass());
         MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
 
         mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD)).file(csvFile)

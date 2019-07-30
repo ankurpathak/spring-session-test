@@ -11,6 +11,7 @@
         <module>commons</module>
         <module>rest</module>
         <module>etl</module>
+        <module>etl-cmd</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -362,6 +363,11 @@
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
                 <artifactId>etl</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ankurpathak.api</groupId>
+                <artifactId>etl-cmd</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <!--Modules -->

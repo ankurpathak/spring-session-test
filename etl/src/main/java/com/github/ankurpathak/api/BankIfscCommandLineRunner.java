@@ -1,14 +1,13 @@
 package com.github.ankurpathak.api;
 
-import com.github.ankurpathak.api.service.IBankIfscEtlService;
+import com.github.ankurpathak.api.service.IBankEtlService;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 public class BankIfscCommandLineRunner implements CommandLineRunner {
 
-    private final IBankIfscEtlService bankIfscEtlService;
+    private final IBankEtlService bankIfscEtlService;
 
-    public BankIfscCommandLineRunner(IBankIfscEtlService bankIfscEtlService) {
+    public BankIfscCommandLineRunner(IBankEtlService bankIfscEtlService) {
         this.bankIfscEtlService = bankIfscEtlService;
     }
 

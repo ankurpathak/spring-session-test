@@ -1,8 +1,6 @@
 package com.github.ankurpathak.api.service.impl;
 
-import com.github.ankurpathak.api.domain.repository.mongo.IBankIfscEltRepository;
 import com.github.ankurpathak.api.domain.repository.mongo.ICityEtlRepository;
-import com.github.ankurpathak.api.service.IBankIfscEtlService;
 import com.github.ankurpathak.api.service.ICityEtlService;
 import org.springframework.stereotype.Service;
 

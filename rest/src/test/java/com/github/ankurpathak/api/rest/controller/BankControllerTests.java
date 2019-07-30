@@ -1,29 +1,20 @@
 package com.github.ankurpathak.api.rest.controller;
 
 
-import com.github.ankurpathak.api.AbstractRestIntegrationTest;
 import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.service.IBankIfscEtlService;
+import com.github.ankurpathak.api.service.IBankEtlService;
 import com.github.ankurpathak.api.util.MatcherUtil;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
-
 import static com.github.ankurpathak.api.constant.ApiPaths.*;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,7 +30,7 @@ public class BankControllerTests   {
     private MockMvc mockMvc;
 
     @Autowired
-    private IBankIfscEtlService bankIfscEtlService;
+    private IBankEtlService bankIfscEtlService;
 
 
 
