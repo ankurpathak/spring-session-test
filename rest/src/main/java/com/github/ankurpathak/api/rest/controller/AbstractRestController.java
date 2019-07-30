@@ -12,14 +12,14 @@ import com.github.ankurpathak.api.domain.updater.IUpdateDomain;
 import com.github.ankurpathak.api.event.DomainCreatedEvent;
 import com.github.ankurpathak.api.event.PaginatedResultsRetrievedEvent;
 import com.github.ankurpathak.api.event.util.PagingUtil;
+import com.github.ankurpathak.api.exception.CsvException;
 import com.github.ankurpathak.api.exception.InvalidException;
 import com.github.ankurpathak.api.exception.NotFoundException;
-import com.github.ankurpathak.api.rest.controller.callback.IPostCreateOne;
-import com.github.ankurpathak.api.rest.controller.callback.IPostUpdateOne;
-import com.github.ankurpathak.api.rest.controller.callback.IPreCreateOne;
-import com.github.ankurpathak.api.rest.controller.callback.IPreUpdateOne;
+import com.github.ankurpathak.api.rest.controller.callback.*;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
+import com.github.ankurpathak.api.rest.controller.dto.PageDto;
 import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;
 import com.github.ankurpathak.api.rest.controller.util.DuplicateKeyExceptionProcessor;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
@@ -72,11 +72,6 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-
-
-
-
-
     protected ResponseEntity<T> byId(ID id, Class<T> type) {
         return ControllerUtil.processOptional(getDomainService().findById(id), type, null, String.valueOf(id), messageService);
     }
@@ -88,20 +83,30 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
 
     protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
+        return createMany(dtoList, type, result, request, converter,
+                (rest, list) -> { }, (rest, list, count) -> { }
+        );
+    }
+
+
+    protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate) {
         try {
-            BulkWriteResult res = tryCreateMany(dtoList, type, result, request, converter);
-            return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of( Params.COUNT, res.getInsertedCount()));
+            BulkWriteResult res = tryCreateMany(dtoList, type, result, request, converter, preCreate, postCreate);
+            return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of(Params.COUNT, res.getInsertedCount()));
         } catch (DuplicateKeyException ex) {
             catchCreateMany(dtoList, ex, result, request);
             throw ex;
         }
     }
 
-    private BulkWriteResult tryCreateMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
+    private BulkWriteResult tryCreateMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate) {
         ControllerUtil.processValidation(result, messageService);
+        preCreate.doPreCreateMany(this, dtoList);
         List<T> ts = dtoList.getDtos().stream().map(dto -> dto.toDomain(converter)).collect(Collectors.toList());
-        return getDomainService().bulkInsertMany(type, ts);
+        BulkWriteResult writeResult = getDomainService().bulkInsertMany(type, ts);
+        postCreate.doPostCreateMany(this, dtoList, writeResult);
         //applicationEventPublisher.publishEvent(new DomainCreatedEvent<>(t, response));
+        return writeResult;
     }
 
     private T tryCreateOne(TDto dto, BindingResult result, HttpServletResponse response, IToDomain<T, ID, TDto> converter, IPreCreateOne<T, ID, TDto> preCreate, IPostCreateOne<T, ID, TDto> postCreate) {
@@ -155,8 +160,10 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
     protected ResponseEntity<?> update(TDto dto, ID id, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request, BindingResult result) {
         return update(dto, id, updater, request, result,
-                (rest, tDto) -> { },
-                (rest, t, tDto) -> { }
+                (rest, tDto) -> {
+                },
+                (rest, t, tDto) -> {
+                }
         );
 
     }
@@ -170,8 +177,10 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
     protected ResponseEntity<?> update(TDto dto, T t, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request, BindingResult result) {
         return update(dto, t, updater, request, result,
-                (rest, tDto) -> { },
-                (rest, aT, tDto) -> { });
+                (rest, tDto) -> {
+                },
+                (rest, aT, tDto) -> {
+                });
     }
 
 
@@ -217,13 +226,13 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    protected List<T> search(String rsql, Pageable pageable, Class<T> type, HttpServletResponse response) {
+    protected ResponseEntity<?> search(String rsql, Pageable pageable, Class<T> type, HttpServletResponse response) {
         PagingUtil.pagePreCheck(pageable.getPageNumber());
         Criteria criteria = PagingUtil.parseRSQL(rsql, type);
         Page<T> page = getDomainService().findByCriteriaPaginated(criteria, pageable, type);
         PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent(page, response));
-        return page.getContent();
+        return ControllerUtil.processSuccess(messageService, Map.of("data", PageDto.getInstance(page)));
     }
 
 
@@ -232,7 +241,8 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         Page<T> page = getDomainService().findAllPaginated(pageable);
         PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent(page, response));
-        return ResponseEntity.ok(page.getContent());
+        return ControllerUtil.processSuccess(messageService, Map.of("data", PageDto.getInstance(page)));
+
     }
 
     protected ResponseEntity<?> patch(T t, ID id, JsonNode patch, IToDto<T, ID, TDto> converter, IUpdateDomain<T, ID, TDto> updater, Class<TDto> dtoType, Class<?>... hints) {
@@ -291,30 +301,35 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         ms.setType(dtoType);
         List<TDto> dtos = Collections.emptyList();
         try (CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(csv.getInputStream())))
-        ){
+        ) {
             CsvToBean<TDto> cb = new CsvToBeanBuilder<TDto>(reader)
                     .withType(dtoType)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .withThrowExceptions(true)
                     .withMappingStrategy(ms)
                     .build();
-           dtos = cb.parse();
-        }catch (IOException ex){
+            dtos = cb.parse();
+        } catch (IOException ex) {
             LogUtil.logStackTrace(log, ex);
+        } catch (RuntimeException ex) {
+            LogUtil.logStackTrace(log, ex);
+            throw new CsvException(ex.getMessage(), ex, csv.getOriginalFilename());
         }
 
-        DomainDtoList<T, ID, TDto> dtoList =  new DomainDtoList<>();
+        DomainDtoList<T, ID, TDto> dtoList = new DomainDtoList<>();
         return dtoList.dtos(dtos);
     }
 
-    public ResponseEntity<?> createManyByCsv(DomainDtoList<T,ID,TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T,ID, TDto> converter, Logger log, BindingResult result, Class<?>...hints){
+    public ResponseEntity<?> createManyByCsv(DomainDtoList<T, ID, TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T, ID, TDto> converter, Logger log, BindingResult result, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate, Class<?>... hints) {
         ControllerUtil.processValidation(result, messageService);
         DomainDtoList<T, ID, TDto> list = csvToDomainDtoList(csvList.getCsv(), dtoType, log);
         BindException exception = new BindException(list, list.getClass().getSimpleName());
         processValidation(list, exception, hints);
-        return createMany(list, type, exception, request, converter);
+        return createMany(list, type, exception, request, converter, preCreate, postCreate);
     }
 
 
-    private void processValidation(Object object, BindingResult result, Class<?>...hints){
+    private void processValidation(Object object, BindingResult result, Class<?>... hints) {
         validator.validate(object, result, hints);
     }
 

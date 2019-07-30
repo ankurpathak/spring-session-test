@@ -1,10 +1,20 @@
 package com.github.ankurpathak.api.constant;
 
+import java.util.List;
+
 public interface Model {
+
+    List<Class<?>> LIST_BUSINESS_DOMAIN = List.of(
+            Product.class,
+            Customer.class
+    );
+
+
     interface Domain {
         interface Field {
             String ID = "_id";
             String CANDIDATE_ID = "candidateKey";
+            String BUSINESS_ID = "businessId";
         }
 
         interface Index {

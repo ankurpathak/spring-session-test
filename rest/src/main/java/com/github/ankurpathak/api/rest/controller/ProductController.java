@@ -3,6 +3,7 @@ package com.github.ankurpathak.api.rest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentBusiness;
+import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.converter.ProductConverters;
 import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Product;
@@ -15,19 +16,23 @@ import com.github.ankurpathak.api.service.impl.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.groups.Default;
+import javax.ws.rs.QueryParam;
 
-import static com.github.ankurpathak.api.constant.ApiPaths.PATH_SERVICE;
-import static com.github.ankurpathak.api.constant.ApiPaths.PATH_SERVICE_UPLOAD;
+import static com.github.ankurpathak.api.constant.ApiPaths.*;
 
 @ApiController
 public class ProductController extends AbstractRestController<Product, String, ProductDto> {
@@ -57,7 +62,19 @@ public class ProductController extends AbstractRestController<Product, String, P
 
     @PostMapping(PATH_SERVICE_UPLOAD)
     public ResponseEntity<?> createMany(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Product, String, ProductDto> csvList, BindingResult result){
-        return createManyByCsv(csvList, ProductDto.class, Product.class, request, ProductConverters.createOne, log,result, Default.class);
+        return createManyByCsv(csvList, ProductDto.class, Product.class, request, ProductConverters.createOne, log,result, (rest, list) -> {}, (rest, list, count) -> {}, Default.class);
+    }
+
+
+
+    @GetMapping(PATH_SERVICE)
+    public ResponseEntity<?> paginated(@CurrentBusiness Business business, HttpServletResponse response, Pageable pageable){
+        return paginated(pageable, response);
+    }
+
+    @GetMapping(PATH_SERVICE_SEARCH)
+    public ResponseEntity<?> search(@CurrentBusiness Business business, HttpServletResponse response, @RequestParam(Params.Query.RSQL) String rsql, Pageable pageable){
+        return search(rsql, pageable, Product.class, response);
     }
 
 

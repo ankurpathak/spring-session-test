@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.domain.model;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.ankurpathak.api.constant.Model;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,15 +10,16 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 @Document(collection = Model.Product.PRODUCT)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Product extends BusinessExtendedDomain<String> {
 
    // @Indexed(name = Model.Product.Index.NAME_IDX , sparse = true, unique = true)
    // Uncomment for testing duplicate key exception in createMany
     private String name;
     private String description;
-    private BigDecimal amount = BigDecimal.ZERO;
-    private BigDecimal tax = BigDecimal.ZERO;
-    private Boolean variable = false;
+    private BigDecimal amount;
+    private BigDecimal tax;
+    private Boolean variable;
 
 
     public BigDecimal getTax() {

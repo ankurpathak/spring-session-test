@@ -1,8 +1,10 @@
 package com.github.ankurpathak.api.domain.repository.mongo.custom;
 
+import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.mongo.DomainSingleFieldSearchTypedAggregation;
 import com.github.ankurpathak.api.domain.repository.mongo.ICustomizedDomainRepository;
+import com.github.ankurpathak.api.security.util.SecurityUtil;
 import com.mongodb.bulk.BulkWriteResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -39,6 +41,13 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
         return aggregation.getFieldPage(field, value, pageable, type);
     }
 
+
+    @Override
+    public Page<T> findAllPaginated(Pageable pageable, Class<T> type) {
+        Criteria criteria = new Criteria();
+        return findByCriteriaPaginated(criteria, pageable, type);
+    }
+
     @Override
     public Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type) {
         List<T> list = template.find(
@@ -72,5 +81,11 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
         BulkOperations ops = template.bulkOps(BulkOperations.BulkMode.UNORDERED, type);
         ops.insert(domains);
         return ops.execute();
+    }
+
+    private Criteria businessCiteria(Criteria criteria, Class<?> type){
+        if(Model.LIST_BUSINESS_DOMAIN.contains(type)){
+            criteria.and(Model.Domain.Field.BUSINESS_ID).is()
+        }
     }
 }

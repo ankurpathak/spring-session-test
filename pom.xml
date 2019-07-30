@@ -80,14 +80,6 @@
             </dependency>
 
             <!-- Apache Commons -->
-            <!-- Open CSV -->
-            <dependency>
-                <groupId>com.opencsv</groupId>
-                <artifactId>opencsv</artifactId>
-                <version>${opencsv.version}</version>
-            </dependency>
-            <!-- Open CSV -->
-
 
             <!-- Method Preconditions Check -->
             <dependency>
@@ -127,17 +119,6 @@
                 <version>${primitive-validation.version}</version>
             </dependency>
             <!-- Ankur Validation Work -->
-
-
-            <!-- Redis Client -->
-             <dependency>
-                 <groupId>redis.clients</groupId>
-                 <artifactId>jedis</artifactId>
-                 <version>${jedis.version}</version>
-             </dependency>
-            <!-- Redis Client -->
-
-
             <!-- Password validation -->
             <dependency>
                 <groupId>org.passay</groupId>

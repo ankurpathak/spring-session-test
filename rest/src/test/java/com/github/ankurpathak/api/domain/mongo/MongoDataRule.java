@@ -73,7 +73,7 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
 
     public Map<String, Resource> getJsons() {
         this.jsons = setUpJsons();
-       // ensure(this.jsons, MatcherUtil.notMapEmpty());
+        ensure(this.jsons, MatcherUtil.notMapEmpty());
         return this.jsons;
     }
 

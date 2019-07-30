@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.Product;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
@@ -91,9 +92,6 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
 
 
 
-    @Autowired
-    private LocalValidatorFactoryBean validatorFactoryBean;
-
     @Test
     public void testServicesCsv() throws Exception {
         Resource csv = new ClassPathResource("services.csv", this.getClass());
@@ -151,4 +149,23 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
                 .andExpect(authenticated())
                 .andExpect(jsonPath("$.code", equalTo(5)));
     }
+
+
+    @Test
+    public void testGetPaginated() throws Exception{
+
+        mockMvc.perform(get(apiPath(PATH_SERVICE))
+                .param(Params.Query.SORT,"name,asc")
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(5)));
+    }
+
+
+
+
+
 }

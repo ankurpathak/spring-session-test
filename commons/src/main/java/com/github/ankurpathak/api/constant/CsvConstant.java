@@ -11,4 +11,15 @@ public interface CsvConstant {
         String VARIABLE = "VARIABLE(y/n)";
         String DESCRIPTION = "DESCRIPTION";
     }
+
+    interface Customer {
+        String NAME = "NAME";
+        String EMAIL = "EMAIL";
+        String PHONE = "PHONE";
+        String ADDRESS = "ADDRESS";
+        String STATE = "STATE";
+        String CITY ="CITY";
+        String PIN_CODE = "PIN CODE";
+
+    }
 }

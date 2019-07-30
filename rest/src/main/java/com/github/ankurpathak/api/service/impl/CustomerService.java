@@ -6,7 +6,6 @@ import com.github.ankurpathak.api.domain.model.CustomerId;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.repository.mongo.ICustomerRepository;
 import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
-import com.github.ankurpathak.api.rest.controllor.dto.PhoneEmailPairDto;
 import com.github.ankurpathak.api.service.ICustomerService;
 import com.github.ankurpathak.api.service.IUserService;
 import org.springframework.stereotype.Service;

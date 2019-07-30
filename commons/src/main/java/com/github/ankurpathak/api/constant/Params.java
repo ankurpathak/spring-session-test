@@ -35,6 +35,7 @@ public interface Params {
     String PIN_CODE = "pinCode";
     String PAGE = "page";
     String SIZE = "size";
+    String SORT = "sort";
 
 
 

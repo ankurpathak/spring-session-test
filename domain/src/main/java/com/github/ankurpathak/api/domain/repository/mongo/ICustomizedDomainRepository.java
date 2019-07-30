@@ -13,6 +13,9 @@ import java.util.stream.Stream;
 public interface ICustomizedDomainRepository<T extends Domain<ID>, ID extends Serializable> {
     Page<T> findByField(String field, String value, Pageable pageable, Class<T> type);
     Page<String> listField(String field, String value, Pageable pageable, Class<T> type);
+
+    Page<T> findAllPaginated(Pageable pageable, Class<T> type);
+
     Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type);
     Stream<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
     long countByCriteria(Criteria criteria, Class<T> type);

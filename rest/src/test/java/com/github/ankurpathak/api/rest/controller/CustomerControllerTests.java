@@ -82,6 +82,16 @@ public class CustomerControllerTests extends AbstractRestIntegrationTest<Custome
 
     @Test
     public void testCustomersCsv() throws Exception{
+        Resource csv = new ClassPathResource("customers.csv", this.getClass());
+        MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
+
+        mockMvc.perform(multipart(apiPath(PATH_CUSTOMER_UPLOAD)).file(csvFile)
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(0)));
 
     }
 
