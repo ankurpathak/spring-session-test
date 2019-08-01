@@ -69,7 +69,7 @@ public class ProductController extends AbstractRestController<Product, String, P
 
     @GetMapping(PATH_SERVICE)
     public ResponseEntity<?> paginated(@CurrentBusiness Business business, HttpServletResponse response, Pageable pageable){
-        return paginated(pageable, response);
+        return paginated(pageable, response, Product.class);
     }
 
     @GetMapping(PATH_SERVICE_SEARCH)

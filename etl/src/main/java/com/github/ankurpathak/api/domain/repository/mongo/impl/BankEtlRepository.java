@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.bson.Document;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -22,22 +23,22 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unchecked")
 public class BankEtlRepository implements IBankEltRepository {
     private final MongoTemplate mongoTemplate;
-    private final Environment environment;
     private final ObjectMapper objectMapper;
 
-    public BankEtlRepository(MongoTemplate mongoTemplate, Environment environment, ObjectMapper objectMapper) {
+    public BankEtlRepository(MongoTemplate mongoTemplate, ObjectMapper objectMapper) {
         this.mongoTemplate = mongoTemplate;
-        this.environment = environment;
         this.objectMapper = objectMapper;
     }
 
 
     @Override
     public void process() throws IOException {
-        File ifscDir = Paths.get(PropertyUtil.getProperty(environment, BankEtlConstants.Property.PATH)).toFile();
+       // File ifscDir = Paths.get(PropertyUtil.getProperty(environment, BankEtlConstants.Property.PATH)).toFile();
 
-        if(ifscDir.isDirectory()){
-            Collection<File> jsonFiles = FileUtils.listFiles(ifscDir, new String[]{"json"}, false);
+        ClassPathResource bankResource = new ClassPathResource("bank", this.getClass());
+
+        if(bankResource.getFile().isDirectory()){
+            Collection<File> jsonFiles = FileUtils.listFiles(bankResource.getFile(), new String[]{"json"}, false);
             for (File jsonFile: jsonFiles){
                 if(Objects.equals(String.format("%s.json", BankEtlConstants.File.BANK_NAMES), jsonFile.getName())){
                     processJsonKeyValueFile(jsonFile);

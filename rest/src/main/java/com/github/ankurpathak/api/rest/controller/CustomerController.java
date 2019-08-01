@@ -3,6 +3,7 @@ package com.github.ankurpathak.api.rest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentBusiness;
+import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.converter.CustomerConverters;
 import com.github.ankurpathak.api.domain.model.*;
@@ -62,6 +63,7 @@ public class CustomerController extends AbstractRestController<Customer, Custome
 
 
 
+
     @PostMapping(PATH_CUSTOMER_UPLOAD)
     public ResponseEntity<?> createMany(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Customer, CustomerId, CustomerDto> csvList, BindingResult result){
         return createManyByCsv(csvList, CustomerDto.class, Customer.class, request, CustomerConverters.createOne, log,result,(rest, list) -> {
@@ -77,7 +79,7 @@ public class CustomerController extends AbstractRestController<Customer, Custome
 
     @GetMapping(PATH_CUSTOMER)
     public ResponseEntity<?> paginated(@CurrentBusiness Business business, HttpServletResponse response, Pageable pageable){
-        return paginated(pageable, response);
+        return paginated(pageable, response, (Class)VCustomerUser.class, Model.VCustomerUser.V_CUSTOMER_USER);
     }
 
     @GetMapping(PATH_CUSTOMER_SEARCH)

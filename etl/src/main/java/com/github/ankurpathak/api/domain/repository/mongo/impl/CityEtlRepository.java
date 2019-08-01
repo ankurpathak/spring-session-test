@@ -6,6 +6,7 @@ import com.github.ankurpathak.api.constant.CityEtlConstants;
 import com.github.ankurpathak.api.domain.repository.mongo.ICityEtlRepository;
 import com.github.ankurpathak.api.util.PropertyUtil;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -29,8 +30,8 @@ public class CityEtlRepository implements ICityEtlRepository {
 
     @Override
     public void process() throws IOException {
-        File file = Paths.get(PropertyUtil.getProperty(environment, CityEtlConstants.Property.PATH)).toFile();
-        try(FileReader reader = new FileReader(file)){
+        ClassPathResource resource = new ClassPathResource("city/city.csv", this.getClass());
+        try(FileReader reader = new FileReader(resource.getFile())){
             Iterator<Map<String, String>> iterator = new CsvMapper()
                     .readerFor(Map.class)
                     .with(CsvSchema.emptySchema().withHeader())

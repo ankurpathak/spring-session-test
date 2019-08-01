@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.service.impl;
 
 import com.github.ankurpathak.api.domain.model.Domain;
+import com.github.ankurpathak.api.domain.mongo.util.CriteriaUtil;
 import com.github.ankurpathak.api.domain.repository.mongo.ExtendedMongoRepository;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.util.MatcherUtil;
@@ -27,6 +28,7 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
         this.dao = dao;
     }
 
+
     @Override
     public Optional<T> findById(final ID id) {
         require(id, notNullValue());
@@ -43,29 +45,38 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
         require(criteria, notNullValue());
         require(pageable, notNullValue());
         require(type, notNullValue());
-        return dao.findByCriteriaPaginated(criteria, pageable, type);
+        Criteria businessCriteria = CriteriaUtil.converToBusinessCriteria(type, criteria);
+        return dao.findByCriteriaPaginated(businessCriteria, pageable, type);
     }
 
+
     @Override
-    public Stream<T> findByCriteria(final Criteria criteria, final Pageable pageable, final Class<T> type) {
+    public List<T> findByCriteria(final Criteria criteria, final Pageable pageable, final Class<T> type) {
         require(criteria, notNullValue());
         require(pageable, notNullValue());
         require(type, notNullValue());
-        return dao.findByCriteria(criteria, pageable, type);
+        Criteria businessCriteria = CriteriaUtil.converToBusinessCriteria(type, criteria);
+        return dao.findByCriteria(businessCriteria, pageable, type);
     }
+
+
 
     @Override
     public long countByCriteria(final Criteria criteria, final Pageable pageable, final Class<T> type) {
         require(criteria, notNullValue());
         require(type, notNullValue());
-        return dao.countByCriteria(criteria, type);
+        Criteria businessCriteria = CriteriaUtil.converToBusinessCriteria(type, criteria);
+        return dao.countByCriteria(businessCriteria, type);
     }
 
-        @Override
-    public Page<T> findAllPaginated(final Pageable pageable) {
+
+    @Override
+    public Page<T> findAllPaginated(final Pageable pageable, Class<T> type) {
         require(pageable, notNullValue());
-        return dao.findAll(pageable);
+        return dao.findAllPaginated(pageable, type);
     }
+
+
 
     @Override
     public T create(T entity) {
@@ -139,8 +150,39 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
 
     @Override
     public BulkWriteResult bulkInsertMany(Class<T> type, List<T> domains) {
-        require(type, notNullValue(Class.class));
+        require(type, notNullValue());
         require(domains, MatcherUtil.notCollectionEmpty());
         return dao.bulkInsertMany(type, domains);
+    }
+    @Override
+    public <S extends T> Page<S> findAllPaginated(Pageable pageable, Class<S> type, String view){
+        require(pageable, notNullValue());
+        require(type, notNullValue());
+        require(view, MatcherUtil.notStringEmpty());
+        return dao.findAllPaginated(pageable, type, view);
+    }
+    @Override
+    public long countByCriteria(final Criteria criteria, final Class<T> type, final String view){
+        require(criteria, notNullValue());
+        require(type, notNullValue());
+        require(view, notNullValue());
+        Criteria businessCriteria = CriteriaUtil.converToBusinessCriteria(type, criteria);
+        return dao.countByCriteria(businessCriteria, type, view);
+    }
+    @Override
+    public List<T> findByCriteria(final Criteria criteria, final Pageable pageable, final Class<T> type, final String view){
+        require(criteria, notNullValue());
+        require(type, notNullValue());
+        require(view, notNullValue());
+        Criteria businessCriteria = CriteriaUtil.converToBusinessCriteria(type, criteria);
+        return dao.findByCriteria(businessCriteria, pageable, type, view);
+    }
+    @Override
+    public Page<T> findByCriteriaPaginated(final Criteria criteria, final Pageable pageable, final Class<T> type, final String view){
+        require(criteria, notNullValue());
+        require(type, notNullValue());
+        require(view, notNullValue());
+        Criteria businessCriteria = CriteriaUtil.converToBusinessCriteria(type, criteria);
+        return dao.findByCriteriaPaginated(businessCriteria, pageable, type, view);
     }
 }

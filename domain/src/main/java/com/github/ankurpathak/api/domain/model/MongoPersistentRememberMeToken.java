@@ -1,5 +1,6 @@
 package com.github.ankurpathak.api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -14,6 +15,7 @@ import java.util.Date;
         @CompoundIndex(name = "persistentloginsUsernameIdx", def = "{ 'username' : 1 }"),
         @CompoundIndex(name = "persistentloginsSeriesIdx", def = "{ 'series' : 1 }", unique = true)
 })
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MongoPersistentRememberMeToken extends PersistentRememberMeToken {
 
     @Id

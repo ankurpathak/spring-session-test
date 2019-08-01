@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.domain.model;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.ankurpathak.api.rest.controller.dto.View;
 import com.github.ankurpathak.api.security.util.SecurityUtil;
@@ -9,7 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ExtendedDomain<ID extends Serializable> extends Domain<ID> {
 
     @CreatedBy

@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface ICustomizedDomainRepository<T extends Domain<ID>, ID extends Serializable> {
@@ -15,9 +16,15 @@ public interface ICustomizedDomainRepository<T extends Domain<ID>, ID extends Se
     Page<String> listField(String field, String value, Pageable pageable, Class<T> type);
 
     Page<T> findAllPaginated(Pageable pageable, Class<T> type);
-
-    Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type);
-    List<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
     long countByCriteria(Criteria criteria, Class<T> type);
+    List<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
+    Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type);
+
+    <S extends T> Page<S> findAllPaginated(Pageable pageable, Class<S> type, String view);
+    <S extends T> long countByCriteria(Criteria criteria, Class<S> type, String view);
+    <S extends T> List<S> findByCriteria(Criteria criteria, Pageable pageable, Class<S> type, String view);
+    <S extends T> Page<S> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<S> type, String view);
+
+
     BulkWriteResult bulkInsertMany(Class<T> type, List<T> domains);
 }

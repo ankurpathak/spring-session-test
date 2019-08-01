@@ -1,13 +1,9 @@
 package com.github.ankurpathak.api.domain.repository.mongo.custom;
 
-import com.github.ankurpathak.api.constant.Model;
-import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.mongo.DomainSingleFieldSearchTypedAggregation;
 import com.github.ankurpathak.api.domain.mongo.util.CriteriaUtil;
 import com.github.ankurpathak.api.domain.repository.mongo.ICustomizedDomainRepository;
-import com.github.ankurpathak.api.security.dto.DomainContext;
-import com.github.ankurpathak.api.security.util.SecurityUtil;
 import com.mongodb.bulk.BulkWriteResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,9 +14,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
-import java.util.stream.Stream;
 
 public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, ID extends Serializable> implements ICustomizedDomainRepository<T, ID> {
 
@@ -49,7 +43,15 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
     @Override
     public Page<T> findAllPaginated(Pageable pageable, Class<T> type) {
         Criteria criteria = new Criteria();
-        return findByCriteriaPaginated(criteria, pageable, type);
+        Criteria businessCriteria = CriteriaUtil.converToBusinessCriteria(type, criteria);
+        return findByCriteriaPaginated(businessCriteria, pageable, type);
+    }
+
+    @Override
+    public<S extends T> Page<S> findAllPaginated(Pageable pageable, Class<S> type, String view) {
+        Criteria criteria = new Criteria();
+        Criteria businessCriteria = CriteriaUtil.converToBusinessCriteria(type, criteria);
+        return findByCriteriaPaginated(businessCriteria, pageable, type, view);
     }
 
     @Override
@@ -63,9 +65,30 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
     }
 
     @Override
+    public <S extends T> Page<S> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<S> type, String view) {
+        List<S> list = findByCriteria(criteria, pageable, type, view);
+        return new PageImpl<>(
+                list,
+                pageable,
+                countByCriteria(criteria, type, view)
+        );
+    }
+
+
+    @Override
+    public <S extends T> List<S> findByCriteria(Criteria criteria, Pageable pageable, Class<S> type, String view) {
+        return template.find(
+                new Query().with(pageable).addCriteria(criteria),
+                type,
+                view
+
+        );
+    }
+
+    @Override
     public List<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type) {
         return template.find(
-                new Query().with(pageable).addCriteria(CriteriaUtil.businessCiteria(criteria, type)),
+                new Query().with(pageable).addCriteria(criteria),
                 type
         );
     }
@@ -73,7 +96,12 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
 
     @Override
     public long countByCriteria(Criteria criteria, Class<T> type) {
-        return template.count(new Query().addCriteria(CriteriaUtil.businessCiteria(criteria, type)), type);
+        return template.count(new Query().addCriteria(criteria), type);
+    }
+
+    @Override
+    public <S extends T> long countByCriteria(Criteria criteria, Class<S> type, String view) {
+        return template.count(new Query().addCriteria(criteria), view);
     }
 
 

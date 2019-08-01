@@ -1,5 +1,6 @@
 package com.github.ankurpathak.api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.io.Serializable;
@@ -8,7 +9,7 @@ import java.util.Objects;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.require;
-
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CustomerId implements Serializable {
 
     private final BigInteger businessId;
@@ -18,16 +19,16 @@ public class CustomerId implements Serializable {
     }
 
     @PersistenceConstructor
-    public CustomerId(BigInteger businessId, BigInteger userId) {
-        require(businessId, notNullValue());
+    public CustomerId(BigInteger userId, BigInteger businessId) {
         require(userId, notNullValue());
+        require(businessId, notNullValue());
         this.businessId = businessId;
         this.userId = userId;
     }
 
 
-    public static CustomerId getInstance(BigInteger uerrId, BigInteger businessId){
-        return new CustomerId(uerrId, businessId);
+    public static CustomerId getInstance(BigInteger userId, BigInteger businessId){
+        return new CustomerId(userId, businessId);
     }
 
 

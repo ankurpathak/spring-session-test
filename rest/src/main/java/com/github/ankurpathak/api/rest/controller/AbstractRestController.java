@@ -72,7 +72,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    protected ResponseEntity<T> byId(ID id, Class<T> type) {
+    protected ResponseEntity<?> byId(ID id, Class<T> type) {
         return ControllerUtil.processOptional(getDomainService().findById(id), type, null, String.valueOf(id), messageService);
     }
 
@@ -236,9 +236,17 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    protected ResponseEntity<?> paginated(Pageable pageable, HttpServletResponse response) {
+    protected ResponseEntity<?> paginated(Pageable pageable, HttpServletResponse response, Class<T> type) {
         PagingUtil.pagePreCheck(pageable.getPageNumber());
-        Page<T> page = getDomainService().findAllPaginated(pageable);
+        Page<T> page = getDomainService().findAllPaginated(pageable, type);
+        PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
+        applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent(page, response));
+        return ControllerUtil.processSuccess(messageService, Map.of("data", PageDto.getInstance(page)));
+
+    }
+    protected<S extends T> ResponseEntity<?> paginated(Pageable pageable, HttpServletResponse response, Class<S> type, String view) {
+        PagingUtil.pagePreCheck(pageable.getPageNumber());
+        Page<S> page = getDomainService().findAllPaginated(pageable, type, view);
         PagingUtil.pagePostCheck(pageable.getPageNumber(), page);
         applicationEventPublisher.publishEvent(new PaginatedResultsRetrievedEvent(page, response));
         return ControllerUtil.processSuccess(messageService, Map.of("data", PageDto.getInstance(page)));

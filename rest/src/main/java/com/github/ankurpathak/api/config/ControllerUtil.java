@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.config;
 
 import com.github.ankurpathak.api.constant.Params;
+import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.exception.*;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;

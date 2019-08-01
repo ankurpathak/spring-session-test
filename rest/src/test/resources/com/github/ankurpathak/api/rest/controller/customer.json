@@ -1,0 +1,58 @@
+[{
+  "_id" : {
+    "businessId" : "1",
+    "userId" : "6"
+  },
+  "address" : {
+    "name" : "Kapil Dev",
+    "phone" : {
+      "value" : "+918000000002",
+      "tag" : "primary",
+      "checked" : false
+    },
+    "city" : "PUNE",
+    "state" : "MAHARASHTRA",
+    "pinCode" : "411047",
+    "tag" : "primary"
+  }
+
+},
+{
+  "_id" : {
+    "businessId" : "1",
+    "userId" : "7"
+  },
+  "address" : {
+    "name" : "Saurav Ganguly",
+    "phone" : {
+      "value" : "+918000000003",
+      "tag" : "primary",
+      "checked" : false
+    },
+    "city" : "PUNE",
+    "state" : "MAHARASHTRA",
+    "pinCode" : "411001",
+    "tag" : "primary"
+  }
+
+
+},
+{
+  "_id" : {
+    "businessId" : "1",
+    "userId" : "8"
+  },
+  "address" : {
+    "name" : "Sachine Tendulkar",
+    "phone" : {
+      "value" : "+918000000099",
+      "tag" : "primary",
+      "checked" : false
+    },
+    "city" : "AMRITSAR",
+    "state" : "PUNJAB",
+    "pinCode" : "200009",
+    "tag" : "primary"
+  }
+}
+]

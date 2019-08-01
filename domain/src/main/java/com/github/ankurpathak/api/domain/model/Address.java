@@ -1,11 +1,12 @@
 package com.github.ankurpathak.api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.Objects;
-
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Address implements Serializable {
     public static final String TAG_PRIMARY = "primary";
     public static final String TAG_ADDED_BY_BUSINESS = "added_by_business_%s";

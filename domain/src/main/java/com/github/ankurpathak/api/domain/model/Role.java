@@ -1,5 +1,6 @@
 package com.github.ankurpathak.api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.ankurpathak.api.constant.Model;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,6 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Document(collection = Model.Role.ROLE)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Role extends Domain<String> implements Serializable {
 
     @Indexed(name = Model.Role.Index.ROLE_NAME_IDX, unique = true, sparse = true)

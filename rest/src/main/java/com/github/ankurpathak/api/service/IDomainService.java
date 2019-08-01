@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
 
@@ -21,11 +20,11 @@ public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
 
     List<T> findAll();
 
-    Stream<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
+    List<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
 
     long countByCriteria(Criteria criteria, Pageable pageable, Class<T> type);
 
-    Page<T> findAllPaginated(Pageable pageable);
+    Page<T> findAllPaginated(Pageable pageable, Class<T> type);
 
     Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type);
 
@@ -55,4 +54,11 @@ public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
     BulkWriteResult bulkInsertMany(Class<T> type, List<T> domains);
 
 
+    <S extends T> Page<S> findAllPaginated(Pageable pageable, Class<S> type, String view);
+
+    long countByCriteria(Criteria criteria, Class<T> type, String view);
+
+    List<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type, String view);
+
+    Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type, String view);
 }

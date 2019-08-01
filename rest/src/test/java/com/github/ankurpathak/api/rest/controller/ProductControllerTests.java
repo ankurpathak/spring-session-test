@@ -6,6 +6,7 @@ import com.github.ankurpathak.api.domain.model.Product;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
+import com.github.ankurpathak.api.util.MatcherUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,8 +27,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static com.github.ankurpathak.api.constant.ApiPaths.*;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -159,10 +159,63 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
                 .with(authentication(token("+918000000000")))
         )
                 .andDo(print())
-                .andExpect(status().isConflict())
+                .andExpect(status().isOk())
                 .andExpect(authenticated())
-                .andExpect(jsonPath("$.code", equalTo(5)));
+                .andExpect(jsonPath("$.code", equalTo(0)))
+                .andExpect(jsonPath("$.data.list", MatcherUtil.notCollectionEmpty()))
+                .andExpect(jsonPath("$.data.list", hasSize(16)));
     }
+
+
+    @Test
+    public void testGetSearchMissingRsql() throws Exception{
+
+        mockMvc.perform(get(apiPath(PATH_SERVICE_SEARCH))
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(5)))
+                .andExpect(jsonPath("$.message", containsString("rsql")));
+    }
+
+    @Test
+    public void testGetSearchInvalidRsql() throws Exception{
+
+        mockMvc.perform(get(apiPath(PATH_SERVICE_SEARCH))
+                .param(Params.Query.SORT,"name,asc")
+                .param(Params.Query.RSQL,"hello")
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(14)))
+                .andExpect(jsonPath("$.message", containsString("RSQL")));
+    }
+
+
+    @Test
+    public void testGetSearchRsql() throws Exception{
+
+        mockMvc.perform(get(apiPath(PATH_SERVICE_SEARCH))
+                .param(Params.Query.SORT,"name,asc")
+                .param(Params.Query.RSQL,"name==E")
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(0)))
+                .andExpect(jsonPath("$.data.list", MatcherUtil.notCollectionEmpty()))
+                .andExpect(jsonPath("$.data.list[0].name", not(emptyOrNullString())))
+                .andExpect(jsonPath("$.data.list[0].name", equalTo("E")));
+    }
+
+
+
+
 
 
 

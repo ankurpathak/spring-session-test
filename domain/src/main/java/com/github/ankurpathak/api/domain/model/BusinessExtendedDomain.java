@@ -1,9 +1,11 @@
 package com.github.ankurpathak.api.domain.model;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.io.Serializable;
 import java.math.BigInteger;
-
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class BusinessExtendedDomain<ID extends Serializable> extends ExtendedDomain<ID> {
     private BigInteger businessId;
 

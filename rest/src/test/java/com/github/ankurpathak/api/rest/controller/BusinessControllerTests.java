@@ -54,7 +54,7 @@ public class BusinessControllerTests extends AbstractRestIntegrationTest<Busines
         mockMvc.perform(post(apiPath(PATH_BUSINESS))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(businessDto))
-                .with(authentication(token("+919000000000")))
+                .with(authentication(token("+918000000005")))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -73,7 +73,7 @@ public class BusinessControllerTests extends AbstractRestIntegrationTest<Busines
         mockMvc.perform(post(apiPath(PATH_BUSINESS))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(businessDto))
-                .with(authentication(token("+919000000000")))
+                .with(authentication(token("+918000000005")))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -88,10 +88,11 @@ public class BusinessControllerTests extends AbstractRestIntegrationTest<Busines
         mockMvc.perform(post(apiPath(PATH_BUSINESS))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(businessDto))
-                .with(authentication(token("+919000000000")))
+                .with(authentication(token("+918000000005")))
         )
                 .andDo(print())
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code", equalTo(25)));
     }
 
 
@@ -103,7 +104,7 @@ public class BusinessControllerTests extends AbstractRestIntegrationTest<Busines
         mockMvc.perform(put(apiPath(PATH_BUSINESS))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(businessDto))
-                .with(authentication(token("+919000000000")))
+                .with(authentication(token("+918000000005")))
         )
                 .andDo(print())
                 .andExpect(status().isNotFound())
@@ -119,7 +120,7 @@ public class BusinessControllerTests extends AbstractRestIntegrationTest<Busines
         mockMvc.perform(put(apiPath(PATH_BUSINESS))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(businessDto))
-                .with(authentication(token("+918000000000")))
+                .with(authentication(token("+919000000000")))
         )
                 .andDo(print())
                 .andExpect(status().isOk())

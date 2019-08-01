@@ -50,12 +50,13 @@
 
     },
     "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
-    "enabled":  true
+    "enabled":  true,
+    "businessIds" : ["2"]
   },
   {
     "_id" : "5",
-    "firstName": "Virat",
-    "lastName": "Kohli",
+    "firstName": "Rohit",
+    "lastName": "Sharma",
     "roles" : "ROLE_ADMIN",
     "phone" : {
       "tag" : "primary",
@@ -65,5 +66,76 @@
     "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
     "enabled":  true,
     "businessIds" : ["1"]
+  },
+  {
+    "_id" : "6",
+    "firstName": "Kapil",
+    "lastName": "Dev",
+    "roles" : "ROLE_ADMIN",
+    "phone" : {
+      "tag" : "primary",
+      "value" : "+918000000002",
+      "checked" : true
+    },
+    "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
+    "enabled":  true,
+    "businessIds" : ["1"]
+  },
+  {
+    "_id" : "7",
+    "firstName": "Saurav",
+    "lastName": "Ganguly",
+    "roles" : "ROLE_ADMIN",
+    "phone" : {
+      "tag" : "primary",
+      "value" : "+918000000003",
+      "checked" : true
+    },
+    "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
+    "enabled":  true,
+    "businessIds" : ["1"]
+  },
+  {
+    "_id" : "8",
+    "firstName": "Sachine",
+    "lastName": "Tendulkar",
+    "roles" : "ROLE_ADMIN",
+    "phone" : {
+      "tag" : "primary",
+      "value" : "+918000000099",
+      "checked" : true
+    },
+    "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
+    "enabled":  true,
+    "businessIds" : ["1"]
+  },
+
+  {
+    "_id" : "9",
+    "firstName": "Yuvraj",
+    "lastName": "Singh",
+    "roles" : "ROLE_ADMIN",
+    "phone" : {
+      "tag" : "primary",
+      "value" : "+918000000004",
+      "checked" : true
+    },
+    "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
+    "enabled":  true,
+    "businessIds" : ["3"]
+  },
+  {
+    "_id" : "10",
+    "firstName": "Suresh",
+    "lastName": "Raina",
+    "roles" : "ROLE_ADMIN",
+    "phone" : {
+      "tag" : "primary",
+      "value" : "+918000000005",
+      "checked" : true
+    },
+    "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
+    "enabled":  true
   }
+
 ]

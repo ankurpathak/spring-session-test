@@ -1,11 +1,12 @@
 package com.github.ankurpathak.api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.ankurpathak.api.rest.controller.dto.View;
 
 import java.io.Serializable;
 import java.util.Objects;
-
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Contact implements Serializable {
 
     public static final String TAG_PRIMARY = "primary";

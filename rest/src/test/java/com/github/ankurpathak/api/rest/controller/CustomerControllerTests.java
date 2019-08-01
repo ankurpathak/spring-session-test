@@ -1,8 +1,14 @@
 package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.constant.Params;
+import com.github.ankurpathak.api.domain.repository.mongo.ISchemaRepository;
 import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
 import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
+import com.github.ankurpathak.api.service.ISchemaService;
+import com.github.ankurpathak.api.util.MatcherUtil;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,12 +23,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import java.io.IOException;
+
 import static com.github.ankurpathak.api.constant.ApiPaths.*;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,6 +40,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ContextConfiguration(initializers = {CustomerControllerTests.Initializer.class})
 public class CustomerControllerTests extends AbstractRestIntegrationTest<CustomerControllerTests> {
+    @Autowired
+    private ISchemaService schemaService;
+
+    @Before
+    public void setUp() throws IOException {
+        schemaService.createViews();
+    }
 
 
     @Test
@@ -71,7 +85,7 @@ public class CustomerControllerTests extends AbstractRestIntegrationTest<Custome
         mockMvc.perform(post(apiPath(PATH_CUSTOMER))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto))
-                .with(authentication(token("+918000000000")))
+                .with(authentication(token("+919000000000")))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -86,13 +100,26 @@ public class CustomerControllerTests extends AbstractRestIntegrationTest<Custome
         MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
 
         mockMvc.perform(multipart(apiPath(PATH_CUSTOMER_UPLOAD)).file(csvFile)
-                .with(authentication(token("+918000000000")))
+                .with(authentication(token("+919000000000")))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(authenticated())
                 .andExpect(jsonPath("$.code", equalTo(0)));
 
+    }
+
+    @Test
+    public void testGetPaginated() throws Exception{
+
+        mockMvc.perform(get(apiPath(PATH_CUSTOMER))
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(0)))
+                .andExpect(jsonPath("$.data.list", MatcherUtil.notCollectionEmpty()));
     }
 
 

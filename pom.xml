@@ -12,6 +12,7 @@
         <module>rest</module>
         <module>etl</module>
         <module>etl-cmd</module>
+        <module>resource</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -25,6 +26,8 @@
         <version>2.1.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
+
 
     <!--Spring Data Release Train -->
     <dependencyManagement>
@@ -367,6 +370,11 @@
             </dependency>
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
+                <artifactId>resource</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ankurpathak.api</groupId>
                 <artifactId>etl-cmd</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
@@ -490,6 +498,7 @@
         <greenmail.version>1.5.10</greenmail.version>
         <opencsv.version>4.6</opencsv.version>
         <commons-collection.version>4.4</commons-collection.version>
+        <maven.remote.resource.plugin>1.6.0</maven.remote.resource.plugin>
     </properties>
 
     <repositories>
@@ -529,6 +538,18 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-remote-resources-plugin</artifactId>
+                    <version>${maven.remote.resource.plugin}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 
 </project>

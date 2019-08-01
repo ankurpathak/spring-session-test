@@ -1,0 +1,30 @@
+{
+  "userBusiness": {
+    "create": "userBusiness",
+    "viewOn": "user",
+    "pipeline": [
+      {
+        "$lookup": {
+          "from": "business",
+          "localField": "businessIds",
+          "foreignField": "_id",
+          "as": "businesses"
+        }
+      }
+    ]
+  },
+  "customerUser": {
+    "create": "customerUser",
+    "viewOn": "customer",
+    "pipeline": [
+      {
+        "$lookup": {
+          "from": "user",
+          "localField": "_id.userId",
+          "foreignField": "_id",
+          "as": "user"
+        }
+      }
+    ]
+  }
+}

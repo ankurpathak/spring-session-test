@@ -4,10 +4,7 @@ import java.util.List;
 
 public interface Model {
 
-    List<Class<?>> LIST_BUSINESS_DOMAIN = List.of(
-            Product.class,
-            Customer.class
-    );
+
 
 
     interface Domain {
@@ -108,7 +105,7 @@ public interface Model {
     }
 
     interface Business {
-        String BUSINESS = "businesses";
+        String BUSINESS = "business";
 
         interface Field extends Domain.Field{
             String CURRENT = "curr";
@@ -173,6 +170,41 @@ public interface Model {
 
         interface Field extends Domain.Field{
             String NAME  = "name";
+            String BUSINESS_ID  = "_id.businessId";
+            String USER_ID  = "_id.userId";
+        }
+
+        interface Index extends Domain.Index{
+
+            interface Definition extends Domain.Index.Definition { }
+        }
+
+        interface Query extends Domain.Query{ }
+
+    }
+
+    interface VUserBusiness extends User {
+        String V_USER_BUSINESS = "userBusiness";
+
+        interface Field extends Domain.Field{
+
+        }
+
+        interface Index extends Domain.Index{
+
+            interface Definition extends Domain.Index.Definition { }
+        }
+
+        interface Query extends Domain.Query{ }
+
+    }
+
+
+    interface VCustomerUser extends Customer {
+        String V_CUSTOMER_USER = "customerUser";
+
+        interface Field extends Domain.Field{
+
         }
 
         interface Index extends Domain.Index{

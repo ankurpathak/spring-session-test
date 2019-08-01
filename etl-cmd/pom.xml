@@ -101,19 +101,53 @@
             <artifactId>opencsv</artifactId>
         </dependency>
         <!--Open CSV -->
+        <!--Modules -->
         <dependency>
             <groupId>com.github.ankurpathak.api</groupId>
             <artifactId>etl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ankurpathak.api</groupId>
+            <artifactId>resource</artifactId>
+        </dependency>
+        <!--Modules -->
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/maven-shared-archive-resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <configuration>
+                    <resourceBundles>
+                        <resourceBundle>com.github.ankurpathak.api:resource:${project.version}</resourceBundle>
+                    </resourceBundles>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
     </build>
 
 </project>

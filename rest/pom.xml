@@ -404,6 +404,10 @@
             <groupId>com.github.ankurpathak.api</groupId>
             <artifactId>etl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ankurpathak.api</groupId>
+            <artifactId>resource</artifactId>
+        </dependency>
         <!--Modules -->
         <!-- Reactor Core -->
         <dependency>
@@ -470,6 +474,10 @@
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
             </resource>
+            <resource>
+                <directory>${project.build.directory}/maven-shared-archive-resources</directory>
+                <filtering>false</filtering>
+            </resource>
         </resources>
 
         <plugins>
@@ -485,6 +493,22 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <configuration>
+                    <resourceBundles>
+                        <resourceBundle>com.github.ankurpathak.api:resource:${project.version}</resourceBundle>
+                    </resourceBundles>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 
