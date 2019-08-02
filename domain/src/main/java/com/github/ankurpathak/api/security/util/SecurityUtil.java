@@ -35,6 +35,10 @@ public class SecurityUtil {
         return getDomainContext().map(DomainContext::getBusiness);
     }
 
+    public static Optional<BigInteger> getRequestedBusinessId(){
+        return getDomainContext().map(DomainContext::getRequestedBusinessId);
+    }
+
 
 
 

@@ -62,7 +62,8 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
 
     @PutMapping(PATH_FORGET_PASSWORD)
     public ResponseEntity<?> forgetPassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ForgetPassword.class}) UserDto dto, BindingResult result) {
-        return update(dto, user, UserUpdaters.forgetPasswordUpdater(), request, result, (rest, tDto) -> {
+        User newUser = User.getInstance(user);
+        return update(dto, newUser, UserUpdaters.forgetPasswordUpdater(), request, result, (rest, tDto) -> {
             dto.encodedPassword(encoder.encode(dto.getPassword()));
         }, (rest, t, tDto) -> {}); // Added Binding Result
     }
@@ -70,8 +71,9 @@ public class PasswordController extends AbstractRestController<User, BigInteger,
 
     @PatchMapping(PATH_CHANGE_PASSWORD)
     public ResponseEntity<?> changePassword(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({UserDto.ChangePassword.class}) UserDto dto, BindingResult result){
-        return update(dto, user,UserUpdaters.forgetPasswordUpdater(), request, result, (rest, tDto) -> {
-            service.validateExistingPassword(user, dto);
+        User newUser = User.getInstance(user);
+        return update(dto, newUser,UserUpdaters.forgetPasswordUpdater(), request, result, (rest, tDto) -> {
+            service.validateExistingPassword(newUser, dto);
             dto.encodedPassword(encoder.encode(dto.getPassword()));
         }, (rest, t, tDto) -> {}); //Added Binding Result
     }

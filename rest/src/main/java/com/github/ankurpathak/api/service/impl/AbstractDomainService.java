@@ -178,7 +178,7 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
         return dao.findByCriteria(businessCriteria, pageable, type, view);
     }
     @Override
-    public Page<T> findByCriteriaPaginated(final Criteria criteria, final Pageable pageable, final Class<T> type, final String view){
+    public<S extends T> Page<S> findByCriteriaPaginated(final Criteria criteria, final Pageable pageable, final Class<S> type, final String view){
         require(criteria, notNullValue());
         require(type, notNullValue());
         require(view, notNullValue());

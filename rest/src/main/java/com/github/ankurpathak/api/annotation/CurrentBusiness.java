@@ -9,4 +9,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface CurrentBusiness {
+    boolean errorOnNotFound() default true;
 }

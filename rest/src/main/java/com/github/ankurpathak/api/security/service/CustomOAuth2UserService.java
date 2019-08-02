@@ -3,6 +3,7 @@ package com.github.ankurpathak.api.security.service;
 import com.github.ankurpathak.api.domain.model.Contact;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
+import com.github.ankurpathak.api.domain.model.VUserBusiness;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import org.apache.commons.collections4.MapUtils;
@@ -64,7 +65,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                                                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                                                     .enabled(true)
                                                     .roles(Collections.singleton(Role.ROLE_ADMIN));
-                                            return userDetailsService.getUserService().create(user);
+                                            return VUserBusiness.getInstance(userDetailsService.getUserService().create(user));
                                         }),
                                 userDetailsService.getPrivileges(Collections.singleton(Role.ROLE_ADMIN)), oath2User));
     }

@@ -5,6 +5,7 @@ import com.github.ankurpathak.api.domain.mongo.MongoDataRule;
 import com.github.ankurpathak.api.redis.RedisDataRule;
 import com.github.ankurpathak.api.security.DomainContextRule;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
+import com.github.ankurpathak.api.service.ISchemaService;
 import com.github.ankurpathak.api.testcontainer.mongo.MongoDbContainer;
 import com.github.ankurpathak.api.testcontainer.redis.RedisContainer;
 import org.junit.ClassRule;
@@ -61,6 +62,8 @@ public class AbstractRestIntegrationTest<SELF extends AbstractRestIntegrationTes
     protected MongoTemplate mongoTemplate;
     @Autowired
     protected RedisTemplate<?, ?> redisTemplate;
+    @Autowired
+    protected ISchemaService schemaService;
 
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {

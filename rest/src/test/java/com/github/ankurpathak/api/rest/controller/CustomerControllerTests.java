@@ -40,13 +40,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ContextConfiguration(initializers = {CustomerControllerTests.Initializer.class})
 public class CustomerControllerTests extends AbstractRestIntegrationTest<CustomerControllerTests> {
-    @Autowired
-    private ISchemaService schemaService;
-
-    @Before
-    public void setUp() throws IOException {
-        schemaService.createViews();
-    }
 
 
     @Test

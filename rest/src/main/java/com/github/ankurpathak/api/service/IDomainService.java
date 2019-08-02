@@ -60,5 +60,5 @@ public interface IDomainService<T extends Domain<ID>, ID extends Serializable> {
 
     List<T> findByCriteria(Criteria criteria, Pageable pageable, Class<T> type, String view);
 
-    Page<T> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<T> type, String view);
+    <S extends T> Page<S> findByCriteriaPaginated(Criteria criteria, Pageable pageable, Class<S> type, String view);
 }

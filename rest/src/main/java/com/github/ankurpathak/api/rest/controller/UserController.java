@@ -15,6 +15,7 @@ import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controller.dto.View;
 import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.rest.controllor.dto.converter.UserDtoConverters;
+import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.IUserService;
@@ -34,35 +35,23 @@ import java.math.BigInteger;
 @ApiController
 public class UserController extends AbstractRestController<User,BigInteger, UserDto> {
 
-
-    private final IUserService service;
-
-
+    private final CustomUserDetailsService service;
 
     @Override
     public IDomainService<User, BigInteger> getDomainService() {
-        return service;
+        return service.getUserService();
     }
 
-    public UserController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService service) {
+    public UserController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, CustomUserDetailsService service) {
         super(applicationEventPublisher, messageService, objectMapper, validator);
         this.service = service;
     }
-
-    @GetMapping(ApiPaths.PATH_ME)
-    @JsonView(View.Me.class)
-    public User get(@CurrentUser User user){
-        return user;
-    }
-
 
 
     @PostMapping(ApiPaths.PATH_USER)
     public ResponseEntity<?> createOne(HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({Default.class}) UserDto dto, BindingResult result){
         return createOne(dto, result, request, response, UserConverters.createOne);
     }
-
-
 
     /*
 

@@ -4,6 +4,7 @@ package com.github.ankurpathak.api.security;
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.User;
+import com.github.ankurpathak.api.domain.model.VUserBusiness;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
 import org.apache.commons.lang3.StringUtils;
@@ -441,7 +442,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                             .andExpect(status().isForbidden());
                 });
 
-        Optional<User> user = userDetailsService.getUserService().byPhone("+917588011779");
+        Optional<VUserBusiness> user = userDetailsService.getUserService().byPhone("+917588011779");
 
         assertTrue("New User exists", user.isPresent());
         assertFalse("New User is disabled", user.get().isEnabled());
@@ -500,7 +501,7 @@ public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
                 .andExpect(header().doesNotExist(Params.Header.X_REMEMBER_ME_TOKEN))
                 .andExpect(jsonPath("$.code", is(ApiCode.SUCCESS.getCode())));
 
-        Optional<User> user = userDetailsService.getUserService().byPhone("+917588011779");
+        Optional<VUserBusiness> user = userDetailsService.getUserService().byPhone("+917588011779");
         assertTrue("New User exists", user.isPresent());
         assertFalse("New User is disabled", user.get().isEnabled());
 

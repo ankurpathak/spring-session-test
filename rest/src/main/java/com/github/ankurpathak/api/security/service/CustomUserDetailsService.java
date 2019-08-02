@@ -4,6 +4,7 @@ import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
+import com.github.ankurpathak.api.domain.model.VUserBusiness;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.service.IMessageService;
@@ -40,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = findByCandidateKey(username);
+        Optional<VUserBusiness> user = findByCandidateKey(username);
         if (user.isPresent()) {
             return CustomUserDetails.getInstance(user.get(), getPrivileges(user.get().getRoles()));
         } else {
@@ -52,7 +53,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
 
-    public Optional<User> findByCandidateKey(String username){
+    public Optional<VUserBusiness> findByCandidateKey(String username){
         List<Criteria> criteriaList = new ArrayList<>();
         userService.possibleCandidateKeys(username)
                 .forEach((key, value) -> criteriaList.add(Criteria.where(KEY_MAPPINGS.get(key)).is(value)));
@@ -66,7 +67,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         // if you want to filter anonymous user in query
         //criteria.andOperator(Criteria.where(Model.User.CustomField.ENABLED).is(true));
-        return userService.findByCriteriaPaginated(criteria, PageRequest.of(0, 1), User.class)
+        return userService.findByCriteriaPaginated(criteria, PageRequest.of(0, 1), VUserBusiness.class, Model.VUserBusiness.V_USER_BUSINESS)
                 .stream()
           // if you want to filter anonymous user
           //      .filter(user -> !Objects.equals(user.getId(), BigInteger.ONE))

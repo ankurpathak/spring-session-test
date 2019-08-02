@@ -8,6 +8,7 @@ import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.rest.controller.dto.View;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -289,6 +290,11 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
                 .enabled(false);
     }
 
+    public static User getInstance(User user){
+        User newUser = new User();
+        BeanUtils.copyProperties(user, newUser, "businesses");
+        return newUser;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -311,6 +317,9 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
         this.businessIds = businessIds;
         return this;
     }
+
+
+
 
 
     public User addresses(List<Address> addresses) {

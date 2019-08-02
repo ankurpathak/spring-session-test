@@ -68,7 +68,8 @@ public class BusinessController extends AbstractRestController<Business, BigInte
                         applicationEventPublisher.publishEvent(new EmailTokenEvent(user));
                     }
                     user.addBusinessId(t.getId());
-                    userDetailsService.getUserService().update(user);
+                    User newUser = User.getInstance(user);
+                    userDetailsService.getUserService().update(newUser);
                     if (user.getEmail() != null) {
                         applicationEventPublisher.publishEvent(new BusinessAddedEvent(t, user));
                     }

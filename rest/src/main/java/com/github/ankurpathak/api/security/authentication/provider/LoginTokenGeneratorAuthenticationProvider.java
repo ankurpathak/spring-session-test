@@ -3,6 +3,7 @@ package com.github.ankurpathak.api.security.authentication.provider;
 import com.github.ankurpathak.api.domain.model.Contact;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
+import com.github.ankurpathak.api.domain.model.VUserBusiness;
 import com.github.ankurpathak.api.event.RegistrationCompleteEvent;
 import com.github.ankurpathak.api.event.LoginTokenEvent;
 import com.github.ankurpathak.api.security.authentication.token.PreLoginTokenAuthenticationToken;
@@ -64,7 +65,7 @@ public class LoginTokenGeneratorAuthenticationProvider implements Authentication
         if(authentication.getPrincipal() instanceof String){
             String candidateKeyValue = (String) authentication.getPrincipal();
             if(StringValidator.contact(candidateKeyValue, false)){
-                Optional<User> user = userDetailsService.getUserService().byPhone(candidateKeyValue);
+                Optional<VUserBusiness> user = userDetailsService.getUserService().byPhone(candidateKeyValue);
                 if(user.isPresent()){
                     CustomUserDetails userDetails = CustomUserDetails.getInstance(user.get(), userDetailsService.getPrivileges(user.get().getRoles()));
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -85,7 +86,7 @@ public class LoginTokenGeneratorAuthenticationProvider implements Authentication
         if(authentication.getCredentials() instanceof String){
             String candidateKeyValue = (String) authentication.getPrincipal();
             if(StringValidator.contact(candidateKeyValue, false)){
-                User user = registerNewContact(candidateKeyValue);
+                VUserBusiness user = registerNewContact(candidateKeyValue);
                 CustomUserDetails userDetails = CustomUserDetails.getInstance(user, userDetailsService.getPrivileges(user.getRoles()));
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 return PreLoginTokenAuthenticationToken.getInstance(usernamePasswordAuthenticationToken);
@@ -98,14 +99,14 @@ public class LoginTokenGeneratorAuthenticationProvider implements Authentication
     }
 
 
-    private User registerNewContact(String candidateKeyValue){
+    private VUserBusiness registerNewContact(String candidateKeyValue){
         User user = User.getInstance()
                 .phone(Contact.getInstance(candidateKeyValue))
                 .roles(Collections.singleton(Role.ROLE_ADMIN))
                 .enabled(false);
-        userDetailsService.getUserService().create(user);
+        user = userDetailsService.getUserService().create(user);
         applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(user));
-        return user;
+        return VUserBusiness.getInstance(user);
     }
 
     @Override

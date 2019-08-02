@@ -2,6 +2,7 @@ package com.github.ankurpathak.api.security.dto;
 
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.User;
+import com.github.ankurpathak.api.domain.model.VUserBusiness;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,9 +21,9 @@ import static org.hamcrest.Matchers.*;
 import static org.valid4j.Assertive.ensure;
 
 
-public class CustomUserDetails implements UserDetails, OAuth2User, OidcUser {
+public final class CustomUserDetails implements UserDetails, OAuth2User, OidcUser {
 
-    private final User user;
+    private final VUserBusiness user;
     private final Set<String> privileges;
     private final Map<String, Object> attributes;
     private final String name;
@@ -30,14 +31,14 @@ public class CustomUserDetails implements UserDetails, OAuth2User, OidcUser {
     private final OidcUserInfo userInfo;
 
 
-    public static final CustomUserDetails ANNONYMOUS_CUSTOM_USER_DETAILS = getInstance(User.ANONYMOUS_USER, Role.ANONYMOUS_ROLE.getPrivileges());
+    public static final CustomUserDetails ANNONYMOUS_CUSTOM_USER_DETAILS = getInstance(VUserBusiness.V_ANONYMOUS_USER, Role.ANONYMOUS_ROLE.getPrivileges());
 
 
     public User getUser() {
         return user;
     }
 
-    private CustomUserDetails(User user, Set<String> privileges) {
+    private CustomUserDetails(VUserBusiness user, Set<String> privileges) {
         this(user, privileges, null, null, null, null);
     }
 
@@ -46,11 +47,11 @@ public class CustomUserDetails implements UserDetails, OAuth2User, OidcUser {
         this(null, null, null, null, null, null);
     }
 
-    private CustomUserDetails(User user, Set<String> privileges, String name, Map<String, Object> attributes){
+    private CustomUserDetails(VUserBusiness user, Set<String> privileges, String name, Map<String, Object> attributes){
         this(user,privileges,name,attributes, null, null);
     }
 
-    private CustomUserDetails(User user, Set<String> privileges, String name, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo) {
+    private CustomUserDetails(VUserBusiness user, Set<String> privileges, String name, Map<String, Object> attributes, OidcIdToken idToken, OidcUserInfo userInfo) {
         this.user = user;
         this.privileges = privileges;
         this.name = name;
@@ -61,13 +62,13 @@ public class CustomUserDetails implements UserDetails, OAuth2User, OidcUser {
 
 
 
-    public static CustomUserDetails getInstance(User user, Set<String> privileges){
+    public static CustomUserDetails getInstance(VUserBusiness user, Set<String> privileges){
         ensure(user, notNullValue());
         ensure(privileges, allOf(notNullValue(),not(is(empty()))));
         return new CustomUserDetails(user, privileges);
     }
 
-    public static CustomUserDetails getInstance(User user, Set<String> privileges, OAuth2User oauth2User){
+    public static CustomUserDetails getInstance(VUserBusiness user, Set<String> privileges, OAuth2User oauth2User){
         ensure(user, notNullValue());
         ensure(privileges, allOf(notNullValue(),not(is(empty()))));
         ensure(oauth2User, notNullValue());

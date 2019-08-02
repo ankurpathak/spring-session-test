@@ -33,18 +33,15 @@ public class CurrentBusinessArgumentResolver implements HandlerMethodArgumentRes
                                   WebDataBinderFactory factory) throws Exception {
         CurrentBusiness currBusiness = findMethodAnnotation(
                 CurrentBusiness.class, parameter);
-        Optional<DomainContext> context = SecurityUtil.getDomainContext();
-        if(context.isPresent()){
-            BigInteger businessId = context.get().getRequestedBusinessId();
-            Business business = context.get().getBusiness();
-            if(business != null){
-                return business;
-            }else {
-                throw new NotFoundException(String.valueOf(businessId), Params.ID, "Business",ApiCode.BUSINESS_NOT_FOUND );
-            }
-
+        Optional<Business> business = SecurityUtil.getRequestedMyBusiness();
+        if (business.isPresent()){
+            return business.get();
         }else {
-                throw new RuntimeException("Domain Context Not Found");
+            if(currBusiness.errorOnNotFound()){
+                throw new NotFoundException(String.valueOf(SecurityUtil.getRequestedBusinessId().orElse(BigInteger.ZERO)), Params.ID, "Business",ApiCode.BUSINESS_NOT_FOUND );
+            }else {
+                return null;
+            }
         }
     }
 

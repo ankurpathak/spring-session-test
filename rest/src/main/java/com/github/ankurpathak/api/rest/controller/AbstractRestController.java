@@ -336,7 +336,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return createMany(list, type, exception, request, converter, preCreate, postCreate);
     }
 
-
+    @SafeVarargs
     private void processValidation(Object object, BindingResult result, Class<?>... hints) {
         validator.validate(object, result, hints);
     }

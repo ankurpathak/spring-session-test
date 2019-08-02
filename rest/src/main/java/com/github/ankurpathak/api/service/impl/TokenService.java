@@ -4,6 +4,7 @@ package com.github.ankurpathak.api.service.impl;
 import com.github.ankurpathak.api.domain.model.Role;
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.domain.model.User;
+import com.github.ankurpathak.api.domain.model.VUserBusiness;
 import com.github.ankurpathak.api.domain.repository.mongo.ITokenRepository;
 import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
@@ -134,12 +135,13 @@ public class TokenService extends AbstractDomainService<Token, String> implement
                 deleteAccountToken(token.get().getValue());
                 return Token.TokenStatus.EXPIRED;
             }
-            Optional<User> user = customUserDetailsService.getUserService().byEmail(token.get().getValue());
+            Optional<VUserBusiness> user = customUserDetailsService.getUserService().byEmail(token.get().getValue());
             if (user.isPresent()) {
                 if(!user.get().isEnabled())
                     user.get().setEnabled(true);
                 user.get().getEmail().setChecked(true);
-                customUserDetailsService.getUserService().update(user.get());
+                User newUser = User.getInstance(user.get());
+                customUserDetailsService.getUserService().update(newUser);
                 deleteById(token.get().getId());
                 deleteAccountToken(token.get().getValue());
                 return Token.TokenStatus.VALID;
@@ -158,7 +160,7 @@ public class TokenService extends AbstractDomainService<Token, String> implement
                 deleteForgetPasswordToken(token.get().getValue());
                 return Token.TokenStatus.EXPIRED;
             }
-            Optional<User> user = customUserDetailsService.getUserService().byEmail(token.get().getValue());
+            Optional<VUserBusiness> user = customUserDetailsService.getUserService().byEmail(token.get().getValue());
             if (user.isPresent()) {
                 UserDetails details = CustomUserDetails.getInstance(user.get(), Set.of(Role.Privilege.PRIV_FORGET_PASSWORD));
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -188,12 +190,13 @@ public class TokenService extends AbstractDomainService<Token, String> implement
                 return Token.TokenStatus.EXPIRED;
             }
             if(Objects.equals(tokenOtp, token.get().getValue())){
-                Optional<User> user = customUserDetailsService.getUserService().byPhone(phone);
+                Optional<VUserBusiness> user = customUserDetailsService.getUserService().byPhone(phone);
                 if (user.isPresent()) {
                     if(!user.get().isEnabled())
                         user.get().setEnabled(true);
                     user.get().getPhone().setChecked(true);
-                    customUserDetailsService.getUserService().update(user.get());
+                    User newUser = User.getInstance(user.get());
+                    customUserDetailsService.getUserService().update(newUser);
                     deleteById(token.get().getId());
                     return Token.TokenStatus.VALID;
                 }

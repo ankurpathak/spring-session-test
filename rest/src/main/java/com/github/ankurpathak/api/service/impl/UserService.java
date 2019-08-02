@@ -49,16 +49,16 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
 
     @Override
-    public Optional<User> byEmail(String email) {
+    public Optional<VUserBusiness> byEmail(String email) {
         require(email, not(emptyString()));
-        return dao.findByCriteria(Criteria.where(Model.User.Field.EMAIL_VALUE).is(email), PageRequest.of(0, 1), User.class)
+        return dao.findByCriteria(Criteria.where(Model.User.Field.EMAIL_VALUE).is(email), PageRequest.of(0, 1), VUserBusiness.class, Model.VUserBusiness.V_USER_BUSINESS)
                 .stream().findFirst();
     }
 
     @Override
-    public Optional<User> byPhone(String phone) {
+    public Optional<VUserBusiness> byPhone(String phone) {
         require(phone, not(emptyString()));
-        return dao.findByCriteria(Criteria.where(Model.User.Field.PHONE_VALUE).is(phone), PageRequest.of(0, 1), User.class)
+        return dao.findByCriteria(Criteria.where(Model.User.Field.PHONE_VALUE).is(phone), PageRequest.of(0, 1), VUserBusiness.class, Model.VUserBusiness.V_USER_BUSINESS)
                 .stream().findFirst();
     }
 

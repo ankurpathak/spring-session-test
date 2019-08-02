@@ -2,6 +2,7 @@ package com.github.ankurpathak.api.domain.mongo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.service.ISchemaService;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import com.mongodb.client.model.IndexOptions;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,7 +43,8 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
     private MongoTemplate template;
     private ObjectMapper objectMapper;
     private Collection<Class<?>> collections;
-    private Map<String, Resource> jsons = null;
+    private Map<String, Resource> jsons;
+    private ISchemaService schemaService;
 
 
 
@@ -61,6 +63,14 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
             ensure(this.objectMapper, notNullValue());
         }
         return this.objectMapper;
+    }
+
+    public ISchemaService getSchemaService() {
+        if(this.schemaService == null){
+            this.schemaService = setUpSchemaService();
+            ensure(this.schemaService, notNullValue());
+        }
+        return this.schemaService;
     }
 
     public Collection<Class<?>> getCollections() {
@@ -94,6 +104,18 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
         }
         return null;
     }
+
+    private ISchemaService setUpSchemaService(){
+        Field field = ReflectionUtils.findField(test.getClass(), "schemaService");
+        if(field != null) {
+            field.setAccessible(true);
+            Object fileldValue = ReflectionUtils.getField(field, test);
+            if(ISchemaService.class.isAssignableFrom(fileldValue.getClass()))
+                return ISchemaService.class.cast(fileldValue);
+        }
+        return null;
+    }
+
 
     private ObjectMapper setUpObjectMapper(){
         Field field = ReflectionUtils.findField(test.getClass(), "objectMapper");
@@ -183,7 +205,12 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
         // dropCollections();
         dropDatabase();
         createIndices();
+        createViews();
         createDocuments();
+    }
+
+    private void createViews() throws Exception {
+        getSchemaService().createViews();
     }
 
     public void after() throws Exception{
