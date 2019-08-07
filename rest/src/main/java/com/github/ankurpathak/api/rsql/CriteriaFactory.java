@@ -19,7 +19,7 @@ public class CriteriaFactory {
         if (Objects.equals(node.getOperator(), RSQLOperators.EQUAL)) {
             Object arg = castedArguments.get(0);
             if (arg instanceof String) {
-                return Criteria.where(node.getSelector()).regex(String.valueOf(arg), "i");
+                return Criteria.where(node.getSelector()).regex(String.format("^%s$", String.valueOf(arg)), "i");
             }
             return Criteria.where(node.getSelector()).is(castedArguments.get(0));
         } else if (Objects.equals(node.getOperator(), RSQLOperators.NOT_EQUAL)) {

@@ -163,7 +163,8 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
                 .andExpect(authenticated())
                 .andExpect(jsonPath("$.code", equalTo(0)))
                 .andExpect(jsonPath("$.data.list", MatcherUtil.notCollectionEmpty()))
-                .andExpect(jsonPath("$.data.list", hasSize(16)));
+                .andExpect(jsonPath("$.data.list", hasSize(lessThanOrEqualTo(20))))
+                .andExpect(jsonPath("$.data.list", hasSize(greaterThan(0))));
     }
 
 
@@ -210,7 +211,7 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
                 .andExpect(jsonPath("$.code", equalTo(0)))
                 .andExpect(jsonPath("$.data.list", MatcherUtil.notCollectionEmpty()))
                 .andExpect(jsonPath("$.data.list[0].name", not(emptyOrNullString())))
-                .andExpect(jsonPath("$.data.list[0].name", equalTo("E")));
+                .andExpect(jsonPath("$.data.list[0].name", equalToIgnoringCase("E")));
     }
 
 

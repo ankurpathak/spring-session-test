@@ -138,7 +138,7 @@ public class EmailService implements IEmailService {
     private void sendSimpleMessage(String email, String subject, String body, String replyTo, String... ccs){
         JavaMailSender sender = getJavaMailSender(SmtpCredential.EMPTY_INSTANCE);
         String from = EmailUtil.getFrom(SmtpCredential.EMPTY_INSTANCE, environment);
-        EmailContext emailContext = new EmailContext(subject, email, from, body, null, null, null);
+        EmailContext emailContext = new EmailContext(subject, email, from, body, Collections.emptyList(), Collections.emptyList(), null);
 
         EmailUtil.sendSimpleMessage(new SmtpContext(Collections.singletonList(emailContext), sender));
     }
