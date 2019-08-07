@@ -1,12 +1,12 @@
 package com.github.ankurpathak.api.service.impl;
 
-import com.github.ankurpathak.api.rest.controller.util.JsonPathUtil;
+import com.github.ankurpathak.api.util.JsonPathUtil;
 import com.github.ankurpathak.api.service.ICountryService;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.TypeRef;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Named;
 import javax.ws.rs.client.WebTarget;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class CountryService implements ICountryService {
     private final WebTarget countryByAlphaTarget;
 
     public CountryService(
-            @Named("countryByAlphaTarget") WebTarget countryByAlphaTarget
+            @Qualifier("countryByAlphaTarget") WebTarget countryByAlphaTarget
     ) {
         this.countryByAlphaTarget = countryByAlphaTarget;
     }

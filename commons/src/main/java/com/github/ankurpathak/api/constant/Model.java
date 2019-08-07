@@ -10,6 +10,8 @@ public interface Model {
     interface Domain {
         interface Field {
             String ID = "_id";
+            String CREATED = "created";
+            String UPDATED = "updated";
             String CANDIDATE_ID = "candidateKey";
             String BUSINESS_ID = "businessId";
         }

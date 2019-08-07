@@ -5,6 +5,7 @@ import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.exception.NotFoundException;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.rsql.CustomRSQLOperators;
 import com.github.ankurpathak.api.rsql.CustomRSQLVisitor;
 import com.github.ankurpathak.api.util.PrimitiveUtils;
 import com.google.common.base.Splitter;
@@ -117,7 +118,7 @@ public class PagingUtil {
     }
 
     public static <T> Criteria parseRSQL(String rsql, Class<T> type) {
-        Node rootNode = new RSQLParser().parse(rsql);
+        Node rootNode = new RSQLParser(CustomRSQLOperators.defaultOperators()).parse(rsql);
         return rootNode.accept(new CustomRSQLVisitor(type.getSimpleName()));
     }
 }

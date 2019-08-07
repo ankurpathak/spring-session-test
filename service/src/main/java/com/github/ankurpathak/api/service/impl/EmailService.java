@@ -51,14 +51,16 @@ public class EmailService implements IEmailService {
     private final IEmailTemplateService emailTemplateService;
     private final TaskExecutor taskExecutor;
     private final Validator validator;
+    private final MailService mailService;
 
-    public EmailService(JavaMailSender javaMailSender, Environment environment, MessageSource messageSource, IEmailTemplateService emailTemplateService, TaskExecutor taskExecutor, Validator validator) {
+    public EmailService(JavaMailSender javaMailSender, Environment environment, MessageSource messageSource, IEmailTemplateService emailTemplateService, TaskExecutor taskExecutor, Validator validator, MailService mailService) {
         this.javaMailSender = javaMailSender;
         this.environment = environment;
         this.messageSource = messageSource;
         this.emailTemplateService = emailTemplateService;
         this.taskExecutor = taskExecutor;
         this.validator = validator;
+        this.mailService = mailService;
     }
     //Autowiring
 
@@ -137,6 +139,7 @@ public class EmailService implements IEmailService {
         JavaMailSender sender = getJavaMailSender(SmtpCredential.EMPTY_INSTANCE);
         String from = EmailUtil.getFrom(SmtpCredential.EMPTY_INSTANCE, environment);
         EmailContext emailContext = new EmailContext(subject, email, from, body, null, null, null);
+
         EmailUtil.sendSimpleMessage(new SmtpContext(Collections.singletonList(emailContext), sender));
     }
 
@@ -159,8 +162,8 @@ public class EmailService implements IEmailService {
         JavaMailSender sender = getJavaMailSender(SmtpCredential.EMPTY_INSTANCE);
         String from = EmailUtil.getFrom(SmtpCredential.EMPTY_INSTANCE, environment);
         if (!StringUtils.isEmpty(email)) {
-            EmailContext emailContextUser = new EmailContext(subject, email, from, html, null, null, null);
-            EmailUtil.sendMimeMail(taskExecutor, new SmtpContext(Collections.singletonList(emailContextUser), sender));
+            EmailContext emailContextUser = new EmailContext(subject, email, from, html, Collections.emptyList(), Collections.emptyList(), null);
+            EmailUtil.sendMimeMail(mailService, taskExecutor, new SmtpContext(Collections.singletonList(emailContextUser), sender));
         }
         disposeJavaMailSender(sender);
     }

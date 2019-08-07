@@ -32,7 +32,7 @@ public class MatcherUtil {
 
     public static Matcher<String> stringEmpty(){
 
-        return Matchers.allOf(Matchers.notNullValue(), Matchers.emptyString());
+        return not(emptyOrNullString());
     }
 
     public static Matcher<String> notStringEmpty(){

@@ -1,4 +1,4 @@
-package com.github.ankurpathak.api.rest.controller.util;
+package com.github.ankurpathak.api.util;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;

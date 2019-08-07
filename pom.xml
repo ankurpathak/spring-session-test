@@ -13,6 +13,7 @@
         <module>etl</module>
         <module>etl-cmd</module>
         <module>resource</module>
+        <module>service</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -40,8 +41,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${amazon.sdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- Json Path -->
             <dependency>
                 <groupId>com.jayway.jsonpath</groupId>
@@ -378,6 +384,11 @@
                 <artifactId>etl-cmd</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>com.github.ankurpathak.api</groupId>
+                <artifactId>service</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
             <!--Modules -->
 
             <!--Open CSV -->
@@ -499,6 +510,7 @@
         <opencsv.version>4.6</opencsv.version>
         <commons-collection.version>4.4</commons-collection.version>
         <maven.remote.resource.plugin>1.6.0</maven.remote.resource.plugin>
+        <amazon.sdk.version>2.7.17</amazon.sdk.version>
     </properties>
 
     <repositories>

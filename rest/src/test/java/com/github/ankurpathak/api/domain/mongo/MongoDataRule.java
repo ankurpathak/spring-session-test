@@ -2,10 +2,12 @@ package com.github.ankurpathak.api.domain.mongo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.service.ISchemaService;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import com.mongodb.client.model.IndexOptions;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -32,6 +34,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.*;
 
 import static org.hamcrest.Matchers.notNullValue;
@@ -154,12 +157,22 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
 
     private void createDocuments() throws IOException {
         for(Map.Entry<String, Resource> json: this.getJsons().entrySet()){
-            List<?> list = getObjectMapper().readValue(json.getValue().getFile(), List.class);
+            List<Map<String, Object>> list = getObjectMapper().readValue(json.getValue().getFile(), List.class);
+            processList(list);
             getTemplate().insert(list, json.getKey());
         }
     }
 
-
+    private void processList(List<Map<String, Object>> list) {
+        list.stream().forEach(doc -> {
+            if(doc.containsKey(Model.Domain.Field.CREATED)){
+                doc.put(Model.Domain.Field.CREATED, Instant.parse(MapUtils.getString(doc, "created")));
+            }
+            if(doc.containsKey(Model.Domain.Field.UPDATED)){
+                doc.put(Model.Domain.Field.UPDATED, Instant.parse(MapUtils.getString(doc, "updated")));
+            }
+        });
+    }
 
 
     private void dropCollections() {

@@ -3,6 +3,7 @@ package com.github.ankurpathak.api.config;
 import com.google.gson.Gson;
 import com.maxmind.db.CHMCache;
 import com.maxmind.geoip2.DatabaseReader;
+import org.apache.logging.log4j.util.PropertiesUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -12,9 +13,17 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 import org.springframework.session.security.SpringSessionBackedSessionRegistry;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import java.io.IOException;
+import java.util.Properties;
 
 @Configuration
 public class AppConfig {
@@ -43,15 +52,6 @@ public class AppConfig {
         return threadPoolTaskExecutor;
 
     }
-    /*
-
-    @Bean
-    public ExtendedLocalValidatorFactoryBean localValidatorFactoryBean(){
-        return new ExtendedLocalValidatorFactoryBean();
-    }
-
-     */
-
 
     @Bean
     public Client client(){
@@ -69,6 +69,20 @@ public class AppConfig {
     @Bean
     public SpringSessionBackedSessionRegistry sessionRegistry() {
         return new SpringSessionBackedSessionRegistry<>(this.sessionRepository);
+    }
+
+    @Bean
+    public AwsCredentials awsCredentials() throws IOException {
+        ClassPathResource aswPropertiesResource = new ClassPathResource("AwsCredentials.properties");
+        Properties awsProp = new Properties();
+        awsProp.load(aswPropertiesResource.getInputStream());
+        return AwsBasicCredentials.create(awsProp.getProperty("accessKey", ""), awsProp.getProperty("secretKey", ""));
+    }
+
+    @Bean
+    public S3Client s3(AwsCredentials awsCredentials){
+        return S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
+                .region(Region.AP_SOUTH_1).build();
     }
 
 

@@ -10,7 +10,7 @@ import com.github.ankurpathak.api.security.dto.CustomUserDetails;
 import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.IRoleService;
 import com.github.ankurpathak.api.service.IUserService;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.security.core.userdetails.UserDetails;

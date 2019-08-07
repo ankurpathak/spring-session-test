@@ -14,7 +14,7 @@ public class CriteriaFactory {
     public static Criteria create(ComparisonNode node, String resource) {
         if (node == null)
             return null;
-        List<?> castedArguments = FilterFieldMapper.castFilterField(resource, node.getSelector(), node.getArguments());
+        List<?> castedArguments = RSQLFieldMapper.castFilterField(resource, node.getSelector(), node.getArguments());
 
         if (Objects.equals(node.getOperator(), RSQLOperators.EQUAL)) {
             Object arg = castedArguments.get(0);
@@ -37,8 +37,27 @@ public class CriteriaFactory {
         } else if (Objects.equals(node.getOperator(), RSQLOperators.NOT_IN)) {
             return Criteria.where(node.getSelector()).not().in(castedArguments);
         } else if (Objects.equals(node.getOperator(), CustomRSQLOperators.BETWEEN)) {
-            return Criteria.where(node.getSelector()).gte(castedArguments.get(0)).and(node.getSelector()).lte(castedArguments.get(1));
-        } else {
+            return Criteria.where(node.getSelector()).gte(castedArguments.get(0)).lte(castedArguments.get(1));
+        } else if (Objects.equals(node.getOperator(), CustomRSQLOperators.CONTANING)){
+            Object arg = castedArguments.get(0);
+            if (arg instanceof String) {
+                return Criteria.where(node.getSelector()).regex(String.format(".*%s.*",String.valueOf(arg)), "i");
+            }
+            return Criteria.where(node.getSelector()).is(castedArguments.get(0));
+        }else if (Objects.equals(node.getOperator(), CustomRSQLOperators.STARTING_WITH)){
+            Object arg = castedArguments.get(0);
+            if (arg instanceof String) {
+                return Criteria.where(node.getSelector()).regex(String.format("^%s",String.valueOf(arg)), "i");
+            }
+            return Criteria.where(node.getSelector()).is(castedArguments.get(0));
+
+        }else if (Objects.equals(node.getOperator(), CustomRSQLOperators.ENDING_WITH)){
+            Object arg = castedArguments.get(0);
+            if (arg instanceof String) {
+                return Criteria.where(node.getSelector()).regex(String.format("%s$", String.valueOf(arg)), "i");
+            }
+            return Criteria.where(node.getSelector()).is(castedArguments.get(0));
+        }else {
             return null;
         }
     }

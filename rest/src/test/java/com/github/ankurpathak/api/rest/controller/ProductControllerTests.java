@@ -214,6 +214,78 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
     }
 
 
+    @Test
+    public void testGetSearchStartingWithRsql() throws Exception{
+
+        mockMvc.perform(get(apiPath(PATH_SERVICE_SEARCH))
+                .param(Params.Query.SORT,"name,asc")
+                .param(Params.Query.RSQL,"name=s=E")
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(0)))
+                .andExpect(jsonPath("$.data.list", MatcherUtil.notCollectionEmpty()))
+                .andExpect(jsonPath("$.data.list[0].name", not(emptyOrNullString())))
+                .andExpect(jsonPath("$.data.list[0].name", startsWithIgnoringCase("E")));
+    }
+
+
+    @Test
+    public void testGetSearchEndingWithRsql() throws Exception{
+
+        mockMvc.perform(get(apiPath(PATH_SERVICE_SEARCH))
+                .param(Params.Query.SORT,"name,asc")
+                .param(Params.Query.RSQL,"name=e=E")
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(0)))
+                .andExpect(jsonPath("$.data.list", MatcherUtil.notCollectionEmpty()))
+                .andExpect(jsonPath("$.data.list[0].name", not(emptyOrNullString())))
+                .andExpect(jsonPath("$.data.list[0].name", endsWithIgnoringCase("E")));
+    }
+
+
+
+    @Test
+    public void testGetSearchContaininghRsql() throws Exception{
+
+        mockMvc.perform(get(apiPath(PATH_SERVICE_SEARCH))
+                .param(Params.Query.SORT,"name,asc")
+                .param(Params.Query.RSQL,"name=c=E")
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(0)))
+                .andExpect(jsonPath("$.data.list", MatcherUtil.notCollectionEmpty()))
+                .andExpect(jsonPath("$.data.list[0].name", not(emptyOrNullString())))
+                .andExpect(jsonPath("$.data.list[0].name", containsStringIgnoringCase("E")));
+    }
+
+
+    @Test
+    public void testGetSearchBetweenTwoTimestampRsql() throws Exception{
+
+        mockMvc.perform(get(apiPath(PATH_SERVICE_SEARCH))
+                .param(Params.Query.RSQL,"created=between=(2019-08-02T08:00:22.084615Z,2019-08-02T11:00:22.084615Z)")
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(0)))
+                .andExpect(jsonPath("$.data.list", MatcherUtil.notCollectionEmpty()))
+                .andExpect(jsonPath("$.data.list[0].name", not(emptyOrNullString())))
+                .andExpect(jsonPath("$.data.list[0].name", containsStringIgnoringCase("E")));
+    }
+
+
 
 
 

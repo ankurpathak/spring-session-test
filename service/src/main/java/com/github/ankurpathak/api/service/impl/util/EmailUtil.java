@@ -1,7 +1,9 @@
 package com.github.ankurpathak.api.service.impl.util;
 
+import com.github.ankurpathak.api.domain.model.Mail;
 import com.github.ankurpathak.api.security.dto.DomainContext;
 import com.github.ankurpathak.api.security.dto.DomainContextHolder;
+import com.github.ankurpathak.api.service.IMailService;
 import com.github.ankurpathak.api.service.dto.EmailAttachmentContext;
 import com.github.ankurpathak.api.service.dto.EmailContext;
 import com.github.ankurpathak.api.service.dto.SmtpContext;
@@ -109,7 +111,7 @@ public class EmailUtil {
      }
 
 
-    public static void sendMimeMail(TaskExecutor taskExecutor, SmtpContext smtpContext) {
+    public static void sendMimeMail(IMailService mailService, TaskExecutor taskExecutor, SmtpContext smtpContext) {
         require(smtpContext, notNullValue());
         Optional<DomainContext> domainContext = DomainContextHolder.getContext();
         if(domainContext.isPresent() && domainContext.get().isAsync()){
@@ -131,6 +133,8 @@ public class EmailUtil {
                 try {
                     MimeMessage message = EmailUtil.convertEmailDtoToMimeMessage(smtpContext.getSender(), emailContext);
                     smtpContext.getSender().send(message);
+
+
                     log.info("Successfully sent email to {}.", emailContext.getTo());
                 } catch (Exception ex) {
                     log.info("Problem in sending email to {}. message: {} cause: {}", emailContext.getTo(), ex.getMessage(), ex.getCause());

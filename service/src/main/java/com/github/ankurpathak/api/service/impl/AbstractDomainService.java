@@ -11,11 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.valid4j.Assertive;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
 import static org.valid4j.Assertive.require;
@@ -129,7 +127,7 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
     }
 
     @Override
-    public Page<String> listField(@Nonnull String field, @Nonnull String value, @Nonnull Pageable pageable, Class<T> type) {
+    public Page<String> listField(String field,String value, Pageable pageable, Class<T> type) {
         require(field, not(emptyOrNullString()));
         require(value, not(emptyOrNullString()));
         require(pageable, notNullValue());

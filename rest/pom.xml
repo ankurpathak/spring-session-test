@@ -35,11 +35,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- Spring Boot Web-->
+        <!-- Spring Boot Mail -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-        <!-- Spring Boot Web -->
+        <!-- Spring Boot Mail -->
 
 
         <!-- Json Path -->
@@ -408,6 +410,10 @@
             <groupId>com.github.ankurpathak.api</groupId>
             <artifactId>resource</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ankurpathak.api</groupId>
+            <artifactId>service</artifactId>
+        </dependency>
         <!--Modules -->
         <!-- Reactor Core -->
         <dependency>
@@ -457,6 +463,13 @@
             <artifactId>opencsv</artifactId>
         </dependency>
         <!-- Open CSV -->
+        <!--AWS -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+        </dependency>
+        <!--AWS -->
+
 
 
     </dependencies>
