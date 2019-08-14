@@ -1,4 +1,4 @@
-package com.github.ankurpathak.api.service.dto;
+package com.github.ankurpathak.api.domain.model;
 
 
 import javax.validation.constraints.AssertTrue;

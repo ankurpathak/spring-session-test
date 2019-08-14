@@ -1,13 +1,14 @@
 package com.github.ankurpathak.api.service.impl;
 
 import com.github.ankurpathak.api.domain.model.Business;
+import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.service.IEmailService;
 import com.github.ankurpathak.api.service.IEmailTemplateService;
 import com.github.ankurpathak.api.service.dto.EmailContext;
 import com.github.ankurpathak.api.service.dto.SmtpContext;
-import com.github.ankurpathak.api.service.dto.SmtpCredential;
+import com.github.ankurpathak.api.domain.model.SmtpCredential;
 import com.github.ankurpathak.api.service.impl.util.EmailUtil;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import com.github.ankurpathak.api.util.MessageUtil;
@@ -38,7 +39,6 @@ import static org.valid4j.Assertive.require;
 public class EmailService implements IEmailService {
 
     private static final Logger log = LoggerFactory.getLogger(EmailService.class);
-
 
     //Messages
 
@@ -137,8 +137,8 @@ public class EmailService implements IEmailService {
 
     private void sendSimpleMessage(String email, String subject, String body, String replyTo, String... ccs){
         JavaMailSender sender = getJavaMailSender(SmtpCredential.EMPTY_INSTANCE);
-        String from = EmailUtil.getFrom(SmtpCredential.EMPTY_INSTANCE, environment);
-        EmailContext emailContext = new EmailContext(subject, email, from, body, Collections.emptyList(), Collections.emptyList(), null);
+        String from = EmailUtil.getFrom(EmailUtil.getSmtpCredential(null), environment);
+        EmailContext emailContext = new EmailContext(subject, email, from, body, Collections.emptyList(), null,Collections.emptyList());
 
         EmailUtil.sendSimpleMessage(new SmtpContext(Collections.singletonList(emailContext), sender));
     }
@@ -151,18 +151,19 @@ public class EmailService implements IEmailService {
         require(user, notNullValue());
         require(user.getEmail(), notNullValue());
         String email = user.getEmail().getValue();
-        sendEmail(email, subjectKey, html);
+        sendEmail(email, subjectKey, html, user);
     }
 
 
 
 
-    private void sendEmail(String email, String subjectKey, String html){
+    private void sendEmail(String email, String subjectKey, String html, Domain<?> to){
         String subject = MessageUtil.getMessage(messageSource, subjectKey);
         JavaMailSender sender = getJavaMailSender(SmtpCredential.EMPTY_INSTANCE);
-        String from = EmailUtil.getFrom(SmtpCredential.EMPTY_INSTANCE, environment);
+        String from = EmailUtil.getFrom(EmailUtil.getSmtpCredential(null), environment);
         if (!StringUtils.isEmpty(email)) {
-            EmailContext emailContextUser = new EmailContext(subject, email, from, html, Collections.emptyList(), Collections.emptyList(), null);
+            EmailContext emailContextUser = new EmailContext(subject, email, from, html, Collections.emptyList(), null,Collections.emptyList());
+            mailService.processEmailContext(emailContextUser, to);
             EmailUtil.sendMimeMail(mailService, taskExecutor, new SmtpContext(Collections.singletonList(emailContextUser), sender));
         }
         disposeJavaMailSender(sender);

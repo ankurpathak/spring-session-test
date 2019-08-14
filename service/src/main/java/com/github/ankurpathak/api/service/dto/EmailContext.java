@@ -22,11 +22,29 @@ public class EmailContext {
     private final List<String> bccs;
     private final String replyTo;
 
-    public EmailContext(String subject, String to, String from, String body, List<EmailAttachmentContext> emailAttachments, List<String> ccs, String replyTo) {
+
+
+    public EmailContext(String subject, String to, String from, String body) {
+        this(subject, to, from, body, true, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), null);
+    }
+
+    public EmailContext(String subject, String to, String from, String body, String replyTo) {
+        this(subject, to, from, body, true, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), replyTo);
+    }
+
+    public EmailContext(String subject, String to, String from, String body, List<String> ccs) {
+        this(subject, to, from, body, true, Collections.emptyList(), ccs, Collections.emptyList(), null);
+    }
+
+    public EmailContext(String subject, String to, String from, String body, String replyTo, List<String> ccs) {
+        this(subject, to, from, body, true, Collections.emptyList(), ccs, Collections.emptyList(), replyTo);
+    }
+
+    public EmailContext(String subject, String to, String from, String body, List<String> ccs, String replyTo, List<EmailAttachmentContext> emailAttachments) {
         this(subject, to, from, body, true, emailAttachments, ccs, Collections.emptyList(), replyTo);
     }
 
-    public EmailContext(String subject, String to, String from, String body, List<EmailAttachmentContext> emailAttachments, List<String> ccs, List<String> bccs, String replyTo) {
+    public EmailContext(String subject, String to, String from, String body, List<String> ccs, List<String> bccs, String replyTo,  List<EmailAttachmentContext> emailAttachments) {
         this(subject, to, from, body, true, emailAttachments, ccs, bccs, replyTo);
     }
 

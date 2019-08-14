@@ -6,11 +6,16 @@ import java.io.Serializable;
 public class EmailAttachmentContext implements Serializable {
     final private String originalFileName;
     final private DataSource dataSource;
+    final private String mime;
 
+    public String getMime() {
+        return mime;
+    }
 
-    public EmailAttachmentContext(String originalFileName, DataSource dataSource) {
+    public EmailAttachmentContext(String originalFileName, DataSource dataSource, String mime) {
         this.originalFileName = originalFileName;
         this.dataSource = dataSource;
+        this.mime = mime;
     }
 
     public String getOriginalFileName() {

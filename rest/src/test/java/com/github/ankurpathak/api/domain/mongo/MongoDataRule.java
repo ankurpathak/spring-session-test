@@ -29,6 +29,7 @@ import org.springframework.data.mongodb.core.index.IndexResolver;
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
+import org.springframework.data.util.AnnotatedTypeScanner;
 import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.util.ReflectionUtils;
 
@@ -148,9 +149,11 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
 
 
     private Set<Class<?>> setUpCollections(){
-        Reflections reflections = new Reflections(new ConfigurationBuilder()
-                .setUrls(ClasspathHelper.forPackage("com.github.ankurpathak.api.domain.model")).setScanners(new TypeAnnotationsScanner(), new SubTypesScanner()));
-        Set<Class<?>> collections = reflections.getTypesAnnotatedWith(Document.class);
+      //  Reflections reflections = new Reflections(new ConfigurationBuilder()
+      //          .setUrls(ClasspathHelper.forPackage("com.github.ankurpathak.api.domain.model")).setScanners(new TypeAnnotationsScanner(), new SubTypesScanner()));
+       // Set<Class<?>> collections = reflections.getTypesAnnotatedWith(Document.class);
+        AnnotatedTypeScanner scanner = new AnnotatedTypeScanner(Document.class);
+        Set<Class<?>> collections = scanner.findTypes("com.github.ankurpathak.api.domain.model");
         return CollectionUtils.isEmpty(collections) ? Collections.emptySet() : collections;
     }
 

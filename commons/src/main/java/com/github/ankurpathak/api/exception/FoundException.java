@@ -12,15 +12,12 @@ import static org.valid4j.Assertive.require;
 
 public class FoundException extends RuntimeException {
     private final List<FoundDto> fondDtos;
-    private final DuplicateKeyException duplicateKeyException;
     private final Class<?> dtoType;
 
-    public FoundException(DuplicateKeyException duplicateKeyException, List<FoundDto> foundDtos, Class<?> dtoType) {
-        super(duplicateKeyException.getMessage(), duplicateKeyException.getCause());
-        require(duplicateKeyException, notNullValue());
+    public FoundException(Throwable cause, List<FoundDto> foundDtos, Class<?> dtoType) {
+        super(cause.getMessage(), cause);
         require(foundDtos, MatcherUtil.notCollectionEmpty());
         require(dtoType, notNullValue());
-        this.duplicateKeyException = duplicateKeyException;
         this.fondDtos = foundDtos;
         this.dtoType = dtoType;
 
@@ -37,7 +34,6 @@ public class FoundException extends RuntimeException {
     public boolean hasOnlyFound(){
         return fondDtos.size() == 1;
     }
-
 
     public List<FoundDto> getFounds() {
         return fondDtos;

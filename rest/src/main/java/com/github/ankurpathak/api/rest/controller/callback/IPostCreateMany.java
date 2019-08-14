@@ -12,4 +12,5 @@ import java.math.BigInteger;
 @FunctionalInterface
 public interface IPostCreateMany<T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> {
     void doPostCreateMany(AbstractRestController<T, ID, TDto> restController, DomainDtoList<T, ID, TDto> dtoList, BulkWriteResult result);
+
 }

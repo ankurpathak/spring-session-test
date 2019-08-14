@@ -107,8 +107,8 @@ public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, I
 
     @Override
     public BulkWriteResult bulkInsertMany(final Class<T> type, final List<T> domains) {
-        BulkOperations ops = template.bulkOps(BulkOperations.BulkMode.UNORDERED, type);
-        ops.insert(domains);
+        BulkOperations ops = template.bulkOps(BulkOperations.BulkMode.ORDERED, type);
+        ops  = ops.insert(domains);
         return ops.execute();
     }
 

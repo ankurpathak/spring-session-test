@@ -1,13 +1,14 @@
 package com.github.ankurpathak.api.service.impl.util;
 
-import com.github.ankurpathak.api.domain.model.Mail;
+import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.security.dto.DomainContext;
 import com.github.ankurpathak.api.security.dto.DomainContextHolder;
 import com.github.ankurpathak.api.service.IMailService;
 import com.github.ankurpathak.api.service.dto.EmailAttachmentContext;
 import com.github.ankurpathak.api.service.dto.EmailContext;
 import com.github.ankurpathak.api.service.dto.SmtpContext;
-import com.github.ankurpathak.api.service.dto.SmtpCredential;
+import com.github.ankurpathak.api.domain.model.SmtpCredential;
+import com.github.ankurpathak.api.service.impl.EmailService;
 import com.github.ankurpathak.api.util.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ import java.util.Optional;
 import java.util.Properties;
 
 import static org.hamcrest.Matchers.notNullValue;
-import static org.valid4j.Assertive.ensure;
+import static org.valid4j.Assertive.require;
 import static org.valid4j.Assertive.require;
 
 public class EmailUtil {
@@ -36,10 +37,15 @@ public class EmailUtil {
     private static  final Logger log = LoggerFactory.getLogger(EmailUtil.class);
 
 
+    public static SmtpCredential getSmtpCredential(Business business){
+        return Optional.ofNullable(business).map(Business::getSmtpCredential).orElse(SmtpCredential.EMPTY_INSTANCE);
+    }
+
+
     public static JavaMailSender getLocalMailSender(Environment environment, SmtpCredential smtpCredential) {
-        ensure(smtpCredential, notNullValue());
-        ensure(smtpCredential.getEmail(), notNullValue());
-        ensure(smtpCredential.getPassword(), notNullValue());
+        require(smtpCredential, notNullValue());
+        require(smtpCredential.getEmail(), notNullValue());
+        require(smtpCredential.getPassword(), notNullValue());
 
         JavaMailSenderImpl selfJavaMailSender = new JavaMailSenderImpl();
         selfJavaMailSender.setHost(PropertyUtil.getProperty(environment, "spring.mail.host"));
@@ -57,8 +63,8 @@ public class EmailUtil {
 
 
     public static MimeMessage convertEmailDtoToMimeMessage(JavaMailSender sender, EmailContext emailContext) throws Exception {
-        ensure(sender, notNullValue());
-        ensure(emailContext, notNullValue());
+        require(sender, notNullValue());
+        require(emailContext, notNullValue());
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
         //messageHelper.setFrom();
@@ -80,8 +86,8 @@ public class EmailUtil {
 
 
     public static SimpleMailMessage convertEmailDtoToSimpleMessage(JavaMailSender sender, EmailContext emailContext) throws Exception {
-        ensure(sender, notNullValue());
-        ensure(emailContext, notNullValue());
+        require(sender, notNullValue());
+        require(emailContext, notNullValue());
         SimpleMailMessage message = new SimpleMailMessage();
         //messageHelper.setFrom();
         message.setFrom(emailContext.getFrom());

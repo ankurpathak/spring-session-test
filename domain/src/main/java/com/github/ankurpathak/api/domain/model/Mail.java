@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -22,14 +23,14 @@ public class Mail extends BusinessExtendedDomain<String> implements Serializable
     private Set<String> ccs;
     private Set<String> bccs;
     private Set<String> attachmentTds;
-    private String toUserId;
+    private BigInteger toUserId;
     private CustomerId toCustomerId;
 
-    public String getToUserId() {
+    public BigInteger getToUserId() {
         return toUserId;
     }
 
-    public void setToUserId(String toUserId) {
+    public void setToUserId(BigInteger toUserId) {
         this.toUserId = toUserId;
     }
 
@@ -197,7 +198,7 @@ public class Mail extends BusinessExtendedDomain<String> implements Serializable
         return this;
     }
 
-    public Mail toUserId(String userId) {
+    public Mail toUserId(BigInteger userId) {
         this.toUserId = userId;
         return this;
     }
