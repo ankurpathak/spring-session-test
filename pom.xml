@@ -166,13 +166,7 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-test</artifactId>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.hamcrest</groupId>
-                        <artifactId>hamcrest-core</artifactId>
-                    </exclusion>
-                </exclusions>
+                <version>${spring-security.version}</version>
             </dependency>
             <!-- Spring Security Test -->
 
@@ -277,11 +271,6 @@
                 <artifactId>javax.json</artifactId>
                 <version>${javax.json}</version>
             </dependency>
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-test</artifactId>
-                <version>${spring-security.version}</version>
-            </dependency>
             <!--Javax JSON -->
 
             <!--Gson -->
@@ -331,21 +320,11 @@
             </dependency>
             <!-- Reflections -->
 
-            <!-- Embedded MongoDB -->
-            <dependency>
-                <groupId>de.flapdoodle.embed</groupId>
-                <artifactId>de.flapdoodle.embed.mongo</artifactId>
-                <scope>test</scope>
-            </dependency>
-            <!-- Embedded MongoDB -->
-
-
             <!-- TestContainer -->
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${testcontainer.version}</version>
-                <scope>test</scope>
             </dependency>
             <!-- TestContainer -->
 
@@ -358,11 +337,6 @@
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
                 <artifactId>commons</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.ankurpathak.api</groupId>
-                <artifactId>domain</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
             <dependency>

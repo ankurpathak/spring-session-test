@@ -330,10 +330,6 @@
             <artifactId>javax.json</artifactId>
             <version>${javax.json}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-        </dependency>
         <!--Javax JSON -->
 
         <!--Gson -->

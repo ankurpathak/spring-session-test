@@ -98,9 +98,4 @@ public class CustomerController extends AbstractRestController<Customer, Custome
     public ResponseEntity<?> search(@CurrentBusiness Business business, HttpServletResponse response, @RequestParam(Params.Query.RSQL) String rsql, Pageable pageable){
         return search(rsql, pageable, Customer.class, response);
     }
-
-
-
-
-
 }
