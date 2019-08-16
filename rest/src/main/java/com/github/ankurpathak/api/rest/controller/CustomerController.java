@@ -13,6 +13,7 @@ import com.github.ankurpathak.api.service.ICustomerService;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.impl.UserService;
+import com.github.ankurpathak.api.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -29,6 +30,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.groups.Default;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.github.ankurpathak.api.constant.ApiPaths.*;
 
@@ -67,11 +74,16 @@ public class CustomerController extends AbstractRestController<Customer, Custome
     @PostMapping(PATH_CUSTOMER_UPLOAD)
     public ResponseEntity<?> createMany(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Customer, CustomerId, CustomerDto> csvList, BindingResult result){
         return createManyByCsv(csvList, CustomerDto.class, Customer.class, request, CustomerConverters.createOne, log,result,(rest, list) -> {
-            list.getDtos()
-                    .forEach(dto -> {
-                        User user = service.processUser(business, dto);
-                        dto.businessId(business.getId());
-                        dto.userId(user.getId());
+            Map<String, CustomerDto> dtoListMap = list.getDtos().stream().collect(Collectors.toMap(CustomerDto::getPhone, Function.identity()));
+            service.processUsers(business, dtoListMap)
+                    .forEach(user -> {
+                        Optional.ofNullable(user)
+                                .map(User::getPhone)
+                                .map(Contact::getValue)
+                                .ifPresentOrElse(phone -> {
+                                    dtoListMap.get(phone).userId(user.getId());
+                                    dtoListMap.get(phone).businessId(business.getId());
+                                }, () -> LogUtil.logFieldNull(log, User.class.getSimpleName(), "contact.value", String.valueOf(user.getId())));
                     });
         }, (rest, list, count) ->{}, Default.class);
     }

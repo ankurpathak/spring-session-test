@@ -1,5 +1,6 @@
 package com.github.ankurpathak.api.domain.repository.mongo.custom;
 
+import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.mongo.DomainSingleFieldSearchTypedAggregation;
 import com.github.ankurpathak.api.domain.mongo.util.CriteriaUtil;
@@ -15,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractCustomizedDomainRepository<T extends Domain<ID>, ID extends Serializable> implements ICustomizedDomainRepository<T, ID> {
 

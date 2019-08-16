@@ -3,6 +3,7 @@ package com.github.ankurpathak.api.util;
 import com.github.ankurpathak.api.security.dto.DomainContext;
 import com.github.ankurpathak.api.security.util.SecurityUtil;
 import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.validation.FieldError;
 
@@ -21,7 +22,7 @@ public class MessageUtil {
 
 
 
-    public static final String getMessage(MessageSource messageSource, FieldError error){
+    public static final String getMessage(MessageSource messageSource, MessageSourceResolvable error){
         try {
             return messageSource.getMessage(error, getLocale());
         }catch (NoSuchMessageException ex){

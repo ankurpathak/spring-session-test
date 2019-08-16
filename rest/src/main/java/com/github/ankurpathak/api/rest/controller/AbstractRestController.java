@@ -13,6 +13,7 @@ import com.github.ankurpathak.api.event.DomainCreatedEvent;
 import com.github.ankurpathak.api.event.PaginatedResultsRetrievedEvent;
 import com.github.ankurpathak.api.event.util.PagingUtil;
 import com.github.ankurpathak.api.exception.CsvException;
+import com.github.ankurpathak.api.exception.FoundException;
 import com.github.ankurpathak.api.exception.InvalidException;
 import com.github.ankurpathak.api.exception.NotFoundException;
 import com.github.ankurpathak.api.rest.controller.callback.*;
@@ -143,7 +144,8 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
 
     private void catchCreateOne(TDto dto, DuplicateKeyException ex, BindingResult result, HttpServletRequest request) {
-        DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dto.getClass()).ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
+        Optional<FoundException> res = DuplicateKeyExceptionProcessor.processDuplicateKeyException(ex, dto.getClass());
+        res.ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
     }
 
 

@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.List;
 
 @Repository
 public class CustomizedUserRepositoryImpl extends AbstractCustomizedDomainRepository<User, BigInteger> implements CustomizedUserRepository {
@@ -24,5 +26,15 @@ public class CustomizedUserRepositoryImpl extends AbstractCustomizedDomainReposi
     public User persist(final User user) {
         template.insert(user.id(sequenceRepository.next(Sequence.ID_USER_SEQ)));
         return user;
+    }
+
+    @Override
+    public Collection<User> persistAll(Collection<User> users) {
+        BigInteger curr = sequenceRepository.nextMany(Sequence.ID_USER_SEQ, BigInteger.valueOf(users.size()));
+        for(User user: users){
+            user.id(curr);
+            curr = curr.add(BigInteger.ONE);
+        }
+        return template.insertAll(users);
     }
 }

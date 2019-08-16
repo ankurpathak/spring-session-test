@@ -24,20 +24,19 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.List;
 
-@RestControllerAdvice
-public class FoundRestControllerAdvice  extends ResponseEntityExceptionHandler {
+public class FoundExceptionHandler  {
 
-    private static final Logger log = LoggerFactory.getLogger(ValidationRestControllerAdvice.class);
+    private static final Logger log = LoggerFactory.getLogger(FoundExceptionHandler.class);
 
     private final IMessageService messageService;
 
-    public FoundRestControllerAdvice(IMessageService messageService) {
+    public FoundExceptionHandler(IMessageService messageService) {
         this.messageService = messageService;
     }
 
 
-    @ExceptionHandler({FoundException.class})
-    public ResponseEntity<?> handleFoundException(FoundException ex, WebRequest request) {
+    //@ExceptionHandler({FoundException.class})
+    public ResponseEntity<?> handleFoundException(FoundException ex, WebRequest request, RuntimeRestExceptionHandler advice) {
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         LogUtil.logStackTrace(log, ex);
         List<FoundDto> founds = ex.getFounds();
@@ -62,9 +61,7 @@ public class FoundRestControllerAdvice  extends ResponseEntityExceptionHandler {
             validationErrorDto.addError(dto.getProperty(), dto.getId());
         }
 
-
-
-        return handleExceptionInternal(
+        return advice.handleExceptionInternal(
                 ex,
                 ApiResponse.getInstance(
                         code,

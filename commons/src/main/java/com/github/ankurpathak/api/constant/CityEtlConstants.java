@@ -5,7 +5,6 @@ public interface CityEtlConstants {
         String PATH = "city.path";
     }
 
-
     interface File {
     }
 

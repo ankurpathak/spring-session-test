@@ -7,4 +7,6 @@ import java.math.BigInteger;
 
 public interface CustomizedSequenceRepository extends ICustomizedDomainRepository<Sequence, String> {
     BigInteger next(String id);
+
+    BigInteger nextMany(String id, BigInteger size);
 }

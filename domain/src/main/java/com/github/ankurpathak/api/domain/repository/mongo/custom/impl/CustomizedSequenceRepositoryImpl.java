@@ -24,6 +24,11 @@ public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRe
 
     @Override
     public BigInteger next(String id)  {
+        return nextMany(id, BigInteger.ONE);
+    }
+
+    @Override
+    public BigInteger nextMany(String id, BigInteger size)  {
 
         //get sequence id
         Query query = new Query(Criteria.where(Model.Sequence.Field.ID).is(id));
@@ -34,7 +39,7 @@ public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRe
             nextValue = sequence.getCurr();
         }
 
-        nextValue = nextValue.add(BigInteger.ONE);
+        nextValue = nextValue.add(size);
 
         //increase sequence id by 1
         Update update = new Update();
@@ -55,6 +60,5 @@ public class CustomizedSequenceRepositoryImpl extends AbstractCustomizedDomainRe
         }
 
         return seq.getCurr();
-
     }
 }

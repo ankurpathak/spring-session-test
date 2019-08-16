@@ -6,13 +6,12 @@ import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
 import com.github.ankurpathak.api.rest.controller.dto.ValidationErrorDto;
+import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.util.MessageUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,25 +21,24 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-@RestControllerAdvice
-public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandler {
+public class ValidationExceptionHandler {
 
 
 
-    private static final Logger log = LoggerFactory.getLogger(ValidationRestControllerAdvice.class);
+    private static final Logger log = LoggerFactory.getLogger(ValidationExceptionHandler.class);
 
 
-    @Autowired
-    private MessageSource messageSource;
+    private final IMessageService messageService;
+
+    public ValidationExceptionHandler(IMessageService messageService) {
+        this.messageService = messageService;
+    }
 
 
     private ValidationErrorDto processFieldErrors(List<FieldError> fieldErrors) {
@@ -54,7 +52,7 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
 
 
     private String resolveLocalizedFieldErrorMessage(FieldError fieldError) {
-        String localizedErrorMessage = MessageUtil.getMessage(messageSource, fieldError);
+        String localizedErrorMessage = messageService.getMessage(fieldError);
         //If the message was not found, return the most accurate field error code instead.
         //You can remove this check if you prefer to get the default error message.
         if (localizedErrorMessage.equals(fieldError.getDefaultMessage())) {
@@ -77,7 +75,7 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
 
     private String resolveLocalizedObjectErrorMessage(ObjectError objectError) {
         Locale currentLocale = LocaleContextHolder.getLocale();
-        String localizedErrorMessage = messageSource.getMessage(objectError, currentLocale);
+        String localizedErrorMessage = messageService.getMessage(objectError);
 
         //If the message was not found, return the most accurate field error code instead.
         //You can remove this check if you prefer to get the default error message.
@@ -90,29 +88,27 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
     }
 
 
-    @ExceptionHandler({ValidationException.class})
-    public ResponseEntity<Object> handleValidationException(ValidationException ex, WebRequest request) {
+    //@ExceptionHandler({ValidationException.class})
+    public ResponseEntity<Object> handleValidationException(ValidationException ex, WebRequest request, RuntimeRestExceptionHandler advice) {
         log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
-        return handleValidationErrors(ex, request);
+        return handleValidationErrors(ex, request,advice);
     }
 
 
 
-    @Override
-    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request, RuntimeRestExceptionHandler advice) {
         log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
-        return handleValidationErrors(ex, request);
+        return handleValidationErrors(ex, request, advice);
     }
 
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request, RuntimeRestExceptionHandler advice) {
         log.info("message: {} cause: {}", ex.getMessage(), ex.getCause());
-        return handleValidationErrors(ex, request);
+        return handleValidationErrors(ex, request, advice);
     }
 
 
-    private ResponseEntity<Object> handleValidationErrors(Exception ex, WebRequest request) {
+    private ResponseEntity<Object> handleValidationErrors(Exception ex, WebRequest request, RuntimeRestExceptionHandler advice) {
         String[] messages = {};
         ApiCode code = null;
         List<BindingResult> results = new ArrayList<>();
@@ -127,7 +123,7 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
             code = vEx.getCode();
         }
         if(ArrayUtils.isEmpty(messages))
-            messages = ArrayUtils.add(messages, MessageUtil.getMessage(messageSource, ApiMessages.VALIDATION));
+            messages = ArrayUtils.add(messages, messageService.getMessage(ApiMessages.VALIDATION));
         if(code == null)
             code = ApiCode.VALIDATION;
 
@@ -148,7 +144,7 @@ public class ValidationRestControllerAdvice extends ResponseEntityExceptionHandl
             dto.addExtra("hints", mainDto);
 
         }
-        return handleExceptionInternal(ex, dto, new HttpHeaders(), HttpStatus.CONFLICT, request);
+        return advice.handleExceptionInternal(ex, dto, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
 

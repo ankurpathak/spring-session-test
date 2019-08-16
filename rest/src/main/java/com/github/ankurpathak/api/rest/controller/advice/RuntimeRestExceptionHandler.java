@@ -1,10 +1,7 @@
 package com.github.ankurpathak.api.rest.controller.advice;
 
 import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.exception.InvalidException;
-import com.github.ankurpathak.api.exception.NotAllowedException;
-import com.github.ankurpathak.api.exception.NotFoundException;
-import com.github.ankurpathak.api.exception.TooManyException;
+import com.github.ankurpathak.api.exception.*;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
@@ -21,12 +18,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.Nullable;
+import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.util.WebUtils;
 import org.valid4j.errors.ContractViolation;
 import org.valid4j.errors.EnsureViolation;
 import org.valid4j.errors.RequireViolation;
@@ -209,6 +210,42 @@ public class RuntimeRestExceptionHandler extends ResponseEntityExceptionHandler 
                 status,
                 request
         );
+    }
+
+
+    @ExceptionHandler({FoundException.class})
+    public ResponseEntity<?> handleFoundException(FoundException ex, WebRequest request) {
+        FoundExceptionHandler handler = new FoundExceptionHandler(messageService);
+        return handler.handleFoundException(ex, request, this);
+    }
+
+    @ExceptionHandler({CsvException.class})
+    public ResponseEntity<?> handleCsvException(CsvException ex, WebRequest request) {
+        CsvExceptionHandler handler = new CsvExceptionHandler(messageService);
+        return handler.handleCsvException(ex, request, this);
+    }
+
+    @ExceptionHandler({ValidationException.class})
+    public ResponseEntity<Object> handleValidationException(ValidationException ex, WebRequest request){
+        ValidationExceptionHandler handler =  new ValidationExceptionHandler(messageService);
+        return handler.handleValidationException(ex, request, this);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ValidationExceptionHandler handler =  new ValidationExceptionHandler(messageService);
+        return handler.handleBindException(ex, headers, status, request, this);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ValidationExceptionHandler handler =  new ValidationExceptionHandler(messageService);
+        return handler.handleMethodArgumentNotValid(ex, headers, status, request, this);
+    }
+
+    public ResponseEntity<Object> handleExceptionInternal(
+            Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
 }

@@ -1,7 +1,5 @@
 package com.github.ankurpathak.api.constant;
 
-import java.util.List;
-
 public interface Model {
 
 

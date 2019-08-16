@@ -6,12 +6,18 @@ import com.github.ankurpathak.api.domain.model.*;
 import com.github.ankurpathak.api.domain.repository.mongo.IUserRepository;
 import com.github.ankurpathak.api.exception.TooManyException;
 import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
+import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.security.dto.DomainContext;
 import com.github.ankurpathak.api.security.util.SecurityUtil;
 import com.github.ankurpathak.api.service.IUserService;
 import com.github.ankurpathak.api.service.IpService;
+import com.github.ankurpathak.api.util.MatcherUtil;
 import com.github.ankurpathak.api.util.PrimitiveUtils;
 import com.github.ankurpathak.primitive.string.StringValidator;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +29,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -129,8 +139,52 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
 
     @Override
+    public List<User> processUserForCustomers(Business business, Map<String, CustomerDto> customerDtosMap) {
+        require(business, notNullValue());
+        require(business, notNullValue());
+        Query query =  new Query();
+        Criteria criteria = Criteria.where(Model.User.Field.PHONE_VALUE).in(customerDtosMap.keySet());
+        List<User> matchedUsers = findByCriteria(criteria, PageRequest.of(0, customerDtosMap.size()), User.class);
+        Map<String, User> machedUserMap = matchedUsers.stream().collect(toMap(x -> x.getPhone().getValue(), Function.identity()));
+        Set<String> allPhones = customerDtosMap.keySet();
+        Set<String> matchedPhones = machedUserMap.keySet();
+        Set<String> notMatchedPhones = SetUtils.difference(allPhones, matchedPhones);
+        //process new phones
+        List<User> nonMatchedUsers = new ArrayList<>();
+        {
+            for(String notMatchedPhone: notMatchedPhones){
+                nonMatchedUsers.add(
+                        User.getInstance()
+                        .phone(Contact.getInstance(notMatchedPhone))
+                        .addRole(Role.ROLE_ADMIN)
+                        .enabled(false)
+                        .addAddress(Address.getInstance(customerDtosMap.get(notMatchedPhone)).tag(String.format(Address.TAG_ADDED_BY_BUSINESS, business.getId())))
+                        .addTag(String.format(User.TAG_INVITED_BY_BUSINESS, business.getId()))
+                );
+            }
+
+            nonMatchedUsers = IteratorUtils.toList(createAll(nonMatchedUsers).iterator(), notMatchedPhones.size());
+        }
+        {
+           for(String matchedPhone: matchedPhones){
+               User matchedUser = machedUserMap.get(matchedPhone);
+               matchedUser.addAddress(Address.getInstance(customerDtosMap.get(matchedPhone))
+                       .tag(String.format(Address.TAG_ADDED_BY_BUSINESS, business.getId())));
+               matchedUsers = dao.saveAll(matchedUsers);
+           }
+        }
+        return ListUtils.union(matchedUsers, nonMatchedUsers);
+    }
+
+
+    @Override
     public User create(User entity) {
         require(entity, notNullValue());
         return dao.persist(entity);
+    }
+
+    @Override
+    public Iterable<User> createAll(Iterable<User> entities) {
+        return dao.persistAll(IterableUtils.toList(entities));
     }
 }

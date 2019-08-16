@@ -16,8 +16,8 @@ import java.util.List;
 @Valid
 public class DomainDtoList<T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> {
 
-    @NotEmpty(groups = {Default.class})
-    private List<@NotNull(groups = Default.class)  @Valid TDto> dtos;
+    @NotEmpty
+    private List<@NotNull  @Valid TDto> dtos;
 
     @NotNull(groups = {Upload.class})
     @FileType(mimes = {CsvConstant.MIME_TEXT_CSV}, groups = {Upload.class})
