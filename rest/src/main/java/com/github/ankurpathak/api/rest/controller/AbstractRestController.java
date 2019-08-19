@@ -40,6 +40,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -54,6 +55,7 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 public abstract class AbstractRestController<T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> {
 
 
@@ -83,13 +85,14 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
+    @Transactional
     protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter) {
         return createMany(dtoList, type, result, request, converter,
                 (rest, list) -> { }, (rest, list, count) -> { }
         );
     }
 
-
+    @Transactional
     protected ResponseEntity<?> createMany(DomainDtoList<T, ID, TDto> dtoList, Class<T> type, BindingResult result, HttpServletRequest request, IToDomain<T, ID, TDto> converter, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate) {
         try {
             BulkWriteResult res = tryCreateMany(dtoList, type, result, request, converter, preCreate, postCreate);
@@ -120,14 +123,16 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter) {
+    @Transactional
+    public ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter) {
         return createOne(dto, result, request, response, converter, (rest, tDto) -> {
         }, (rest, tDto, t) -> {
         });
     }
 
 
-    protected ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter, IPreCreateOne<T, ID, TDto> preCreate, IPostCreateOne<T, ID, TDto> postCreate) {
+    @Transactional
+    public ResponseEntity<?> createOne(TDto dto, BindingResult result, HttpServletRequest request, HttpServletResponse response, IToDomain<T, ID, TDto> converter, IPreCreateOne<T, ID, TDto> preCreate, IPostCreateOne<T, ID, TDto> postCreate) {
         try {
             T t = tryCreateOne(dto, result, response, converter, preCreate, postCreate);
             return ControllerUtil.processSuccess(messageService, HttpStatus.CREATED, Map.of(Params.ID, t.getId()));
@@ -148,8 +153,8 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         res.ifPresent(e -> ControllerUtil.processValidationForFound(messageService, e));
     }
 
-
-    protected ResponseEntity<?> delete(ID id) {
+    @Transactional
+    public ResponseEntity<?> delete(ID id) {
         Optional<T> domain = getDomainService().findById(id);
         if (domain.isPresent()) {
             getDomainService().delete(domain.get());
@@ -160,7 +165,8 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
-    protected ResponseEntity<?> update(TDto dto, ID id, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request, BindingResult result) {
+    @Transactional
+    public ResponseEntity<?> update(TDto dto, ID id, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request, BindingResult result) {
         return update(dto, id, updater, request, result,
                 (rest, tDto) -> {
                 },
@@ -170,14 +176,15 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
 
     }
 
-
-    protected ResponseEntity<?> update(TDto dto, ID id, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request, BindingResult result, IPreUpdateOne<T, ID, TDto> preUpdate, IPostUpdateOne<T, ID, TDto> postUpdate) {
+    @Transactional
+    public ResponseEntity<?> update(TDto dto, ID id, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request, BindingResult result, IPreUpdateOne<T, ID, TDto> preUpdate, IPostUpdateOne<T, ID, TDto> postUpdate) {
         Optional<T> domain = getDomainService().findById(id);
         return update(dto, domain.orElse(null), id, updater, request, preUpdate, postUpdate, result);
     }
 
 
-    protected ResponseEntity<?> update(TDto dto, T t, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request, BindingResult result) {
+    @Transactional
+    public ResponseEntity<?> update(TDto dto, T t, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request, BindingResult result) {
         return update(dto, t, updater, request, result,
                 (rest, tDto) -> {
                 },
@@ -186,6 +193,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
     }
 
 
+    @Transactional
     protected ResponseEntity<?> update(TDto dto, T t, IUpdateDomain<T, ID, TDto> updater, HttpServletRequest request, BindingResult result, IPreUpdateOne<T, ID, TDto> preUpdate, IPostUpdateOne<T, ID, TDto> postUpdate) {
         return update(dto, t, null, updater, request, preUpdate, postUpdate, result);
     }
@@ -330,6 +338,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return dtoList.dtos(dtos);
     }
 
+    @Transactional
     public ResponseEntity<?> createManyByCsv(DomainDtoList<T, ID, TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T, ID, TDto> converter, Logger log, BindingResult result, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate, Class<?>... hints) {
         ControllerUtil.processValidation(result, messageService);
         DomainDtoList<T, ID, TDto> list = csvToDomainDtoList(csvList.getCsv(), dtoType, log);
@@ -338,9 +347,8 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return createMany(list, type, exception, request, converter, preCreate, postCreate);
     }
 
-    @SafeVarargs
     private void processValidation(Object object, BindingResult result, Class<?>... hints) {
-        validator.validate(object, result, hints);
+        validator.validate(object, result, (Object[])hints);
     }
 
 }

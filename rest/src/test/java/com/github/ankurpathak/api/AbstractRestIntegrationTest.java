@@ -8,6 +8,7 @@ import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.ISchemaService;
 import com.github.ankurpathak.api.testcontainer.mongo.MongoDbContainer;
 import com.github.ankurpathak.api.testcontainer.redis.RedisContainer;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
@@ -20,16 +21,20 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.BindMode;
 
 public class AbstractRestIntegrationTest<SELF extends AbstractRestIntegrationTest<SELF>> {
 
     //@RegisterExtension
     @ClassRule
-    public static MongoDbContainer mongo = new MongoDbContainer();
+    public static MongoDbContainer mongo = new MongoDbContainer()
+        .withCommand("--replSet rs");
 
     //@RegisterExtension
     @ClassRule
     public static RedisContainer redis = new RedisContainer();
+           // .withClasspathResourceMapping("redis.conf", "/usr/local/etc/redis/redis.conf", BindMode.READ_ONLY)
+           // .withCommand("redis-server","/usr/local/etc/redis/redis.conf");;
 
 
     //@RegisterExtension
@@ -50,6 +55,13 @@ public class AbstractRestIntegrationTest<SELF extends AbstractRestIntegrationTes
     //@RegisterExtension
     @Rule
     public DomainContextRule domainContextRule = new DomainContextRule("103.51.209.45");
+
+    @BeforeClass
+    public static void setUpAll () throws Exception{
+        mongo.execInContainer("/bin/bash", "-c", "mongo --eval 'printjson(rs.initiate())' --quiet");
+        mongo.execInContainer("/bin/bash", "-c",
+                "until mongo --eval \"printjson(rs.isMaster())\" | grep ismaster | grep true > /dev/null 2>&1;do sleep 1;done");
+    }
 
 
     @Autowired

@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -27,6 +28,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.valid4j.Assertive.require;
 
 @Service
+@Transactional(readOnly = true)
 public class AccountService implements IAccountService {
 
     private static final Logger log = LoggerFactory.getLogger(AccountService.class);
@@ -34,18 +36,17 @@ public class AccountService implements IAccountService {
 
     private final IUserService userService;
     private final ITokenService tokenService;
-    private final IEmailService emailService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    protected AccountService(IUserService userService, ITokenService tokenService, IEmailService emailService, ApplicationEventPublisher applicationEventPublisher) {
+    protected AccountService(IUserService userService, ITokenService tokenService, ApplicationEventPublisher applicationEventPublisher) {
         this.userService = userService;
         this.tokenService = tokenService;
-        this.emailService = emailService;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
 
     @Override
+    @Transactional
     public void accountEnableEmail(@Nonnull String email) {
         require(email, notNullValue());
         userService.byEmail(email)
@@ -59,6 +60,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
+    @Transactional
     public Token.TokenStatus accountEnable(@Nonnull String tokenOtp) {
         require(tokenOtp, not(emptyString()));
         return tokenService.checkAccountTokenStatus(tokenOtp);

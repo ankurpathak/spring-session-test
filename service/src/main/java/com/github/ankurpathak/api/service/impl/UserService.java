@@ -26,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -41,6 +42,7 @@ import static org.valid4j.Assertive.require;
 
 
 @Service
+@Transactional(readOnly = true)
 public class UserService extends AbstractDomainService<User, BigInteger> implements IUserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
@@ -113,6 +115,7 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
     }
 
     @Override
+    @Transactional
     public User processUserForCustomer(Business business, CustomerDto customerDto) {
         Query query =  new Query();
         Criteria criteria = Criteria.where(Model.User.Field.PHONE_VALUE).is(customerDto.getPhone());
@@ -139,6 +142,7 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
 
     @Override
+    @Transactional
     public List<User> processUserForCustomers(Business business, Map<String, CustomerDto> customerDtosMap) {
         require(business, notNullValue());
         require(business, notNullValue());
@@ -178,12 +182,14 @@ public class UserService extends AbstractDomainService<User, BigInteger> impleme
 
 
     @Override
+    @Transactional
     public User create(User entity) {
         require(entity, notNullValue());
         return dao.persist(entity);
     }
 
     @Override
+    @Transactional
     public Iterable<User> createAll(Iterable<User> entities) {
         return dao.persistAll(IterableUtils.toList(entities));
     }

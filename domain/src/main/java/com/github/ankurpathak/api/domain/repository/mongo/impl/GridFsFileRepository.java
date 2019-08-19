@@ -38,6 +38,7 @@ public class GridFsFileRepository implements IFileRepository {
 
 
     @Override
+    @SuppressWarnings("deprecation")
     public Optional<FileContext> findById(String id){
         Optional<GridFSFile> gridFile = Optional.ofNullable(gridFsTemplate.findOne(new Query().addCriteria(Criteria.where(Model.Domain.Field.ID).is(id))));
         if(gridFile.isPresent()){

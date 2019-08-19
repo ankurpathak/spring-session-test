@@ -9,10 +9,10 @@ import com.github.ankurpathak.api.domain.model.Token;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.updater.UserUpdaters;
 import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
+import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.IPasswordService;
-import com.github.ankurpathak.api.service.IUserService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,20 +29,20 @@ import static com.github.ankurpathak.api.constant.ApiPaths.*;
 @ApiController
 public class PasswordController extends AbstractRestController<User, BigInteger, UserDto> {
 
-    private final IUserService userService;
+    private final CustomUserDetailsService userDetailsService;
     private final IPasswordService service;
     private final PasswordEncoder encoder;
 
-    public PasswordController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IPasswordService service, IUserService userService, PasswordEncoder encoder) {
+    public PasswordController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, CustomUserDetailsService userDetailsService, IPasswordService service, PasswordEncoder encoder) {
         super(applicationEventPublisher, messageService, objectMapper, validator);
+        this.userDetailsService = userDetailsService;
         this.service = service;
-        this.userService = userService;
         this.encoder = encoder;
     }
 
     @Override
     public IDomainService<User, BigInteger> getDomainService() {
-        return userService;
+        return userDetailsService.getUserService();
     }
 
 

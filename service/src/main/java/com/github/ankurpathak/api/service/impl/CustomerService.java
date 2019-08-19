@@ -9,11 +9,13 @@ import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.ICustomerService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional(readOnly = true)
 public class CustomerService extends AbstractDomainService<Customer, CustomerId> implements ICustomerService {
 
     private final ICustomerRepository dao;
@@ -27,11 +29,13 @@ public class CustomerService extends AbstractDomainService<Customer, CustomerId>
 
 
     @Override
+    @Transactional
     public User processUser(Business business, CustomerDto dto){
         return userDetailsService.getUserService().processUserForCustomer(business, dto);
     }
 
     @Override
+    @Transactional
     public List<User> processUsers(Business business, Map<String, CustomerDto> dtos) {
         return userDetailsService.getUserService().processUserForCustomers(business, dtos);
     }

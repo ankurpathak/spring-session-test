@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.time.Instant;
@@ -28,6 +29,7 @@ import java.util.Set;
 import static org.valid4j.Assertive.require;
 
 @Service
+@Transactional(readOnly = true)
 public class TokenService extends AbstractDomainService<Token, String> implements ITokenService {
 
     private static final Logger log = LoggerFactory.getLogger(TokenService.class);
@@ -43,6 +45,7 @@ public class TokenService extends AbstractDomainService<Token, String> implement
     }
 
     @Override
+    @Transactional
     public Optional<Token> generateAccountToken(String email) {
         require(email, MatcherUtil.notStringEmpty());
         int i = 1;
@@ -87,6 +90,7 @@ public class TokenService extends AbstractDomainService<Token, String> implement
     }
 
     @Override
+    @Transactional
     public Optional<Token> generateForgetPasswordToken(String email) {
         require(email, MatcherUtil.notStringEmpty());
         int i = 1;
@@ -117,6 +121,7 @@ public class TokenService extends AbstractDomainService<Token, String> implement
     }
 
     @Override
+    @Transactional
     public Optional<Token> generatePhoneToken(String phone) {
         require(phone, MatcherUtil.notStringEmpty());
         Token token = Token.getInstance()
@@ -126,6 +131,7 @@ public class TokenService extends AbstractDomainService<Token, String> implement
     }
 
     @Override
+    @Transactional
     public Token.TokenStatus checkAccountTokenStatus(String tokenOtp) {
         require(tokenOtp, MatcherUtil.notStringEmpty());
         Optional<Token> token = findAccountToken(tokenOtp);
@@ -151,6 +157,7 @@ public class TokenService extends AbstractDomainService<Token, String> implement
     }
 
     @Override
+    @Transactional
     public Token.TokenStatus checkForgetPasswordTokenStatus(String tokenOtp) {
         require(tokenOtp, MatcherUtil.notStringEmpty());
         Optional<Token> token = findForgetPasswordToken(tokenOtp);
@@ -211,11 +218,13 @@ public class TokenService extends AbstractDomainService<Token, String> implement
     }
 
     @Override
+    @Transactional
     public void deleteForgetPasswordToken(String key){
         deleteById(String.format("users:forget-password:%s", key));
     }
 
     @Override
+    @Transactional
     public void deleteAccountToken(String key){
         deleteById(String.format("users:account:%s", key));
     }
@@ -232,12 +241,4 @@ public class TokenService extends AbstractDomainService<Token, String> implement
     public Optional<Token> findPhoneToken(String phone){
         return findById(String.format("users:phone:%s", phone));
     }
-
-
-
-
-
-
-
-
 }

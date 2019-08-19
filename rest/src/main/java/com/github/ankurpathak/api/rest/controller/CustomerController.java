@@ -12,7 +12,6 @@ import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.service.ICustomerService;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
-import com.github.ankurpathak.api.service.impl.UserService;
 import com.github.ankurpathak.api.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.groups.Default;
-
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;

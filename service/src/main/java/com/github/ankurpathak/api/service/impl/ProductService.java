@@ -4,8 +4,10 @@ import com.github.ankurpathak.api.domain.model.Product;
 import com.github.ankurpathak.api.domain.repository.mongo.IProductRepository;
 import com.github.ankurpathak.api.service.IProductService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService extends AbstractDomainService<Product, String> implements IProductService {
 
     private final IProductRepository dao;
@@ -14,6 +16,5 @@ public class ProductService extends AbstractDomainService<Product, String> imple
         super(dao);
         this.dao = dao;
     }
-
 
 }

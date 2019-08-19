@@ -136,6 +136,8 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
     private Map<String, Resource> setUpJsons() {
         Map<String, Resource> jsons = new HashMap<>();
         for(Class<?> mongoCollection : getCollections()){
+            if(!getTemplate().collectionExists(mongoCollection))
+                getTemplate().createCollection(mongoCollection);
             Document document = AnnotationUtils.findAnnotation(mongoCollection, Document.class);
             if(document != null){
                 Resource file = new ClassPathResource(String.format("%s.json", document.collection()), test.getClass());

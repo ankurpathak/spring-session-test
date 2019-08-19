@@ -9,6 +9,7 @@ import com.mongodb.bulk.BulkWriteResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.transaction.annotation.Transactional;
 import org.valid4j.Assertive;
 
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import static org.hamcrest.Matchers.*;
 import static org.valid4j.Assertive.require;
 
+@Transactional(readOnly = true)
 public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Serializable> implements IDomainService<T, ID> {
 
     private final ExtendedMongoRepository<T, ID> dao;
@@ -77,30 +79,35 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
 
 
     @Override
+    @Transactional
     public T create(T entity) {
         require(entity, notNullValue());
         return dao.insert(entity);
     }
 
     @Override
+    @Transactional
     public T update(T entity) {
         require(entity, notNullValue());
         return dao.save(entity);
     }
 
     @Override
+    @Transactional
     public Iterable<T> createAll(Iterable<T> entities) {
         Assertive.require(entities, MatcherUtil.notIterableEmpty());
         return dao.insert(entities);
     }
 
     @Override
+    @Transactional
     public void delete(final T entity) {
         require(entity, notNullValue());
         dao.delete(entity);
     }
 
     @Override
+    @Transactional
     public void deleteById(ID id) {
         require(id, notNullValue());
         dao.deleteById(id);
@@ -136,17 +143,20 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
     }
 
     @Override
+    @Transactional
     public void deleteAll() {
         dao.deleteAll();
     }
 
     @Override
+    @Transactional
     public void deleteAll(Iterable<T> domains) {
         require(domains, MatcherUtil.notIterableEmpty());
         dao.deleteAll(domains);
     }
 
     @Override
+    @Transactional
     public BulkWriteResult bulkInsertMany(Class<T> type, List<T> domains) {
         require(type, notNullValue());
         require(domains, MatcherUtil.notCollectionEmpty());

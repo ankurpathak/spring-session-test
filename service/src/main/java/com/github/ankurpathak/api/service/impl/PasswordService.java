@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ import static org.hamcrest.core.IsNull.notNullValue;
 import static org.valid4j.Assertive.require;
 
 @Service
+@Transactional(readOnly = true)
 public class PasswordService  implements IPasswordService {
 
     private static final Logger log = LoggerFactory.getLogger(PasswordService.class);
@@ -44,6 +46,7 @@ public class PasswordService  implements IPasswordService {
 
 
     @Override
+    @Transactional
     public Token.TokenStatus forgetPasswordEnable(String tokenOtp) {
         require(tokenOtp, not(emptyString()));
         return tokenService.checkForgetPasswordTokenStatus(tokenOtp);
@@ -69,6 +72,7 @@ public class PasswordService  implements IPasswordService {
 
 
     @Override
+    @Transactional
     public void forgotPasswordEmail(String email, boolean async) {
         customUserDetailsService.getUserService().byEmail(email).ifPresentOrElse(user -> {
             tokenService.generateForgetPasswordToken(email)
