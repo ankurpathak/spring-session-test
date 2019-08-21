@@ -22,20 +22,9 @@ public class SpringSessionTestApplication {
     }
 }
 
-//@Component
+@Component
 class TestCmd implements CommandLineRunner {
-    private final IFileRepository fileRepository;
-
-    TestCmd(IFileRepository fileRepository) {
-        this.fileRepository = fileRepository;
-    }
-
-
     @Override
     public void run(String... args) throws Exception {
-        ClassPathResource resource = new ClassPathResource("application.properties");
-        String id = fileRepository.store(resource.getInputStream(), resource.getFilename(), "text/plain", Collections.singletonMap("hello", "hello"));
-        Optional<FileContext> context = fileRepository.findById(id);
-        System.out.println();
     }
 }

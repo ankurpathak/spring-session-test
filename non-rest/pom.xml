@@ -86,9 +86,15 @@
         <dependency>
             <groupId>org.springframework.batch</groupId>
             <artifactId>spring-batch-mongodb</artifactId>
-            <version>1.1-SNAPSHOT</version>
         </dependency>
         <!--/ Spring Batch -->
+        <!-- Spring AMQP -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <!--/ Spring AMQP -->
+
 
     </dependencies>
 

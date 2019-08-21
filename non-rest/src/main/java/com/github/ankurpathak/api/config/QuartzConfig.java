@@ -27,6 +27,4 @@ public class QuartzConfig  {
         return schedulerFactoryBean;
     }
 
-
-
 }

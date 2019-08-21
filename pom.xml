@@ -45,7 +45,7 @@
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
                 <artifactId>bom</artifactId>
-                <version>${amazon.sdk.version}</version>
+                <version>${amazon-sdk.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -435,6 +435,13 @@
                 <version>${jackson.version}</version>
             </dependency>
             <!-- Jackson CSV -->
+            <!-- Spring Batch MongoDB -->
+            <dependency>
+                <groupId>org.springframework.batch</groupId>
+                <artifactId>spring-batch-mongodb</artifactId>
+                <version>${spring-batch-mongodb.version}</version>
+            </dependency>
+            <!--/ Spring Batch MongoDB -->
 
         </dependencies>
     </dependencyManagement>
@@ -485,7 +492,8 @@
         <opencsv.version>4.6</opencsv.version>
         <commons-collection.version>4.4</commons-collection.version>
         <maven.remote.resource.plugin>1.6.0</maven.remote.resource.plugin>
-        <amazon.sdk.version>2.7.17</amazon.sdk.version>
+        <amazon-sdk.version>2.7.17</amazon-sdk.version>
+        <spring-batch-mongodb.version>1.1-SNAPSHOT</spring-batch-mongodb.version>
     </properties>
 
     <repositories>
