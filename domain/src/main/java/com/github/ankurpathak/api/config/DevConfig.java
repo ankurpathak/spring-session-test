@@ -6,24 +6,15 @@ import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.WriteConcern;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 @Configuration
-@Dev
-@EnableConfigurationProperties({MongoProperties.class})
+@EnableConfigurationProperties({MongoProperties.class, RedisProperties.class})
 public class DevConfig {
-
-    @Autowired
-    private MongoProperties properties;
-
-    @Bean
-    public MongoClient mongoClient(){
-        MongoClientOptions.Builder mongoClientOptionsBuilder = MongoClientOptions.builder()
-                .writeConcern(WriteConcern.ACKNOWLEDGED)
-                .socketKeepAlive(true);
-        return new MongoClient(new MongoClientURI(properties.getUri(), mongoClientOptionsBuilder));
-    }
 }

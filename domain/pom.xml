@@ -28,20 +28,20 @@
             <scope>provided</scope>
         </dependency>
         <!--Modules -->
-        <!--Spring Data Commons -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!--Spring Data Commons -->
         <!-- Spring Boot Data MongoDB -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- Spring Boot Data MongoDB -->
+        <!--/ Spring Boot Data MongoDB -->
+        <!-- Spring Boot Data Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--/ Spring Boot Data Redis -->
         <!-- Apache Commons -->
         <dependency>
             <groupId>org.apache.commons</groupId>

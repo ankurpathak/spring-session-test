@@ -135,9 +135,8 @@
         <!--<dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
-        </dependency> -->
+        </dependency>-->
         <!-- Redis Reactive Client -->
-
 
         <!-- Password validation -->
         <dependency>
