@@ -332,37 +332,45 @@
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
                 <artifactId>rest</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
                 <artifactId>commons</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
                 <artifactId>domain</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
                 <artifactId>etl</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
                 <artifactId>resource</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
                 <artifactId>etl-cmd</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.ankurpathak.api</groupId>
                 <artifactId>service</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ankurpathak.api</groupId>
+                <artifactId>domain</artifactId>
+                <version>${project.version}</version>
+                <classifier>tests</classifier>
+                <type>test-jar</type>
+                <scope>test</scope>
             </dependency>
             <!--Modules -->
 
