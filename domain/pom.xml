@@ -148,6 +148,25 @@
             <scope>provided</scope>
         </dependency>
         <!--AWS -->
+        <!-- TestContainer -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- TestContainer -->
+        <!-- Junit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Junit 5 -->
 
     </dependencies>
 

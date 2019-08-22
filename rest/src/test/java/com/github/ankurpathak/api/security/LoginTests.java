@@ -2,6 +2,9 @@ package com.github.ankurpathak.api.security;
 
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.SpringSessionTestApplication;
+import com.github.ankurpathak.api.config.MongoConfig;
+import com.github.ankurpathak.api.config.RedisConfig;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.model.VUserBusiness;
@@ -16,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -40,7 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@ContextConfiguration(initializers = {LoginTests.Initializer.class})
+@ContextConfiguration(classes = {MongoConfig.class, RedisConfig.class, SpringSessionTestApplication.class})
+@ActiveProfiles("test")
 public class LoginTests extends AbstractRestIntegrationTest<LoginTests> {
     @Rule
     public final OutputCapture outputCapture = new OutputCapture();

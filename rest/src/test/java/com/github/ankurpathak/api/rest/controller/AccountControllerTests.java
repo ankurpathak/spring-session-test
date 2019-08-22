@@ -1,6 +1,9 @@
 package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.SpringSessionTestApplication;
+import com.github.ankurpathak.api.config.MongoConfig;
+import com.github.ankurpathak.api.config.RedisConfig;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;
@@ -36,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@ContextConfiguration(initializers = {AccountControllerTests.Initializer.class})
+@ContextConfiguration(classes = {MongoConfig.class, RedisConfig.class, SpringSessionTestApplication.class})
 @ActiveProfiles("test")
 public class AccountControllerTests extends AbstractRestIntegrationTest<AccountControllerTests> {
 

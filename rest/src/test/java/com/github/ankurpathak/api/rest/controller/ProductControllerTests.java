@@ -1,6 +1,9 @@
 package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.SpringSessionTestApplication;
+import com.github.ankurpathak.api.config.MongoConfig;
+import com.github.ankurpathak.api.config.RedisConfig;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.Product;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
@@ -17,6 +20,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.validation.BindException;
@@ -39,7 +43,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@ContextConfiguration(initializers = {ProductControllerTests.Initializer.class})
+@ContextConfiguration(classes = {MongoConfig.class, RedisConfig.class, SpringSessionTestApplication.class})
+@ActiveProfiles("test")
 public class ProductControllerTests extends AbstractRestIntegrationTest<ProductControllerTests> {
 
 

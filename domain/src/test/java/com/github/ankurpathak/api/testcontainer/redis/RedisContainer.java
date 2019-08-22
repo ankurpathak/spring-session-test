@@ -1,4 +1,4 @@
-package com.github.ankurpathak.api.testcontainer.mongo;
+package com.github.ankurpathak.api.testcontainer.redis;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.AfterAllCallback;
@@ -9,7 +9,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.testcontainers.containers.GenericContainer;
 
-public class MongoDbContainer extends GenericContainer<MongoDbContainer> implements BeforeAllCallback, AfterAllCallback, TestRule {
+public class RedisContainer extends GenericContainer<RedisContainer> implements BeforeAllCallback, AfterAllCallback, TestRule {
 
     /**
      * This is the internal port on which MongoDB is running inside the container.
@@ -18,35 +18,39 @@ public class MongoDbContainer extends GenericContainer<MongoDbContainer> impleme
      * instead of the default random port. This can be done using methods like
      * {@link #setPortBindings(java.util.List)}.
      */
-    public static final int MONGODB_PORT = 27017;
-    public static final String DEFAULT_IMAGE_AND_TAG = "mongo:4.1.13-bionic";
+    public static final int REDIS_PORT = 6379;
+    public static final String DEFAULT_IMAGE_AND_TAG = "redis:5.0.5";
 
     /**
-     * Creates a new {@link MongoDbContainer} with the {@value DEFAULT_IMAGE_AND_TAG} image.
+     * Creates a new {@link RedisContainer} with the {@value DEFAULT_IMAGE_AND_TAG} image.
      */
-    public MongoDbContainer() {
+    public RedisContainer() {
         this(DEFAULT_IMAGE_AND_TAG);
     }
 
     /**
-     * Creates a new {@link MongoDbContainer} with the given {@code 'image'}.
+     * Creates a new {@link RedisContainer} with the given {@code 'image'}.
      *
      * @param image the image (e.g. {@value DEFAULT_IMAGE_AND_TAG}) to use
      */
-    public MongoDbContainer(@NotNull String image) {
+    public RedisContainer(@NotNull String image) {
         super(image);
-        addExposedPort(MONGODB_PORT);
+        addExposedPort(REDIS_PORT);
+        //withClasspathResourceMapping("redis.conf",
+          //      "/usr/local/etc/redis/redis.conf",
+        //        BindMode.READ_ONLY);
+       // withCommand("redis-server  /usr/local/etc/redis/redis.conf");
     }
 
     /**
-     * Returns the actual public port of the internal MongoDB port ({@value MONGODB_PORT}).
+     * Returns the actual public port of the internal MongoDB port ({@value REDIS_PORT}).
      *
      * @return the public port of this container
      * @see #getMappedPort(int)
      */
     @NotNull
     public Integer getPort() {
-        return getMappedPort(MONGODB_PORT);
+        return getMappedPort(REDIS_PORT);
     }
 
 
@@ -72,11 +76,10 @@ public class MongoDbContainer extends GenericContainer<MongoDbContainer> impleme
                 try {
                     statement.evaluate();
                 }finally {
-                  // close();
+                  close();
                 }
             }
         };
     }
-
 
 }
