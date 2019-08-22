@@ -2,18 +2,14 @@ package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
 import com.github.ankurpathak.api.SpringSessionTestApplication;
-import com.github.ankurpathak.api.config.MongoConfig;
-import com.github.ankurpathak.api.config.RedisConfig;
 import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.domain.model.Product;
-import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
-import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
+import com.github.ankurpathak.api.config.test.MongoConfig;
+import com.github.ankurpathak.api.config.test.RedisConfig;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -23,12 +19,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.validation.BindException;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
-import javax.xml.validation.Validator;
-import java.math.BigDecimal;
-import java.util.List;
 
 import static com.github.ankurpathak.api.constant.ApiPaths.*;
 import static org.hamcrest.Matchers.*;

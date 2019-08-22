@@ -3,10 +3,9 @@ package com.github.ankurpathak.api.security;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
 import com.github.ankurpathak.api.SpringSessionTestApplication;
-import com.github.ankurpathak.api.config.MongoConfig;
-import com.github.ankurpathak.api.config.RedisConfig;
+import com.github.ankurpathak.api.config.test.MongoConfig;
+import com.github.ankurpathak.api.config.test.RedisConfig;
 import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.model.VUserBusiness;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.security.dto.LoginRequestDto;

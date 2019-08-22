@@ -3,8 +3,8 @@ package com.github.ankurpathak.api.security;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
 import com.github.ankurpathak.api.SpringSessionTestApplication;
-import com.github.ankurpathak.api.config.MongoConfig;
-import com.github.ankurpathak.api.config.RedisConfig;
+import com.github.ankurpathak.api.config.test.MongoConfig;
+import com.github.ankurpathak.api.config.test.RedisConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

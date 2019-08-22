@@ -13,7 +13,6 @@ import com.github.ankurpathak.api.domain.updater.BusinessUpdaters;
 import com.github.ankurpathak.api.event.BusinessAddedEvent;
 import com.github.ankurpathak.api.event.EmailTokenEvent;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
-import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controllor.dto.BusinessDto;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IBusinessService;

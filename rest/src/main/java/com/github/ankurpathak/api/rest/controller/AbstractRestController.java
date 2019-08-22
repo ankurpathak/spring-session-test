@@ -18,7 +18,6 @@ import com.github.ankurpathak.api.exception.InvalidException;
 import com.github.ankurpathak.api.exception.NotFoundException;
 import com.github.ankurpathak.api.rest.controller.callback.*;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
-import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controller.dto.PageDto;
 import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;

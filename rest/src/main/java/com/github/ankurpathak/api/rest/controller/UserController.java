@@ -1,7 +1,6 @@
 package com.github.ankurpathak.api.rest.controller;
 
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
@@ -11,20 +10,20 @@ import com.github.ankurpathak.api.constant.ApiPaths;
 import com.github.ankurpathak.api.domain.converter.UserConverters;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.updater.UserUpdaters;
-import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
-import com.github.ankurpathak.api.rest.controller.dto.View;
 import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.rest.controllor.dto.converter.UserDtoConverters;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IMessageService;
-import com.github.ankurpathak.api.service.IUserService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,4 +1,4 @@
-package com.github.ankurpathak.api.config;
+package com.github.ankurpathak.api.config.test;
 
 import com.github.ankurpathak.api.annotation.Test;
 import com.github.ankurpathak.api.testcontainer.redis.RedisContainer;
@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
 @Configuration
 @Test
@@ -23,10 +23,9 @@ public class RedisConfig {
         return redis;
     }
 
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory(){
-        RedisContainer redis = redis();
-        JedisConnectionFactory jedis = new JedisConnectionFactory();
+    @Bean(destroyMethod = "destroy")
+    public RedisConnectionFactory redisConnectionFactory(RedisContainer redis){
+        LettuceConnectionFactory jedis = new LettuceConnectionFactory();
         jedis.setHostName(redis.getContainerIpAddress());
         jedis.setPort(redis.getPort());
         return jedis;

@@ -125,17 +125,17 @@
 
 
         <!-- Redis Client -->
-         <dependency>
+        <!--<dependency>
              <groupId>redis.clients</groupId>
              <artifactId>jedis</artifactId>
-         </dependency>
-        <!-- Redis Client -->
+         </dependency>-->
+        <!--/ Redis Client -->
 
         <!-- Redis Reactive Client -->
-        <!--<dependency>
+        <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
-        </dependency>-->
+        </dependency>
         <!-- Redis Reactive Client -->
 
         <!-- Password validation -->
@@ -143,7 +143,7 @@
             <groupId>org.passay</groupId>
             <artifactId>passay</artifactId>
         </dependency>
-        <!-- Password validation -->
+        <!--/ Password validation -->
 
 
         <!-- Redis Reactive Client -->
@@ -409,6 +409,14 @@
             <groupId>com.github.ankurpathak.api</groupId>
             <artifactId>service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ankurpathak.api</groupId>
+            <artifactId>domain</artifactId>
+            <version>${project.version}</version>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
         <!--Modules -->
         <!-- Reactor Core -->
         <dependency>
@@ -470,8 +478,6 @@
             <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
         <!--/ Spring AMQP -->
-
-
 
     </dependencies>
 

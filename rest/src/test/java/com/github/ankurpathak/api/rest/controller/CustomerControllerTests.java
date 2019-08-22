@@ -2,20 +2,12 @@ package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
 import com.github.ankurpathak.api.SpringSessionTestApplication;
-import com.github.ankurpathak.api.config.MongoConfig;
-import com.github.ankurpathak.api.config.RedisConfig;
-import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.domain.repository.mongo.ISchemaRepository;
+import com.github.ankurpathak.api.config.test.MongoConfig;
+import com.github.ankurpathak.api.config.test.RedisConfig;
 import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
-import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
-import com.github.ankurpathak.api.service.ISchemaService;
 import com.github.ankurpathak.api.util.MatcherUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
@@ -25,9 +17,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
-import java.io.IOException;
 
 import static com.github.ankurpathak.api.constant.ApiPaths.*;
 import static org.hamcrest.Matchers.equalTo;

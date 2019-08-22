@@ -11,6 +11,10 @@ public class LogUtil {
         log.error(MESSAGE_LOG_FIELD_NULL, entity, field, id);
     }
 
+    public static void logValue(Logger log, String property, String value){
+        log.error(MESSAGE_LOG_VALUE, property, value);
+    }
+
     public static void logFieldEmpty(Logger log, String entity, String field, String id){
         log.error(MESSAGE_LOG_FIELD_EMPTY, entity, field, id);
     }
@@ -34,8 +38,9 @@ public class LogUtil {
     public static String MESSAGE_LOG_FIELD_EMPTY = "{}.{} is empty for id {}";
 
 
-public static String MESSAGE_LOG_NULL = "{}.{} is null";
+    public static String MESSAGE_LOG_NULL = "{}.{} is null";
     public static String MESSAGE_LOG_EMPTY = "{}.{} is empty";
     public static String MESSAGE_EXCEPTION = "Exception: {}";
+    public static String MESSAGE_LOG_VALUE = "{} is {}";
 
 }

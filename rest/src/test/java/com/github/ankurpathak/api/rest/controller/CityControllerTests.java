@@ -1,14 +1,13 @@
 package com.github.ankurpathak.api.rest.controller;
 
-
 import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.service.IBankEtlService;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,15 +24,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @ContextConfiguration
+@ActiveProfiles("dev")
 public class CityControllerTests {
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private IBankEtlService bankIfscEtlService;
-
-
-
 
     @Test
     public void testStates() throws Exception {
@@ -112,12 +106,5 @@ public class CityControllerTests {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
-
-
-
-
-
-
 }
 
