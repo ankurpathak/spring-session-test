@@ -8,14 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-public class TextService extends AbstractDomainService<Text, String> implements ITextService {
+public class TaskService extends AbstractDomainService<Text, String> implements ITextService {
 
     private final ITextRepository dao;
 
-    public TextService(ITextRepository dao) {
+    public TaskService(ITextRepository dao) {
         super(dao);
         this.dao = dao;
     }
-
-
 }

@@ -1,7 +1,8 @@
 package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.annotation.ApiController;
-import com.github.ankurpathak.api.config.ControllerUtil;
+import com.github.ankurpathak.api.service.IRestControllerService;
+import com.github.ankurpathak.api.service.impl.util.ControllerUtil;
 import com.github.ankurpathak.api.constant.ApiPaths;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.service.IBankService;
@@ -19,10 +20,12 @@ public class BankController {
 
     private final IBankService service;
     private final IMessageService messageService;
+    private final IRestControllerService restControllerService;
 
-    public BankController(IBankService service, IMessageService messageService) {
+    public BankController(IBankService service, IMessageService messageService, IRestControllerService restControllerService) {
         this.service = service;
         this.messageService = messageService;
+        this.restControllerService = restControllerService;
     }
 
 
@@ -34,7 +37,7 @@ public class BankController {
 
     @GetMapping(ApiPaths.PATH_BANK_IFSC)
     public ResponseEntity<?> getBank(@PathVariable(Params.Path.IFSC) String ifsc){
-        return ControllerUtil.processOptional(service.findBranch(ifsc), null, "Bank", ifsc, messageService);
+        return restControllerService.getRestControllerResponseService().processObject(service.findBranch(ifsc).orElse(null), null, "Bank", ifsc);
     }
 
     @GetMapping(ApiPaths.PATH_BANK_STATE)

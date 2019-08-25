@@ -1,7 +1,6 @@
-package com.github.ankurpathak.api.event.util;
+package com.github.ankurpathak.api.service.impl.util;
 
 import com.github.ankurpathak.api.Strings;
-import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.exception.NotFoundException;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;

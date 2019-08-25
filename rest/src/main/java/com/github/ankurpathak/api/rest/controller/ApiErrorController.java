@@ -1,7 +1,7 @@
 package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.annotation.ApiController;
-import com.github.ankurpathak.api.config.ControllerUtil;
+import com.github.ankurpathak.api.service.impl.util.ControllerUtil;
 import com.github.ankurpathak.api.service.IMessageService;
 import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;

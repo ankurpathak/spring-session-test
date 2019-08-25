@@ -1,13 +1,12 @@
 package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.annotation.ApiController;
-import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.constant.ApiPaths;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.event.PaginatedResultsRetrievedEvent;
-import com.github.ankurpathak.api.event.util.PagingUtil;
 import com.github.ankurpathak.api.service.ICityService;
-import com.github.ankurpathak.api.service.IMessageService;
+import com.github.ankurpathak.api.service.IRestControllerResponseService;
+import com.github.ankurpathak.api.service.impl.util.PagingUtil;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,13 +22,13 @@ import java.util.List;
 public class CityController {
 
     private final ICityService service;
-    private final IMessageService messageService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final IRestControllerResponseService restControllerResponseService;
 
-    public CityController(ICityService service, IMessageService messageService, ApplicationEventPublisher applicationEventPublisher) {
+    public CityController(ICityService service, ApplicationEventPublisher applicationEventPublisher, IRestControllerResponseService restControllerResponseService) {
         this.service = service;
-        this.messageService = messageService;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.restControllerResponseService = restControllerResponseService;
     }
 
 
@@ -41,7 +40,7 @@ public class CityController {
 
     @GetMapping(ApiPaths.PATH_PIN_CODE)
     public ResponseEntity<?> getPinCode(@PathVariable(Params.Path.PIN_CODE) String pincode){
-        return ControllerUtil.processOptional(service.findPinCode(pincode), null, "City", pincode, messageService);
+        return restControllerResponseService.processObject(service.findPinCode(pincode).orElse(null), null, "City", pincode);
     }
 
     @GetMapping(ApiPaths.PATH_STATE_DISTRICT)

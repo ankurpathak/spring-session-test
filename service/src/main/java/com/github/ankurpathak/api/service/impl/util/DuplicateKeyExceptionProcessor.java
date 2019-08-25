@@ -1,4 +1,4 @@
-package com.github.ankurpathak.api.rest.controller.util;
+package com.github.ankurpathak.api.service.impl.util;
 
 import com.github.ankurpathak.api.exception.FoundException;
 import com.github.ankurpathak.api.exception.dto.FoundDto;

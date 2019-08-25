@@ -2,10 +2,8 @@ package com.github.ankurpathak.api.rest.controller;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentUser;
-import com.github.ankurpathak.api.config.ControllerUtil;
 import com.github.ankurpathak.api.constant.ApiPaths;
 import com.github.ankurpathak.api.domain.converter.UserConverters;
 import com.github.ankurpathak.api.domain.model.User;
@@ -14,12 +12,10 @@ import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.rest.controllor.dto.converter.UserDtoConverters;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IDomainService;
-import com.github.ankurpathak.api.service.IMessageService;
-import org.springframework.context.ApplicationEventPublisher;
+import com.github.ankurpathak.api.service.IRestControllerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,15 +32,17 @@ public class UserController extends AbstractRestController<User,BigInteger, User
 
     private final CustomUserDetailsService service;
 
+    public UserController(CustomUserDetailsService service, IRestControllerService restControllerService) {
+        super(restControllerService);
+        this.service = service;
+    }
+
     @Override
     public IDomainService<User, BigInteger> getDomainService() {
         return service.getUserService();
     }
 
-    public UserController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, CustomUserDetailsService service) {
-        super(applicationEventPublisher, messageService, objectMapper, validator);
-        this.service = service;
-    }
+
 
 
     @PostMapping(ApiPaths.PATH_USER)
@@ -106,7 +104,7 @@ public class UserController extends AbstractRestController<User,BigInteger, User
 
     @PatchMapping(ApiPaths.PATH_USER)
     public ResponseEntity<?> patch(HttpServletRequest request, @CurrentUser User user, @RequestBody JsonNode patch, BindingResult result){
-        ControllerUtil.processValidation(result, messageService);
+        restControllerService.getRestControllerResponseService().processValidation(result);
         return patch(patch, user, UserDtoConverters.userToUserDto, UserUpdaters.profileUpdater, UserDto.class, Default.class);
     }
 

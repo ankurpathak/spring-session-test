@@ -1,4 +1,4 @@
-package com.github.ankurpathak.api.config;
+package com.github.ankurpathak.api.service.impl.util;
 
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.model.Token;
@@ -31,10 +31,12 @@ public class ControllerUtil {
         throw new NotAllowedException(code);
     }
 
-    @SuppressWarnings("all")
-    public static <T> ResponseEntity<T> processOptional(Optional<T> t, Class<T> type, String typeNeme, String id, IMessageService messageService) {
-        return t.map(ResponseEntity::ok).orElseThrow(() -> new NotFoundException(String.valueOf(id), Params.ID, typeNeme != null ? typeNeme: type.getSimpleName(), ApiCode.NOT_FOUND));
-
+    public static ResponseEntity<?> processObject(Object t, Class<?> tType, String tTypeName, String id, IMessageService messageService) {
+        if(t !=  null){
+            return ResponseEntity.ok(t);
+        }else {
+            throw new NotFoundException(String.valueOf(id), Params.ID, tTypeName != null ? tTypeName: tType.getSimpleName(), ApiCode.NOT_FOUND);
+        }
     }
 
 
@@ -43,7 +45,7 @@ public class ControllerUtil {
     }
 
 
-    public static void processValidationForFound(IMessageService messageService, FoundException ex) {
+    public static void processValidationForFound(FoundException ex) {
         throw ex;
     }
 

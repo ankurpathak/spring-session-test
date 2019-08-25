@@ -1,6 +1,5 @@
 package com.github.ankurpathak.api.rest.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentBusiness;
 import com.github.ankurpathak.api.constant.Model;
@@ -11,16 +10,14 @@ import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.service.ICustomerService;
 import com.github.ankurpathak.api.service.IDomainService;
-import com.github.ankurpathak.api.service.IMessageService;
+import com.github.ankurpathak.api.service.IRestControllerService;
 import com.github.ankurpathak.api.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,8 +41,8 @@ public class CustomerController extends AbstractRestController<Customer, Custome
 
     private final ICustomerService service;
 
-    public CustomerController(ICustomerService service, ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator) {
-        super(applicationEventPublisher, messageService, objectMapper, validator);
+    public CustomerController(ICustomerService service, IRestControllerService restControllerService) {
+        super(restControllerService);
         this.service = service;
     }
 

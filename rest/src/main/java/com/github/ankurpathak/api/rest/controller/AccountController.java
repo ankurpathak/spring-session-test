@@ -1,8 +1,9 @@
 package com.github.ankurpathak.api.rest.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
-import com.github.ankurpathak.api.config.ControllerUtil;
+import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
+import com.github.ankurpathak.api.service.IRestControllerService;
+import com.github.ankurpathak.api.service.impl.util.ControllerUtil;
 import com.github.ankurpathak.api.constant.ApiPaths;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.converter.UserConverters;
@@ -12,14 +13,10 @@ import com.github.ankurpathak.api.event.RegistrationCompleteEvent;
 import com.github.ankurpathak.api.rest.controllor.dto.UserDto;
 import com.github.ankurpathak.api.service.IAccountService;
 import com.github.ankurpathak.api.service.IDomainService;
-import com.github.ankurpathak.api.service.IMessageService;
-import com.github.ankurpathak.api.service.IUserService;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,21 +29,23 @@ import java.math.BigInteger;
 
 @ApiController
 public class AccountController extends AbstractRestController<User, BigInteger, UserDto> {
-    private final IUserService userService;
+    private final CustomUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final IAccountService service;
 
-    @Override
-    public IDomainService<User, BigInteger> getDomainService() {
-        return userService;
-    }
-
-    public AccountController(ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IUserService userService, PasswordEncoder passwordEncoder, IAccountService service) {
-        super(applicationEventPublisher, messageService, objectMapper, validator);
-        this.userService = userService;
+    public AccountController(CustomUserDetailsService userDetailsService, PasswordEncoder passwordEncoder, IAccountService service, IRestControllerService restControllerService) {
+        super(restControllerService);
+        this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.service = service;
     }
+
+    @Override
+    public IDomainService<User, BigInteger> getDomainService() {
+        return userDetailsService.getUserService();
+    }
+
+
 
 
     @PostMapping(ApiPaths.PATH_ACCOUNT)
@@ -55,7 +54,7 @@ public class AccountController extends AbstractRestController<User, BigInteger, 
                 (rest, tDto) -> {
                     tDto.encodedPassword(passwordEncoder.encode(tDto.getPassword()));
                 }, (rest, t, tDto) -> {
-                    applicationEventPublisher.publishEvent(new RegistrationCompleteEvent(t));
+                    restControllerService.getApplicationEventPublisher().publishEvent(new RegistrationCompleteEvent(t));
                 });
     }
 
@@ -63,15 +62,14 @@ public class AccountController extends AbstractRestController<User, BigInteger, 
     @PutMapping(ApiPaths.PATH_ACCOUNT_EMAIL)
     public ResponseEntity<?> accountEnableEmail(@PathVariable(Params.Path.EMAIL) String email) {
         service.accountEnableEmail(email);
-        return ControllerUtil.processSuccess(messageService);
+        return restControllerService.getRestControllerResponseService().processSuccessOk();
     }
 
 
     @PutMapping(ApiPaths.PATH_ACCOUNT_ENABLE)
     public ResponseEntity<?> accountEnable(HttpServletRequest request, @PathVariable(Params.Path.TOKEN) String token) {
         Token.TokenStatus status = service.accountEnable(token);
-        return ControllerUtil.processTokenStatus(status, token, messageService);
+        return restControllerService.getRestControllerResponseService().processTokenStatus(status, token);
     }
-
 
 }

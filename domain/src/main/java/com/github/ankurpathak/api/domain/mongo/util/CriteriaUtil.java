@@ -12,7 +12,7 @@ import java.math.BigInteger;
 public class CriteriaUtil {
     public static Criteria buildBusinessCriteria(Class<?> type){
         if(BusinessExtendedDomain.class.isAssignableFrom(type)){
-            return Criteria.where(Model.Domain.Field.BUSINESS_ID).is(SecurityUtil.getRequestedMyBusiness().map(Business::getId).orElse(BigInteger.ZERO));
+            return Criteria.where(Model.BusinessExtendedDomain.Field.BUSINESS_ID).is(SecurityUtil.getRequestedMyBusiness().map(Business::getId).orElse(BigInteger.ZERO));
         }
 
         if(Customer.class.isAssignableFrom(type)){
@@ -25,7 +25,7 @@ public class CriteriaUtil {
 
     public static Criteria converToBusinessCriteria(Class<?> type, Criteria criteria){
         if(BusinessExtendedDomain.class.isAssignableFrom(type)){
-            return criteria.and(Model.Domain.Field.BUSINESS_ID).is(SecurityUtil.getRequestedMyBusiness().map(Business::getId).orElse(BigInteger.ZERO));
+            return criteria.and(Model.BusinessExtendedDomain.Field.BUSINESS_ID).is(SecurityUtil.getRequestedMyBusiness().map(Business::getId).orElse(BigInteger.ZERO));
         }
 
         if(Customer.class.isAssignableFrom(type)){

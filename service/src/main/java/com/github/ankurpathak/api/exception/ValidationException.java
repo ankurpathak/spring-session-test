@@ -15,7 +15,7 @@ public class ValidationException extends RuntimeException {
     private String[] messages;
     public ValidationException(List<BindingResult> bindingResults, ApiCode code, String...messages) {
         require(bindingResults, MatcherUtil.notCollectionEmpty());
-        require(code, notNullValue(ApiCode.class));
+        require(code, notNullValue());
         require(messages, not(emptyArray()));
         this.bindingResults = bindingResults;
         this.code = code;

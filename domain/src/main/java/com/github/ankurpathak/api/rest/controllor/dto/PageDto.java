@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import java.io.Serializable;
 import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class PageDto<T extends Domain<ID>, ID extends Serializable> {
+public class PageDto<T> {
     private List<T> list;
     private PageInfo page;
 
@@ -41,12 +41,12 @@ public class PageDto<T extends Domain<ID>, ID extends Serializable> {
         return this;
     }
 
-    public static <T extends Domain<ID>, ID extends Serializable> PageDto<T,ID> getInstance(){
+    public static <T> PageDto<T> getInstance(){
         return new PageDto<>();
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends Domain<ID>, ID extends Serializable> PageDto<T,ID> getInstance(Page<T> page){
+    public static <T> PageDto<T> getInstance(Page<T> page){
         return getInstance()
                 .content((List)page.getContent())
                 .page(PageInfo.getInstance(page.getPageable(), page.getTotalElements()));

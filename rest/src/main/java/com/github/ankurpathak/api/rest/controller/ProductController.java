@@ -1,6 +1,5 @@
 package com.github.ankurpathak.api.rest.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentBusiness;
 import com.github.ankurpathak.api.constant.Params;
@@ -10,18 +9,14 @@ import com.github.ankurpathak.api.domain.model.Product;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
 import com.github.ankurpathak.api.service.IDomainService;
-import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.IProductService;
-import com.github.ankurpathak.api.service.impl.UserService;
+import com.github.ankurpathak.api.service.IRestControllerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.groups.Default;
-import javax.ws.rs.QueryParam;
 
 import static com.github.ankurpathak.api.constant.ApiPaths.*;
 
@@ -42,8 +36,8 @@ public class ProductController extends AbstractRestController<Product, String, P
 
     private final IProductService service;
 
-    public ProductController(IProductService service, ApplicationEventPublisher applicationEventPublisher, IMessageService messageService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator) {
-        super(applicationEventPublisher, messageService, objectMapper, validator);
+    public ProductController(IProductService service, IRestControllerService restControllerService){
+        super(restControllerService);
         this.service = service;
     }
 
@@ -76,7 +70,4 @@ public class ProductController extends AbstractRestController<Product, String, P
     public ResponseEntity<?> search(@CurrentBusiness Business business, HttpServletResponse response, @RequestParam(Params.Query.RSQL) String rsql, Pageable pageable){
         return search(rsql, pageable, Product.class, response);
     }
-
-
-
 }

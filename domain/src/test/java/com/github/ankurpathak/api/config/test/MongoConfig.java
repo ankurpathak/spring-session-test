@@ -5,6 +5,7 @@ import com.github.ankurpathak.api.testcontainer.mongo.MongoDbContainer;
 import com.github.ankurpathak.api.util.LogUtil;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.WriteConcern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -25,15 +26,11 @@ public class MongoConfig  {
     private static final Logger log = LoggerFactory.getLogger(MongoConfig.class);
 
 
-    private final MongoClientOptions options;
     private final ConfigurableEnvironment environment;
-
     private final MongoProperties properties;
 
-    public MongoConfig(MongoProperties properties, ObjectProvider<MongoClientOptions> options,
-                                  ConfigurableEnvironment environment) {
+    public MongoConfig(MongoProperties properties, ConfigurableEnvironment environment) {
         this.properties = properties;
-        this.options = options.getIfAvailable();
         this.environment = environment;
     }
 
@@ -55,7 +52,10 @@ public class MongoConfig  {
         sources.addFirst(mapProperties);
         properties.setUri(mongoUri);
         MongoClientFactory factory = new MongoClientFactory(properties, environment);
-        return factory.createMongoClient(this.options);
+        MongoClientOptions options = MongoClientOptions.builder()
+                .writeConcern(WriteConcern.ACKNOWLEDGED)
+                .socketKeepAlive(true).build();
+        return factory.createMongoClient(options);
     }
 
     
