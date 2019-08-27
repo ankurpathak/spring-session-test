@@ -2,8 +2,8 @@ package com.github.ankurpathak.api.domain.repository.mongo.impl;
 
 import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.domain.repository.IFileRepository;
-import com.github.ankurpathak.api.domain.repository.amazon.impl.AmazonS3FileRepository;
 import com.github.ankurpathak.api.domain.repository.dto.FileContext;
+import com.github.ankurpathak.api.exception.ServiceException;
 import com.github.ankurpathak.api.util.LogUtil;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import org.slf4j.Logger;
@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +51,7 @@ public class GridFsFileRepository implements IFileRepository {
                         .path(gridFsTemplate.getResource(gridFile.get()).getFile().toPath()));
             }catch (IOException ex){
                 LogUtil.logStackTrace(log, ex);
-                throw new SecurityException(ex.getMessage(), ex);
+                throw new ServiceException(ex.getMessage(), ex);
             }
         }else {
             return Optional.empty();
@@ -58,4 +59,13 @@ public class GridFsFileRepository implements IFileRepository {
 
     }
 
+    @Override
+    public String store(MultipartFile file, Map<String, String> meta) {
+        try{
+            return store(file.getInputStream(), file.getOriginalFilename(), file.getContentType(), meta);
+        }catch (IOException ex){
+            LogUtil.logStackTrace(log, ex);
+            throw new ServiceException(ex.getMessage(), ex);
+        }
+    }
 }

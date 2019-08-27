@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
+import org.springframework.data.mongodb.core.WriteConcernResolver;
 
 import java.util.Map;
 
@@ -53,9 +54,15 @@ public class MongoConfig  {
         properties.setUri(mongoUri);
         MongoClientFactory factory = new MongoClientFactory(properties, environment);
         MongoClientOptions options = MongoClientOptions.builder()
-                .writeConcern(WriteConcern.ACKNOWLEDGED)
                 .socketKeepAlive(true).build();
         return factory.createMongoClient(options);
+    }
+
+    @Bean
+    public WriteConcernResolver writeConcernResolver() {
+        return action -> {
+            return WriteConcern.ACKNOWLEDGED;
+        };
     }
 
     

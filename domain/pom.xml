@@ -171,6 +171,13 @@
             <scope>provided</scope>
         </dependency>
         <!-- Junit 5 -->
+        <!-- Spring AMQP -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--/ Spring AMQP -->
     </dependencies>
 
     <build>

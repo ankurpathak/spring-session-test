@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -64,6 +65,19 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
     private Instant updated;
 
     private Set<String> tags;
+
+
+    /*@Version
+    private Long version;
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }*/
+
 
 
     public Domain<ID> addTag(String tag){

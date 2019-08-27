@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
+import com.github.ankurpathak.api.domain.model.Task;
 import com.github.ankurpathak.api.domain.updater.IUpdateDomain;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;
@@ -79,7 +80,9 @@ public interface IRestControllerService {
     <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> ResponseEntity<?>
     patch(IDomainService<T, ID> domainService, JsonNode patch, T t, IToDto<T, ID, TDto> converter, IUpdateDomain<T, ID, TDto> updater, Class<TDto> dtoType, Class<?>... hints);
 
-    @Transactional
     <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> ResponseEntity<?>
     createManyByCsv(IDomainService<T, ID> domainService, DomainDtoList<T, ID, TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T, ID, TDto> converter, Logger log, BindingResult result, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate, Class<?>... hints);
+
+    <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> ResponseEntity<?>
+    createManyByCsvTask(DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType type);
 }

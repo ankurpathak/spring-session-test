@@ -63,4 +63,9 @@ public class RestControllerResponseService implements IRestControllerResponseSer
         return ControllerUtil.processTokenStatus(status, token, this.messageService);
     }
 
+    @Override
+    public ResponseEntity<?> processSuccessAccepted(Map<String, Object> extras) {
+        return ControllerUtil.processSuccess(messageService, HttpStatus.ACCEPTED, extras);
+    }
+
 }

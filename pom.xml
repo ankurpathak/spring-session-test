@@ -38,7 +38,7 @@
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-releasetrain</artifactId>
 <!--                <version>Lovelace-RELEASE</version>-->
-                <version>Moore-RC1</version>
+                <version>Moore-RC2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

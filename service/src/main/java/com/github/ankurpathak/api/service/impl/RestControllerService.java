@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.zjsonpatch.*;
+import com.github.ankurpathak.api.config.RabbitConfig;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
+import com.github.ankurpathak.api.domain.model.Task;
+import com.github.ankurpathak.api.domain.repository.dto.MessageContext;
 import com.github.ankurpathak.api.domain.updater.IUpdateDomain;
 import com.github.ankurpathak.api.event.DomainCreatedEvent;
 import com.github.ankurpathak.api.event.PaginatedResultsRetrievedEvent;
@@ -19,10 +22,7 @@ import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controller.dto.PageDto;
 import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
-import com.github.ankurpathak.api.service.IDomainService;
-import com.github.ankurpathak.api.service.IFileService;
-import com.github.ankurpathak.api.service.IRestControllerResponseService;
-import com.github.ankurpathak.api.service.IRestControllerService;
+import com.github.ankurpathak.api.service.*;
 import com.github.ankurpathak.api.service.callback.*;
 import com.github.ankurpathak.api.service.impl.util.ControllerUtil;
 import com.github.ankurpathak.api.service.impl.util.DuplicateKeyExceptionProcessor;
@@ -64,6 +64,9 @@ public class RestControllerService implements IRestControllerService {
     private final IRestControllerResponseService restControllerResponseService;
     private final ObjectMapper objectMapper;
     private final LocalValidatorFactoryBean validator;
+    private final IFileService fileService;
+    private final ITaskService taskService;
+    private final IMessageSenderService messageSenderService;
 
     @Override
     public ApplicationEventPublisher getApplicationEventPublisher() {
@@ -85,11 +88,14 @@ public class RestControllerService implements IRestControllerService {
         return validator;
     }
 
-    public RestControllerService(ApplicationEventPublisher applicationEventPublisher, IRestControllerResponseService restControllerResponseService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator) {
+    public RestControllerService(ApplicationEventPublisher applicationEventPublisher, IRestControllerResponseService restControllerResponseService, ObjectMapper objectMapper, LocalValidatorFactoryBean validator, IFileService fileService, ITaskService taskService, IMessageSenderService messageSenderService) {
         this.applicationEventPublisher = applicationEventPublisher;
         this.restControllerResponseService = restControllerResponseService;
         this.objectMapper = objectMapper;
         this.validator = validator;
+        this.fileService = fileService;
+        this.taskService = taskService;
+        this.messageSenderService = messageSenderService;
     }
 
 
@@ -339,5 +345,20 @@ public class RestControllerService implements IRestControllerService {
         BindException exception = new BindException(list, list.getClass().getSimpleName());
         validator.validate(list, exception, hints);
         return createMany(domainService, list, type, exception, request, converter, preCreate, postCreate);
+    }
+
+
+    @Override
+    public  <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> ResponseEntity<?>
+    createManyByCsvTask(DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType type) {
+        this.restControllerResponseService.processValidation(result);
+        String csvFileId = fileService.store(csvList.getCsv());
+        Task task = Task.getInstance()
+                .type(type)
+                .status(Task.TaskStatus.ACCEPTED)
+                .request(Map.of("file", csvFileId));
+        task = this.taskService.create(task);
+        this.messageSenderService.send(new MessageContext(task, RabbitConfig.TASK_EXCHANGE, RabbitConfig.TASK_QUEUE));
+        return this.restControllerResponseService.processSuccessAccepted(Map.of("obj", task));
     }
 }

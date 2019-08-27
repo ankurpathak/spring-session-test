@@ -98,7 +98,6 @@ public class CustomerControllerTests extends AbstractRestIntegrationTest<Custome
 
     @Test
     public void testGetPaginated() throws Exception{
-
         mockMvc.perform(get(apiPath(PATH_CUSTOMER))
                 .with(authentication(token("+918000000000")))
         )

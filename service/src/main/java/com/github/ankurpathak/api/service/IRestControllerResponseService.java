@@ -25,4 +25,6 @@ public interface IRestControllerResponseService {
     void processNotAllowed(ApiCode code);
 
     ResponseEntity<?> processTokenStatus(Token.TokenStatus status, String token);
+
+    ResponseEntity<?> processSuccessAccepted(Map<String, Object> extras);
 }
