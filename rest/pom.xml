@@ -125,17 +125,17 @@
 
 
         <!-- Redis Client -->
-        <!--<dependency>
+        <dependency>
              <groupId>redis.clients</groupId>
              <artifactId>jedis</artifactId>
-         </dependency>-->
+         </dependency>
         <!--/ Redis Client -->
 
         <!-- Redis Reactive Client -->
-        <dependency>
+        <!--<dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
-        </dependency>
+        </dependency> -->
         <!-- Redis Reactive Client -->
 
         <!-- Password validation -->

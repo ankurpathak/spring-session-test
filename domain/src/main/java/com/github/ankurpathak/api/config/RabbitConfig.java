@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class RabbitConfig  {
+public class RabbitConfig {
     public static final String TASK_QUEUE = "task-queue";
     public static final String DEAD_TASK_QUEUE = "dead-task-queue";
     public static final String TASK_EXCHANGE = "task-exchange";
@@ -18,7 +18,11 @@ public class RabbitConfig  {
 
     @Bean(name = TASK_QUEUE)
     public Queue taskQueue() {
-        return QueueBuilder.durable(TASK_QUEUE).build();
+        return QueueBuilder.durable(TASK_QUEUE)
+                .withArgument("x-dead-letter-exchange", "")
+                .withArgument("x-dead-letter-routing-key", DEAD_TASK_QUEUE)
+                .withArgument("x-message-ttl", 15000) //if message is not consumed in 15 seconds send to DLQ
+                .build();
     }
 
     @Bean(name = DEAD_TASK_QUEUE)

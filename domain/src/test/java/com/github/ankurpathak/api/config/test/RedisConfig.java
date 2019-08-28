@@ -4,15 +4,12 @@ import com.github.ankurpathak.api.annotation.Test;
 import com.github.ankurpathak.api.testcontainer.redis.RedisContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 @Configuration
 @Test
-@EnableConfigurationProperties(RedisProperties.class)
 public class RedisConfig {
     @Autowired
     private RedisProperties properties;
@@ -24,10 +21,11 @@ public class RedisConfig {
     }
 
     @Bean(destroyMethod = "destroy")
-    public RedisConnectionFactory redisConnectionFactory(RedisContainer redis){
-        LettuceConnectionFactory jedis = new LettuceConnectionFactory();
+    public JedisConnectionFactory redisConnectionFactory(RedisContainer redis){
+        JedisConnectionFactory jedis = new JedisConnectionFactory();
         jedis.setHostName(redis.getContainerIpAddress());
         jedis.setPort(redis.getPort());
         return jedis;
     }
+
 }

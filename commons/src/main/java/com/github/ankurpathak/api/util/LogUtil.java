@@ -7,6 +7,10 @@ public class LogUtil {
 
     private LogUtil(){}
 
+    public static void logInfo(Logger log, String message){
+        log.info(message);
+    }
+
     public static void logFieldNull(Logger log, String entity, String field, String id){
         log.error(MESSAGE_LOG_FIELD_NULL, entity, field, id);
     }

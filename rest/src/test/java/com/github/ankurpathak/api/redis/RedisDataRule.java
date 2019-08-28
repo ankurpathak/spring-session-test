@@ -9,12 +9,12 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.springframework.core.io.Resource;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
@@ -25,7 +25,6 @@ public class RedisDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
     private RedisTemplate<?, ?> template;
     private ObjectMapper objectMapper;
     private Map<String, Resource> jsons = null;
-    private RedisConnectionFactory connectionFactory;
 
 
 
@@ -47,18 +46,6 @@ public class RedisDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
     }
 
 
-    public RedisConnectionFactory getConnectionFactory() {
-        if(this.connectionFactory == null){
-            this.connectionFactory = setUpConnectionFactory();
-            ensure(this.connectionFactory, notNullValue());
-        }
-        return this.connectionFactory;
-    }
-
-
-
-
-
     public RedisDataRule(AbstractRestIntegrationTest<SELF> test) {
         require(test, notNullValue());
         this.test = test;
@@ -75,12 +62,6 @@ public class RedisDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
                 return (RedisTemplate) fileldValue;
         }
         return null;
-    }
-
-
-    private RedisConnectionFactory setUpConnectionFactory(){
-        this.connectionFactory = this.getTemplate().getConnectionFactory();
-        return this.connectionFactory;
     }
 
     private ObjectMapper setUpObjectMapper(){
@@ -111,11 +92,13 @@ public class RedisDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
     }
 
     public void before()throws Exception{
-        getConnectionFactory().getConnection().flushAll();
+        getTemplate().execute((RedisCallback<Boolean>) connection -> {
+            connection.flushAll();
+            return true;
+        });
     }
 
     public void after() throws Exception{
-
     }
 
     @Override

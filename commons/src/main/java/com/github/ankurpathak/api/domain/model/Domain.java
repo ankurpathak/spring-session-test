@@ -65,8 +65,6 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
     private Instant updated;
 
     private Set<String> tags;
-
-
     /*@Version
     private Long version;
 
@@ -77,8 +75,6 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
     public void setVersion(Long version) {
         this.version = version;
     }*/
-
-
 
     public Domain<ID> addTag(String tag){
         if(this.tags == null)

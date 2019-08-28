@@ -5,10 +5,8 @@ import com.github.ankurpathak.api.testcontainer.mongo.MongoDbContainer;
 import com.github.ankurpathak.api.util.LogUtil;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
-import com.mongodb.WriteConcern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.mongo.MongoClientFactory;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
-import org.springframework.data.mongodb.core.WriteConcernResolver;
 
 import java.util.Map;
 
@@ -56,13 +53,6 @@ public class MongoConfig  {
         MongoClientOptions options = MongoClientOptions.builder()
                 .socketKeepAlive(true).build();
         return factory.createMongoClient(options);
-    }
-
-    @Bean
-    public WriteConcernResolver writeConcernResolver() {
-        return action -> {
-            return WriteConcern.ACKNOWLEDGED;
-        };
     }
 
     

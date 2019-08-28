@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.config;
 
 import com.mongodb.WriteConcern;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
@@ -14,7 +15,9 @@ import org.springframework.data.mongodb.core.WriteConcernResolver;
         dateTimeProviderRef = "instantDateTimeProvider"
 )
 public class MongoConfig  {
+
     @Bean
+    @ConditionalOnMissingClass("org.springframework.batch.core.repository.JobRepository")
     public MongoTransactionManager transactionManager(MongoDbFactory dbFactory) {
         return new MongoTransactionManager(dbFactory);
     }
