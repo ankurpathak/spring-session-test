@@ -178,6 +178,13 @@
             <scope>provided</scope>
         </dependency>
         <!--/ Spring AMQP -->
+        <!-- Mongo Client -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--/ Mongo Client -->
     </dependencies>
 
     <build>

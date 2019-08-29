@@ -9,30 +9,35 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-
     <artifactId>non-rest</artifactId>
-
     <dependencies>
-
+        <!-- Spring Quartz -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
+        <!-- Spring Quartz -->
 
+        <!-- Spring Data MongoDb -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
+        <!--\ Spring Data MongoDb -->
+
+        <!-- Spring Data Redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-
+        <!--\ Spring Data Redis -->
+        <!-- Quartz MongoDb -->
         <dependency>
             <groupId>com.novemberain</groupId>
             <artifactId>quartz-mongodb</artifactId>
-            <version>2.1.0</version>
         </dependency>
+        <!--\ Quartz MongoDb -->
+
 
         <!-- Method Preconditions Check -->
         <dependency>
@@ -76,12 +81,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-batch</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-jdbc</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.batch</groupId>
@@ -101,7 +100,12 @@
         </dependency>
         <!--/ Spring Web -->
 
-
+        <!-- Mongo Client -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+        </dependency>
+        <!-- Mongo Client -->
     </dependencies>
 
     <repositories>

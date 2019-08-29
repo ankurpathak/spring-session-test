@@ -8,8 +8,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public interface ICustomizedDomainRepository<T extends Domain<ID>, ID extends Serializable> {
     Page<T> findByField(String field, String value, Pageable pageable, Class<T> type);
