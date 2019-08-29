@@ -4,4 +4,5 @@ import java.io.IOException;
 
 public interface ISchemaRepository {
     void createViews() throws IOException;
+    void createCollections() throws IOException;
 }

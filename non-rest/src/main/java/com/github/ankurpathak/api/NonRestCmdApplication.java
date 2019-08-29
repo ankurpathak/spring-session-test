@@ -2,6 +2,7 @@ package com.github.ankurpathak.api;
 
 import com.github.ankurpathak.api.batch.MyTaskOne;
 import com.github.ankurpathak.api.batch.MyTaskTwo;
+import com.github.ankurpathak.api.service.ISchemaService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -21,12 +22,9 @@ import org.springframework.stereotype.Component;
 @SpringBootApplication
 @EnableBatchProcessing(modular = true)
 public class NonRestCmdApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(NonRestCmdApplication.class, args);
     }
-
-
     @Autowired
     private JobBuilderFactory jobs;
 
@@ -64,6 +62,9 @@ class TestClr implements CommandLineRunner{
 
     @Autowired
     Job job;
+
+
+
     @Override
     public void run(String... args) throws Exception {
         JobParameters params = new JobParametersBuilder()

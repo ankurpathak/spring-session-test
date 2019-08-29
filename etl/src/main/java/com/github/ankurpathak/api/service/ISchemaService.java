@@ -4,4 +4,6 @@ import java.io.IOException;
 
 public interface ISchemaService {
     void createViews() throws IOException;
+
+    void createCollections() throws IOException;
 }

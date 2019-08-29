@@ -5,4 +5,11 @@ public interface SchemaConstants {
         String VIEW = "view.json";
         String VIEW_COMMAND = "view-command.js";
     }
+
+    public static final String[] COLLECTIONS = {
+            "Sequences",
+            "JobInstance",
+            "JobExecution",
+            "ExecutionContext"
+    };
 }

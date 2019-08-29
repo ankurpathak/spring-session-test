@@ -14,23 +14,16 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
-import org.springframework.data.mongodb.core.index.IndexResolver;
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.util.AnnotatedTypeScanner;
-import org.springframework.data.util.ClassTypeInformation;
 import org.springframework.util.ReflectionUtils;
 
 import java.io.IOException;
@@ -222,9 +215,14 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
     public void before()throws Exception{
         // dropCollections();
         dropDatabase();
+        createCollections();
         createIndices();
         createViews();
         createDocuments();
+    }
+
+    private void createCollections() throws Exception {
+        getSchemaService().createCollections();
     }
 
     private void createViews() throws Exception {

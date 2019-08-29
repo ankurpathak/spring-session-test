@@ -58,6 +58,10 @@
             <groupId>com.github.ankurpathak.api</groupId>
             <artifactId>domain</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.ankurpathak.api</groupId>
+            <artifactId>etl</artifactId>
+        </dependency>
         <!--Modules -->
         <!-- Apache Commons -->
         <dependency>

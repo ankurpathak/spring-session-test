@@ -19,4 +19,10 @@ public class SchemaService implements ISchemaService {
     public void createViews() throws IOException {
         schemaRepository.createViews();
     }
+
+
+    @Override
+    public void createCollections() throws IOException {
+        schemaRepository.createCollections();
+    }
 }
