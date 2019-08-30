@@ -30,7 +30,7 @@ public class RabbitMessageSenderRepository implements IMessageSenderRepository {
                     .withBody(objectMapper.writeValueAsBytes(context.getMessage()))
                     .setContentType(MessageProperties.CONTENT_TYPE_JSON)
                     .build();
-            rabbitTemplate.convertAndSend(context.getTarget(), context.getKey(), context.getMessage());
+            rabbitTemplate.convertAndSend(context.getTarget(), context.getKey(), message);
         }catch (IOException ex){
             throw new ServiceException(ex.getMessage(), ex.getCause());
         }

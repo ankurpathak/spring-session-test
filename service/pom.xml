@@ -24,11 +24,6 @@
             <artifactId>domain</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.github.ankurpathak.api</groupId>
-            <artifactId>resource</artifactId>
-            <scope>provided</scope>
-        </dependency>
         <!--Modules -->
         <!-- Spring Boot Security -->
         <dependency>
@@ -196,10 +191,15 @@
             <groupId>cz.jirutka.rsql</groupId>
             <artifactId>rsql-parser</artifactId>
             <version>2.1.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <!-- Ankur Validation Work -->
+        <!-- Mongo Client -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--/ Mongo Client -->
     </dependencies>
-
-
 </project>

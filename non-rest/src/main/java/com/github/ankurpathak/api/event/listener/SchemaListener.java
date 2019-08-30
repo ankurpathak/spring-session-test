@@ -24,4 +24,6 @@ public class SchemaListener implements ApplicationListener<ContextRefreshedEvent
             LogUtil.logStackTrace(log, ex);
         }
     }
+
+
 }

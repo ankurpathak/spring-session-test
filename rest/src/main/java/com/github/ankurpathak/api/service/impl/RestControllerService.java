@@ -9,6 +9,7 @@ import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.model.Task;
+import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.repository.dto.MessageContext;
 import com.github.ankurpathak.api.domain.updater.IUpdateDomain;
 import com.github.ankurpathak.api.event.DomainCreatedEvent;
@@ -349,14 +350,15 @@ public class RestControllerService implements IRestControllerService {
 
 
     @Override
+    @Transactional
     public  <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> ResponseEntity<?>
-    createManyByCsvTask(DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType type) {
+    createManyByCsvSubmit(User user, DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType type) {
         this.restControllerResponseService.processValidation(result);
         String csvFileId = fileService.store(csvList.getCsv());
         Task task = Task.getInstance()
                 .type(type)
                 .status(Task.TaskStatus.ACCEPTED)
-                .request(Map.of("file", csvFileId));
+                .request(Map.of("file", csvFileId, "user", user));
         task = this.taskService.create(task);
         this.messageSenderService.send(new MessageContext(task, RabbitConfig.TASK_EXCHANGE, RabbitConfig.TASK_QUEUE));
         return this.restControllerResponseService.processSuccessAccepted(Map.of("obj", task));

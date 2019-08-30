@@ -1,5 +1,6 @@
 package com.github.ankurpathak.api.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.ankurpathak.api.constant.Model;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,6 +8,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 @Document(collection = Model.Task.TASK)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Task extends Domain<String> implements Serializable {
 
     private TaskStatus status = TaskStatus.ACCEPTED;

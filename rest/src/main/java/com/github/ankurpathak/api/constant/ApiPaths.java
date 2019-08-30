@@ -39,6 +39,7 @@ public interface ApiPaths {
     String PATH_CUSTOMER = "/customer";
     String PATH_CUSTOMER_SEARCH = "/customer/search";
     String PATH_SERVICE_UPLOAD = "/service/upload";
+    String PATH_SERVICE_UPLOAD_SUBMIT = "/service/upload/submit";
     String PATH_CUSTOMER_UPLOAD = "/customer/upload";
     static String apiPath(String path){
         return Paths.get(PATH_API, path).toString();

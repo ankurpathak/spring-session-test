@@ -110,6 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_SERVICE)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_CUSTOMER)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_SERVICE_UPLOAD)).hasAuthority(Role.Privilege.PRIV_ADMIN)
+                .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_SERVICE_UPLOAD_SUBMIT)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.POST, ApiPaths.apiPath(ApiPaths.PATH_CUSTOMER_UPLOAD)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_SERVICE)).hasAuthority(Role.Privilege.PRIV_ADMIN)
                 .antMatchers(HttpMethod.GET, ApiPaths.apiPath(ApiPaths.PATH_SERVICE_SEARCH)).hasAuthority(Role.Privilege.PRIV_ADMIN)

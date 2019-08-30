@@ -9,8 +9,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 public class RedisConfig {
-
-
     @Bean
     public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory connectionFactory, GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer, StringRedisSerializer stringRedisSerializer){
         RedisTemplate<?, ?> template = new RedisTemplate<>();
@@ -31,6 +29,4 @@ public class RedisConfig {
     public StringRedisSerializer stringRedisSerializer(){
         return new StringRedisSerializer();
     }
-
-
 }

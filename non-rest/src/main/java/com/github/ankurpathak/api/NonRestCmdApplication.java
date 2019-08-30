@@ -1,8 +1,5 @@
 package com.github.ankurpathak.api;
 
-import com.github.ankurpathak.api.batch.MyTaskOne;
-import com.github.ankurpathak.api.batch.MyTaskTwo;
-import com.github.ankurpathak.api.service.ISchemaService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -25,52 +22,13 @@ public class NonRestCmdApplication {
     public static void main(String[] args) {
         SpringApplication.run(NonRestCmdApplication.class, args);
     }
-    @Autowired
-    private JobBuilderFactory jobs;
 
-    @Autowired
-    private StepBuilderFactory steps;
-
-    @Bean
-    public Step stepOne(){
-        return steps.get("stepOne")
-                .tasklet(new MyTaskOne())
-                .build();
-    }
-
-    @Bean
-    public Step stepTwo(){
-        return steps.get("stepTwo")
-                .tasklet(new MyTaskTwo())
-                .build();
-    }
-
-    @Bean
-    public Job demoJob(){
-        return jobs.get("demoJob")
-                .incrementer(new RunIdIncrementer())
-                .start(stepOne())
-                .next(stepTwo())
-                .build();
-    }
 
 }
 @Component
 class TestClr implements CommandLineRunner{
-    @Autowired
-    JobLauncher jobLauncher;
-
-    @Autowired
-    Job job;
-
-
-
     @Override
     public void run(String... args) throws Exception {
-        JobParameters params = new JobParametersBuilder()
-                .addString("JobID", String.valueOf(System.currentTimeMillis()))
-                .toJobParameters();
-        jobLauncher.run(job, params);
     }
 }
 

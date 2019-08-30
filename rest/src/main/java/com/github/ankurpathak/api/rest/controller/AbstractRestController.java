@@ -3,6 +3,8 @@ package com.github.ankurpathak.api.rest.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
+import com.github.ankurpathak.api.domain.model.Task;
+import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.updater.IUpdateDomain;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;
@@ -108,8 +110,11 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return this.restControllerService.patch(getDomainService(), patch, t, converter, updater, dtoType, hints);
     }
 
-
-    public ResponseEntity<?> createManyByCsv(DomainDtoList<T, ID, TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T, ID, TDto> converter, Logger log, BindingResult result, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate, Class<?>... hints) {
+    protected ResponseEntity<?> createManyByCsv(DomainDtoList<T, ID, TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T, ID, TDto> converter, Logger log, BindingResult result, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate, Class<?>... hints) {
         return this.restControllerService.createManyByCsv(getDomainService(), csvList, dtoType, type, request, converter, log, result, preCreate, postCreate, hints);
+    }
+
+    protected ResponseEntity<?> createManyByCsvSubmit(User user, DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType taskType) {
+        return this.restControllerService.createManyByCsvSubmit(user, csvList, result, taskType);
     }
 }

@@ -31,14 +31,18 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <!--\ Spring Data Redis -->
+        <!-- Spring Boot Data Json -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
+        </dependency>
+        <!-- Spring Boot Data Json -->
         <!-- Quartz MongoDb -->
         <dependency>
             <groupId>com.novemberain</groupId>
             <artifactId>quartz-mongodb</artifactId>
         </dependency>
         <!--\ Quartz MongoDb -->
-
-
         <!-- Method Preconditions Check -->
         <dependency>
             <groupId>org.valid4j</groupId>
@@ -61,6 +65,10 @@
         <dependency>
             <groupId>com.github.ankurpathak.api</groupId>
             <artifactId>etl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ankurpathak.api</groupId>
+            <artifactId>service</artifactId>
         </dependency>
         <!--Modules -->
         <!-- Apache Commons -->
@@ -103,13 +111,62 @@
             <artifactId>spring-web</artifactId>
         </dependency>
         <!--/ Spring Web -->
-
+        <!-- Maxmind Geoid2 -->
+        <dependency>
+            <groupId>com.maxmind.geoip2</groupId>
+            <artifactId>geoip2</artifactId>
+        </dependency>
+        <!--/ Maxmind Geoid2 -->
         <!-- Mongo Client -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
         </dependency>
         <!-- Mongo Client -->
+        <!-- JAX-RS Jersey Rest Client -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+        </dependency>
+        <!--/ JAX-RS Jersey Rest Client -->
+        <!-- Spring Boot Mail -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <!--/ Spring Boot Mail -->
+        <!-- Redis Client -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
+        <!--/ Redis Client -->
+        <!--Spring Boot Thymeleaf -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <!--/ Spring Boot Thymeleaf -->
+        <!--Spring Boot Thymeleaf -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!--/ Spring Boot Thymeleaf -->
+        <!-- OAuth Client -->
+        <dependency>
+            <groupId>com.github.scribejava</groupId>
+            <artifactId>scribejava-apis</artifactId>
+        </dependency>
+        <!--/ OAuth Client -->
     </dependencies>
 
     <repositories>
@@ -120,10 +177,36 @@
     </repositories>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/maven-shared-archive-resources</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-remote-resources-plugin</artifactId>
+                <configuration>
+                    <resourceBundles>
+                        <resourceBundle>com.github.ankurpathak.api:resource:${project.version}</resourceBundle>
+                    </resourceBundles>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

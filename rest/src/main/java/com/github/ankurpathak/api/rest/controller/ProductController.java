@@ -2,10 +2,13 @@ package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.annotation.ApiController;
 import com.github.ankurpathak.api.annotation.CurrentBusiness;
+import com.github.ankurpathak.api.annotation.CurrentUser;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.converter.ProductConverters;
 import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Product;
+import com.github.ankurpathak.api.domain.model.Task;
+import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
 import com.github.ankurpathak.api.service.IDomainService;
@@ -55,8 +58,14 @@ public class ProductController extends AbstractRestController<Product, String, P
 
 
     @PostMapping(PATH_SERVICE_UPLOAD)
-    public ResponseEntity<?> createMany(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Product, String, ProductDto> csvList, BindingResult result){
+    public ResponseEntity<?> createManyCsv(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Product, String, ProductDto> csvList, BindingResult result){
         return createManyByCsv(csvList, ProductDto.class, Product.class, request, ProductConverters.createOne, log,result, (rest, list) -> {}, (rest, list, count) -> {}, Default.class);
+    }
+
+
+    @PostMapping(PATH_SERVICE_UPLOAD_SUBMIT)
+    public ResponseEntity<?> createManyCsvSubmit(@CurrentUser User user, @CurrentBusiness Business business, @Validated(DomainDtoList.Upload.class) DomainDtoList<Product, String, ProductDto> csvList, BindingResult result) {
+        return this.createManyByCsvSubmit(user, csvList, result, Task.TaskType.CSV_CUSTOMER);
     }
 
 
@@ -70,4 +79,5 @@ public class ProductController extends AbstractRestController<Product, String, P
     public ResponseEntity<?> search(@CurrentBusiness Business business, HttpServletResponse response, @RequestParam(Params.Query.RSQL) String rsql, Pageable pageable){
         return search(rsql, pageable, Product.class, response);
     }
+
 }

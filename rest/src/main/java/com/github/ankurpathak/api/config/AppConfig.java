@@ -37,32 +37,12 @@ public class AppConfig {
 
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
-
-
-
-    @Bean
     public TaskExecutor getTaskExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(1);
         threadPoolTaskExecutor.setMaxPoolSize(1);
         return threadPoolTaskExecutor;
 
-    }
-
-    @Bean
-    public Client client(){
-        return ClientBuilder.newClient();
-    }
-
-
-    @Bean
-    public DatabaseReader databaseReader() throws Exception{
-        ClassPathResource resource =  new ClassPathResource("GeoLite2-City.mmdb");
-        return new DatabaseReader.Builder(resource.getInputStream()).withCache(new CHMCache()).build();
     }
 
 
@@ -91,8 +71,6 @@ public class AppConfig {
     public Gson gson(){
         return new Gson();
     }
-
-
 }
 
 
