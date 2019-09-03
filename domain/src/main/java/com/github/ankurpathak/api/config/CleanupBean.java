@@ -8,27 +8,21 @@ import com.mongodb.MongoClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisConnectionUtils;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 @Dev
 @Prod
 @Stag
 public class CleanupBean implements DisposableBean {
-
     private static final Logger log = LoggerFactory.getLogger(CleanupBean.class);
-
-    private final MongoClient mongoClient;
-    private final JedisConnectionFactory redisConnectionFactory;
-
-    public CleanupBean(MongoClient mongoClient, JedisConnectionFactory redisConnectionFactory) {
-        this.mongoClient = mongoClient;
-        this.redisConnectionFactory = redisConnectionFactory;
-    }
-
+    @Autowired
+    private MongoClient mongoClient;
+    @Autowired
+    private JedisConnectionFactory redisConnectionFactory;
 
     @Override
     public void destroy() throws Exception {

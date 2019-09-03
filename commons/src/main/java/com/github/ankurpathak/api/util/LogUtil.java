@@ -42,8 +42,8 @@ public class LogUtil {
     public static String MESSAGE_LOG_FIELD_EMPTY = "{}.{} is empty for id {}";
 
 
-    public static String MESSAGE_LOG_NULL = "{}.{} is null";
-    public static String MESSAGE_LOG_EMPTY = "{}.{} is empty";
+    public static String MESSAGE_LOG_NULL = "{} is null";
+    public static String MESSAGE_LOG_EMPTY = "{} is empty";
     public static String MESSAGE_EXCEPTION = "Exception: {}";
     public static String MESSAGE_LOG_VALUE = "{} is {}";
 

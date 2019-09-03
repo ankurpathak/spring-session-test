@@ -51,19 +51,7 @@ public class AppConfig {
         return new SpringSessionBackedSessionRegistry<>(this.sessionRepository);
     }
 
-    @Bean
-    public AwsCredentials awsCredentials() throws IOException {
-        ClassPathResource aswPropertiesResource = new ClassPathResource("AwsCredentials.properties");
-        Properties awsProp = new Properties();
-        awsProp.load(aswPropertiesResource.getInputStream());
-        return AwsBasicCredentials.create(awsProp.getProperty("accessKey", ""), awsProp.getProperty("secretKey", ""));
-    }
 
-    @Bean
-    public S3Client s3(AwsCredentials awsCredentials){
-        return S3Client.builder().credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
-                .region(Region.AP_SOUTH_1).build();
-    }
 
 
 

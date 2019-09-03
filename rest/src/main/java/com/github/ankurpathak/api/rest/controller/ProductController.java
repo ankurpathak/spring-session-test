@@ -65,7 +65,7 @@ public class ProductController extends AbstractRestController<Product, String, P
 
     @PostMapping(PATH_SERVICE_UPLOAD_SUBMIT)
     public ResponseEntity<?> createManyCsvSubmit(@CurrentUser User user, @CurrentBusiness Business business, @Validated(DomainDtoList.Upload.class) DomainDtoList<Product, String, ProductDto> csvList, BindingResult result) {
-        return this.createManyByCsvSubmit(user, csvList, result, Task.TaskType.CSV_CUSTOMER);
+        return this.createManyByCsvSubmit(user, business, csvList, result, Task.TaskType.CSV_PRODUCT);
     }
 
 

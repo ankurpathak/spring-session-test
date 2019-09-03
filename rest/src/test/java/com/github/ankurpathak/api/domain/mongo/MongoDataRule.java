@@ -144,9 +144,6 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
 
 
     private Set<Class<?>> setUpCollections(){
-      //  Reflections reflections = new Reflections(new ConfigurationBuilder()
-      //          .setUrls(ClasspathHelper.forPackage("com.github.ankurpathak.api.domain.model")).setScanners(new TypeAnnotationsScanner(), new SubTypesScanner()));
-       // Set<Class<?>> collections = reflections.getTypesAnnotatedWith(Document.class);
         AnnotatedTypeScanner scanner = new AnnotatedTypeScanner(Document.class);
         Set<Class<?>> collections = scanner.findTypes("com.github.ankurpathak.api.domain.model");
         return CollectionUtils.isEmpty(collections) ? Collections.emptySet() : collections;

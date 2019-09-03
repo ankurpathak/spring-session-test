@@ -286,7 +286,6 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
     public void testServicesCsvSubmit() throws Exception {
         Resource csv = new ClassPathResource("service.csv", this.getClass());
         MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
-
         mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD_SUBMIT)).file(csvFile)
                 .with(authentication(token("+918000000000")))
         )

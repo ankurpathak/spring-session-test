@@ -1,5 +1,6 @@
 package com.github.ankurpathak.api;
 
+import com.github.ankurpathak.api.service.ISchemaService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -27,6 +28,7 @@ public class NonRestCmdApplication {
 }
 @Component
 class TestClr implements CommandLineRunner{
+
     @Override
     public void run(String... args) throws Exception {
     }

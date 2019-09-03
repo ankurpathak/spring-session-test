@@ -29,6 +29,7 @@
                         <include>**/*.json</include>
                         <include>**/*.js</include>
                         <include>**/*.mmdb</include>
+                        <include>**/*.properties</include>
                     </includes>
                 </configuration>
             </plugin>

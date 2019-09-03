@@ -11,8 +11,13 @@ import org.springframework.batch.core.repository.dao.ExecutionContextDao;
 import org.springframework.batch.core.repository.dao.JobExecutionDao;
 import org.springframework.batch.core.repository.dao.JobInstanceDao;
 import org.springframework.batch.core.repository.dao.StepExecutionDao;
+import org.springframework.batch.core.scope.StepScope;
 import org.springframework.batch.mongodb.MongoJobRepositoryFactoryBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,25 +27,23 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 public class BatchConfig implements BatchConfigurer {
-
-    private final MongoTemplate template;
-    private final ExecutionContextDao executionContextDao;
-    private final JobExecutionDao jobExecutionDao;
-    private final JobInstanceDao jobInstanceDao;
-    private final StepExecutionDao stepExecutionDao;
+    @Autowired
+    private  MongoTemplate template;
+    @Autowired
+    private ExecutionContextDao executionContextDao;
+    @Autowired
+    private JobExecutionDao jobExecutionDao;
+    @Autowired
+    private  JobInstanceDao jobInstanceDao;
+    @Autowired
+    private StepExecutionDao stepExecutionDao;
 
     private JobRepository jobRepository;
     private JobLauncher jobLauncher;
     private JobExplorer jobExplorer;
     private PlatformTransactionManager transactionManager;
 
-    public BatchConfig(MongoTemplate template, ExecutionContextDao executionContextDao, JobExecutionDao jobExecutionDao, JobInstanceDao jobInstanceDao, StepExecutionDao stepExecutionDao) {
-        this.template = template;
-        this.executionContextDao = executionContextDao;
-        this.jobExecutionDao = jobExecutionDao;
-        this.jobInstanceDao = jobInstanceDao;
-        this.stepExecutionDao = stepExecutionDao;
-    }
+
 
 
     @Override
@@ -104,4 +107,6 @@ public class BatchConfig implements BatchConfigurer {
         jobLauncher.afterPropertiesSet();
         return jobLauncher;
     }
+
+
 }

@@ -2,6 +2,7 @@ package com.github.ankurpathak.api.rest.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
+import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.model.Task;
 import com.github.ankurpathak.api.domain.model.User;
@@ -114,7 +115,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return this.restControllerService.createManyByCsv(getDomainService(), csvList, dtoType, type, request, converter, log, result, preCreate, postCreate, hints);
     }
 
-    protected ResponseEntity<?> createManyByCsvSubmit(User user, DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType taskType) {
-        return this.restControllerService.createManyByCsvSubmit(user, csvList, result, taskType);
+    protected ResponseEntity<?> createManyByCsvSubmit(User user, Business business, DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType taskType) {
+        return this.restControllerService.createManyByCsvSubmit(user, business, csvList, result, taskType);
     }
 }

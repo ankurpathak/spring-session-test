@@ -19,7 +19,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Optional;
 
-@Repository
+//@Repository
 public class GridFsFileRepository implements IFileRepository {
 
     private static final Logger log = LoggerFactory.getLogger(GridFsFileRepository.class);

@@ -7,6 +7,7 @@ import com.flipkart.zjsonpatch.*;
 import com.github.ankurpathak.api.config.RabbitConfig;
 import com.github.ankurpathak.api.constant.Params;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
+import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.model.Task;
 import com.github.ankurpathak.api.domain.model.User;
@@ -352,13 +353,13 @@ public class RestControllerService implements IRestControllerService {
     @Override
     @Transactional
     public  <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> ResponseEntity<?>
-    createManyByCsvSubmit(User user, DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType type) {
+    createManyByCsvSubmit(User user, Business business, DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType type) {
         this.restControllerResponseService.processValidation(result);
         String csvFileId = fileService.store(csvList.getCsv());
         Task task = Task.getInstance()
                 .type(type)
                 .status(Task.TaskStatus.ACCEPTED)
-                .request(Map.of("file", csvFileId, "user", user));
+                .request(Map.of("fileId", csvFileId, "user", user, "business", business));
         task = this.taskService.create(task);
         this.messageSenderService.send(new MessageContext(task, RabbitConfig.TASK_EXCHANGE, RabbitConfig.TASK_QUEUE));
         return this.restControllerResponseService.processSuccessAccepted(Map.of("obj", task));

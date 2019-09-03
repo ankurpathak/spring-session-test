@@ -167,6 +167,18 @@
             <artifactId>scribejava-apis</artifactId>
         </dependency>
         <!--/ OAuth Client -->
+        <!-- Open CSV -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+        </dependency>
+        <!--/ Open CSV -->
+        <!--AWS s3-->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+        </dependency>
+        <!--/AWS s3-->
     </dependencies>
 
     <repositories>
