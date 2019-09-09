@@ -42,4 +42,11 @@ public class PrimitiveUtils {
         }
     }
 
+    public static <T> T cast(Object obj, Class<T> t){
+        if(t.isAssignableFrom(obj.getClass()))
+            return t.cast(obj);
+        else
+            return null;
+    }
+
 }

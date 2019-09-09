@@ -86,5 +86,5 @@ public interface IRestControllerService {
     createManyByCsv(IDomainService<T, ID> domainService, DomainDtoList<T, ID, TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T, ID, TDto> converter, Logger log, BindingResult result, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate, Class<?>... hints);
 
     <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> ResponseEntity<?>
-    createManyByCsvSubmit(User user, Business business, DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType type);
+    createManyByCsvSubmit(User user, Business business, DomainDtoList<T, ID, TDto> csvList, BindingResult result, String type);
 }

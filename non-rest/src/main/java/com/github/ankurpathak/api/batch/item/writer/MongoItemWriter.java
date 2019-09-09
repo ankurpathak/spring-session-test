@@ -70,14 +70,10 @@ public class MongoItemWriter<T> implements ItemWriter<T>, InitializingBean {
             }
             else {
                 if(StringUtils.hasText(collection)) {
-                    for (Object object : items) {
-                        template.insert(object, collection);
-                    }
+                    template.insert(items, collection);
                 }
                 else {
-                    for (Object object : items) {
-                        template.insert(object);
-                    }
+                    template.insert(items);
                 }
             }
         }

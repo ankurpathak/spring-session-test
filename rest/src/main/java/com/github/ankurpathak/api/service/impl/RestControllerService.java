@@ -30,6 +30,7 @@ import com.github.ankurpathak.api.service.impl.util.ControllerUtil;
 import com.github.ankurpathak.api.service.impl.util.DuplicateKeyExceptionProcessor;
 import com.github.ankurpathak.api.service.impl.util.PagingUtil;
 import com.github.ankurpathak.api.util.LogUtil;
+import com.google.common.collect.Maps;
 import com.mongodb.bulk.BulkWriteResult;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.CsvToBean;
@@ -353,15 +354,23 @@ public class RestControllerService implements IRestControllerService {
     @Override
     @Transactional
     public  <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> ResponseEntity<?>
-    createManyByCsvSubmit(User user, Business business, DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType type) {
+    createManyByCsvSubmit(User user, Business business, DomainDtoList<T, ID, TDto> csvList, BindingResult result, String type) {
         this.restControllerResponseService.processValidation(result);
         String csvFileId = fileService.store(csvList.getCsv());
+        Map<String, String> request  = Map.of(
+                "fileId", csvFileId,
+                "userId", String.valueOf(user.getId()),
+                "businessId", String.valueOf(business.getId())
+        );
         Task task = Task.getInstance()
                 .type(type)
                 .status(Task.TaskStatus.ACCEPTED)
-                .request(Map.of("fileId", csvFileId, "user", user, "business", business));
+                .request((Map)request);
         task = this.taskService.create(task);
-        this.messageSenderService.send(new MessageContext(task, RabbitConfig.TASK_EXCHANGE, RabbitConfig.TASK_QUEUE));
+        request = Maps.newHashMap(request);
+        request.put("taskId", task.getId());
+        request.put("taskType", task.getType());
+        this.messageSenderService.send(new MessageContext(request, RabbitConfig.TASK_EXCHANGE, RabbitConfig.TASK_QUEUE));
         return this.restControllerResponseService.processSuccessAccepted(Map.of("obj", task));
     }
 }

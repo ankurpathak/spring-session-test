@@ -14,6 +14,7 @@ import org.valid4j.Assertive;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.*;
@@ -31,7 +32,8 @@ public abstract class AbstractDomainService<T extends Domain<ID>, ID extends Ser
 
     @Override
     public Optional<T> findById(final ID id) {
-        require(id, notNullValue());
+        if(Objects.isNull(id))
+            return Optional.empty();
         return dao.findById(id);
     }
 

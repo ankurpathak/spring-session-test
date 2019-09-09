@@ -13,7 +13,7 @@ public class Task extends Domain<String> implements Serializable {
 
     private TaskStatus status = TaskStatus.ACCEPTED;
 
-    private TaskType type;
+    private String type;
 
     private Map<String, Object> request;
 
@@ -24,7 +24,7 @@ public class Task extends Domain<String> implements Serializable {
         return this;
     }
 
-    public Task type(TaskType type) {
+    public Task type(String type) {
         this.type = type;
         return this;
     }
@@ -43,9 +43,9 @@ public class Task extends Domain<String> implements Serializable {
         RUNNING, COMPLETED, ACCEPTED, ERROR
     }
 
-    public enum TaskType {
-        CSV_PRODUCT,
-        CSV_CUSTOMER
+    public interface TaskType {
+        String CSV_PRODUCT = "CSV_PRODUCT";
+        String CSV_CUSTOMER = "CSV_CUSTOMER";
     }
 
     public TaskStatus getStatus() {
@@ -56,11 +56,11 @@ public class Task extends Domain<String> implements Serializable {
         this.status = status;
     }
 
-    public TaskType getType() {
+    public String  getType() {
         return type;
     }
 
-    public void setType(TaskType type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -83,6 +83,4 @@ public class Task extends Domain<String> implements Serializable {
     public static Task getInstance(){
         return new Task();
     }
-
-
 }
