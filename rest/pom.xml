@@ -169,13 +169,13 @@
             <artifactId>scribejava-apis</artifactId>
         </dependency>
         <!--/ OAuth Client -->
-        <!-- Auth0 JWT Parser -->
         <!-- Spring Security Core -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
         </dependency>
         <!--/ Spring Security Core -->
+        <!-- Auth0 JWT Parser -->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>

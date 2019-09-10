@@ -9,23 +9,19 @@ import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IBusinessService;
 import com.github.ankurpathak.api.service.IFileService;
 import com.github.ankurpathak.api.service.ITaskService;
-import com.github.ankurpathak.api.service.impl.UserService;
 import com.github.ankurpathak.api.util.PrimitiveUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Optional;
-import java.util.Properties;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
 
 public class TaskStatusListener implements JobExecutionListener {
-    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+    private static final Logger log = LoggerFactory.getLogger(TaskStatusListener.class);
 
     private final ITaskService taskService;
     private final CustomUserDetailsService userDetailsService;
