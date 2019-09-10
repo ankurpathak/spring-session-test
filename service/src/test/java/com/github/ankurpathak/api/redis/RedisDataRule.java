@@ -1,7 +1,7 @@
 package com.github.ankurpathak.api.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.AbstractIntegrationTest;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -20,8 +20,8 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
 import static org.valid4j.Assertive.require;
 
-public class RedisDataRule<SELF extends AbstractRestIntegrationTest<SELF>> implements AfterEachCallback, BeforeEachCallback, TestRule {
-    private AbstractRestIntegrationTest<SELF> test;
+public class RedisDataRule<SELF extends AbstractIntegrationTest<SELF>> implements AfterEachCallback, BeforeEachCallback, TestRule {
+    private AbstractIntegrationTest<SELF> test;
     private RedisTemplate<?, ?> template;
     private ObjectMapper objectMapper;
     private Map<String, Resource> jsons = null;
@@ -46,7 +46,7 @@ public class RedisDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
     }
 
 
-    public RedisDataRule(AbstractRestIntegrationTest<SELF> test) {
+    public RedisDataRule(AbstractIntegrationTest<SELF> test) {
         require(test, notNullValue());
         this.test = test;
     }

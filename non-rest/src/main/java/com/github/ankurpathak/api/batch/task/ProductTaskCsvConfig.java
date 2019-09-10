@@ -4,6 +4,7 @@ import com.github.ankurpathak.api.batch.item.processor.DomainItemProcessor;
 import com.github.ankurpathak.api.batch.item.processor.listener.DomainItemProcessListener;
 import com.github.ankurpathak.api.batch.item.reader.DomainItemReader;
 import com.github.ankurpathak.api.batch.item.writer.DomainItemWriter;
+ import com.github.ankurpathak.api.batch.item.writer.listener.DomainItemWriteListener;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.converter.ProductConverters;
 import com.github.ankurpathak.api.domain.model.Product;
@@ -27,6 +28,7 @@ public class ProductTaskCsvConfig extends AbstractDomainCsvTaskConfig<Product, S
         String CSV_PRODUCT_STEP = String.format("%s_STEP", Task.TaskType.CSV_PRODUCT);
         String CSV_PRODUCT_READER = String.format("%s_READER", Task.TaskType.CSV_PRODUCT);
         String CSV_PRODUCT_WRITER = String.format("%s_WRITER", Task.TaskType.CSV_PRODUCT);
+        String CSV_PRODUCT_WRITE_LISTENER = String.format("%s_WRITE_LISTENER", Task.TaskType.CSV_PRODUCT);
         String CSV_PRODUCT_PROCESSOR = String.format("%s_PROCESSOR", Task.TaskType.CSV_PRODUCT);
         String CSV_PRODUCT_PROCESS_LISTENER = String.format("%s_PROCESS_LISTENER", Task.TaskType.CSV_PRODUCT);
     }
@@ -41,10 +43,12 @@ public class ProductTaskCsvConfig extends AbstractDomainCsvTaskConfig<Product, S
         applicationContext.registerBean(ProductTask.CSV_PRODUCT_PROCESSOR, DomainItemProcessor.class, () -> itemProcessor);
         DomainItemProcessListener<ProductDto, String, Product> itemProcessListener = itemProcessListener();
         applicationContext.registerBean(ProductTask.CSV_PRODUCT_PROCESS_LISTENER, DomainItemProcessListener.class, () -> itemProcessListener);
+        DomainItemWriteListener<Product, String> itemWriteListener = itemWriteListener();
+        applicationContext.registerBean(ProductTask.CSV_PRODUCT_WRITE_LISTENER, DomainItemWriteListener.class, () -> itemWriteListener);
         Step step = step(ProductTask.CSV_PRODUCT_STEP, itemReader, itemProcessor, itemWriter, itemProcessListener);
         applicationContext.registerBean(ProductTask.CSV_PRODUCT_STEP, Step.class, () -> step);
         Job job = job(Task.TaskType.CSV_PRODUCT, step);
-        applicationContext.registerBean(ProductTask.CSV_PRODUCT_STEP, Job.class, () -> job);
+        applicationContext.registerBean(Task.TaskType.CSV_PRODUCT, Job.class, () -> job);
     }
 
     @Override
@@ -61,6 +65,4 @@ public class ProductTaskCsvConfig extends AbstractDomainCsvTaskConfig<Product, S
     protected IToDomain<Product, String, ProductDto> getConverter() {
         return ProductConverters.createOne;
     }
-
-
 }

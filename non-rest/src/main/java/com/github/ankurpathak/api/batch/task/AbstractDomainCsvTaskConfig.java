@@ -5,6 +5,7 @@ import com.github.ankurpathak.api.batch.item.processor.DomainItemProcessor;
 import com.github.ankurpathak.api.batch.item.processor.listener.DomainItemProcessListener;
 import com.github.ankurpathak.api.batch.item.reader.DomainItemReader;
 import com.github.ankurpathak.api.batch.item.writer.DomainItemWriter;
+import com.github.ankurpathak.api.batch.item.writer.listener.DomainItemWriteListener;
 import com.github.ankurpathak.api.batch.task.listener.TaskStatusListener;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
@@ -102,5 +103,7 @@ public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID exten
         return new DomainItemProcessListener<>(getType(), getDtoType());
     }
 
-
+    protected DomainItemWriteListener<T,ID> itemWriteListener(){
+        return new DomainItemWriteListener<>(getType());
+    }
 }

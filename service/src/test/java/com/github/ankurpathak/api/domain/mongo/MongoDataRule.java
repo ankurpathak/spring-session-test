@@ -1,12 +1,11 @@
 package com.github.ankurpathak.api.domain.mongo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ankurpathak.api.AbstractRestIntegrationTest;
+import com.github.ankurpathak.api.AbstractIntegrationTest;
 import com.github.ankurpathak.api.constant.Model;
 import com.github.ankurpathak.api.service.ISchemaService;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import com.mongodb.client.model.IndexOptions;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -23,20 +22,22 @@ import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
-import org.springframework.data.util.AnnotatedTypeScanner;
 import org.springframework.util.ReflectionUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.Instant;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
 import static org.valid4j.Assertive.require;
 
-public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> implements AfterEachCallback, BeforeEachCallback, TestRule {
-    private AbstractRestIntegrationTest<SELF> test;
+public class MongoDataRule<SELF extends AbstractIntegrationTest<SELF>> implements AfterEachCallback, BeforeEachCallback, TestRule {
+    private AbstractIntegrationTest<SELF> test;
     private MongoTemplate template;
     private ObjectMapper objectMapper;
     private Collection<Class<?>> collections;
@@ -84,7 +85,7 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
         return this.jsons;
     }
 
-    public MongoDataRule(AbstractRestIntegrationTest<SELF> test) {
+    public MongoDataRule(AbstractIntegrationTest<SELF> test) {
         require(test, notNullValue());
         this.test = test;
     }
@@ -129,8 +130,6 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
     private Map<String, Resource> setUpJsons() {
         Map<String, Resource> jsons = new HashMap<>();
         for(Class<?> mongoCollection : getCollections()){
-            if(!getTemplate().collectionExists(mongoCollection))
-                getTemplate().createCollection(mongoCollection);
             Document document = AnnotationUtils.findAnnotation(mongoCollection, Document.class);
             if(document != null){
                 Resource file = new ClassPathResource(String.format("%s.json", document.collection()), test.getClass());
@@ -143,10 +142,8 @@ public class MongoDataRule<SELF extends AbstractRestIntegrationTest<SELF>> imple
     }
 
 
-    private Set<Class<?>> setUpCollections(){
-        AnnotatedTypeScanner scanner = new AnnotatedTypeScanner(Document.class);
-        Set<Class<?>> collections = scanner.findTypes("com.github.ankurpathak.api.domain.model");
-        return CollectionUtils.isEmpty(collections) ? Collections.emptySet() : collections;
+    private Collection<Class<?>> setUpCollections(){
+        return schemaService.getCollections();
     }
 
 

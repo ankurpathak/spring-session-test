@@ -115,7 +115,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return this.restControllerService.createManyByCsv(getDomainService(), csvList, dtoType, type, request, converter, log, result, preCreate, postCreate, hints);
     }
 
-    protected ResponseEntity<?> createManyByCsvSubmit(User user, Business business, DomainDtoList<T, ID, TDto> csvList, BindingResult result, Task.TaskType taskType) {
+    protected ResponseEntity<?> createManyByCsvSubmit(User user, Business business, DomainDtoList<T, ID, TDto> csvList, BindingResult result, String taskType) {
         return this.restControllerService.createManyByCsvSubmit(user, business, csvList, result, taskType);
     }
 }

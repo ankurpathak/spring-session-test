@@ -1,34 +1,32 @@
-package com.github.ankurpathak.api.batch.item.processor.listener;
+package com.github.ankurpathak.api.batch.item.writer.listener;
 
 import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Domain;
 import com.github.ankurpathak.api.domain.model.Task;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.repository.dto.FileContext;
-import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.util.PrimitiveUtils;
-import org.springframework.batch.core.ItemProcessListener;
+import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 
 import java.io.Serializable;
+import java.util.List;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.valid4j.Assertive.ensure;
 
 
-public class DomainItemProcessListener<Tdto extends DomainDto<T, ID>, ID extends Serializable, T extends Domain<ID>> implements ItemProcessListener<Tdto,  T> {
+public class DomainItemWriteListener<T extends Domain<ID>, ID extends Serializable> implements ItemWriteListener<T> {
 
     private Task task;
     private User user;
     private Business business;
     private FileContext file;
     private final Class<T> tClass;
-    private final Class<Tdto> tdtoClass;
 
-    public DomainItemProcessListener(Class<T> tClass, Class<Tdto> tdtoClass) {
+    public DomainItemWriteListener(Class<T> tClass) {
         this.tClass = tClass;
-        this.tdtoClass = tdtoClass;
     }
 
     @BeforeStep
@@ -43,12 +41,19 @@ public class DomainItemProcessListener<Tdto extends DomainDto<T, ID>, ID extends
         ensure(this.file, notNullValue());
     }
 
-    @Override
-    public void beforeProcess(Tdto item) { }
 
     @Override
-    public void afterProcess(Tdto item, T result) { }
+    public void beforeWrite(List<? extends T> items) {
+
+    }
 
     @Override
-    public void onProcessError(Tdto item, Exception e) { }
+    public void afterWrite(List<? extends T> items) {
+
+    }
+
+    @Override
+    public void onWriteError(Exception exception, List<? extends T> items) {
+
+    }
 }
