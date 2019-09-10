@@ -37,7 +37,7 @@
             <scope>provided</scope>
         </dependency>
         <!-- Spring Boot Security -->
-        <!-- Spring Boot Web-->
+        <!-- Spring Web-->
         <dependency>
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf</artifactId>
@@ -48,19 +48,26 @@
             <artifactId>spring-web</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- Spring Boot Web-->
+        <!--\ Spring Web-->
+        <!-- Servlet API -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!--\ Servlet API -->
         <!-- Spring Boot Data MongoDB -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-mongodb</artifactId>
         </dependency>
-        <!-- Spring Boot Data MongoDB -->
+        <!--\ Spring Boot Data MongoDB -->
         <!-- Spring Data Redis -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-redis</artifactId>
         </dependency>
-        <!--/ Spring Data Redis -->
+        <!--\ Spring Data Redis -->
         <!-- Apache Commons -->
         <dependency>
             <groupId>commons-io</groupId>
