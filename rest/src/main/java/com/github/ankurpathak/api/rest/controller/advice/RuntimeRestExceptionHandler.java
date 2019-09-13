@@ -29,6 +29,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.valid4j.errors.ContractViolation;
 import org.valid4j.errors.EnsureViolation;
 import org.valid4j.errors.RequireViolation;
+import com.opencsv.exceptions.CsvException;
 
 
 @RestControllerAdvice

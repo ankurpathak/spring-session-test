@@ -12,6 +12,7 @@ import com.github.ankurpathak.api.service.ICustomerService;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IRestControllerService;
 import com.github.ankurpathak.api.util.LogUtil;
+import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -66,7 +67,7 @@ public class CustomerController extends AbstractRestController<Customer, Custome
 
 
     @PostMapping(PATH_CUSTOMER_UPLOAD)
-    public ResponseEntity<?> createMany(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Customer, CustomerId, CustomerDto> csvList, BindingResult result){
+    public ResponseEntity<?> createMany(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Customer, CustomerId, CustomerDto> csvList, BindingResult result) throws CsvException {
         return createManyByCsv(csvList, CustomerDto.class, Customer.class, request, CustomerConverters.createOne, log,result,(rest, list) -> {
             Map<String, CustomerDto> dtoListMap = list.getDtos().stream().collect(Collectors.toMap(CustomerDto::getPhone, Function.identity()));
             service.processUsers(business, dtoListMap)

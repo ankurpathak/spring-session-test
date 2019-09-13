@@ -15,7 +15,6 @@ import com.github.ankurpathak.api.domain.repository.dto.MessageContext;
 import com.github.ankurpathak.api.domain.updater.IUpdateDomain;
 import com.github.ankurpathak.api.event.DomainCreatedEvent;
 import com.github.ankurpathak.api.event.PaginatedResultsRetrievedEvent;
-import com.github.ankurpathak.api.exception.CsvException;
 import com.github.ankurpathak.api.exception.FoundException;
 import com.github.ankurpathak.api.exception.InvalidException;
 import com.github.ankurpathak.api.exception.NotFoundException;
@@ -31,8 +30,10 @@ import com.github.ankurpathak.api.service.impl.util.DuplicateKeyExceptionProcess
 import com.github.ankurpathak.api.service.impl.util.PagingUtil;
 import com.github.ankurpathak.api.util.LogUtil;
 import com.github.ankurpathak.api.util.OpenCsvBeanReader;
+import com.github.ankurpathak.api.util.WebUtil;
 import com.google.common.collect.Maps;
 import com.mongodb.bulk.BulkWriteResult;
+import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
@@ -310,7 +311,7 @@ public class RestControllerService implements IRestControllerService {
     }
 
     private <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> DomainDtoList<T, ID, TDto>
-    csvToDomainDtoList(MultipartFile csv, Class<TDto> dtoType, Logger log) {
+    csvToDomainDtoList(MultipartFile csv, Class<TDto> dtoType, Logger log) throws CsvException {
         List<TDto> dtos = Collections.emptyList();
         try (OpenCsvBeanReader<TDto> reader = new OpenCsvBeanReader<>(csv.getResource(), dtoType)) {
             dtos = reader.readLines();
@@ -318,7 +319,18 @@ public class RestControllerService implements IRestControllerService {
             LogUtil.logStackTrace(log, ex);
         } catch (RuntimeException ex) {
             LogUtil.logStackTrace(log, ex);
-            throw new CsvException(ex.getMessage(), ex, csv.getOriginalFilename());
+            WebUtil.getRequest().ifPresent((request -> {
+                request.setAttribute(RuntimeException.class.getName(), ex.getMessage());
+            }));
+            if(ex.getCause() instanceof CsvException) {
+                WebUtil.getRequest().ifPresent((request -> {
+                    request.setAttribute(MultipartFile.class.getName(), csv.getOriginalFilename());
+                }));
+                throw ((CsvException) ex.getCause());
+            } else {
+                throw ex;
+            }
+
         }
         DomainDtoList<T, ID, TDto> dtoList = new DomainDtoList<>();
         return dtoList.dtos(dtos);
@@ -327,7 +339,7 @@ public class RestControllerService implements IRestControllerService {
     @Transactional
     @Override
     public  <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> ResponseEntity<?>
-    createManyByCsv(IDomainService<T, ID> domainService, DomainDtoList<T, ID, TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T, ID, TDto> converter, Logger log, BindingResult result, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate, Class<?>... hints) {
+    createManyByCsv(IDomainService<T, ID> domainService, DomainDtoList<T, ID, TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T, ID, TDto> converter, Logger log, BindingResult result, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate, Class<?>... hints) throws CsvException {
         this.restControllerResponseService.processValidation(result);
         DomainDtoList<T, ID, TDto> list = csvToDomainDtoList(csvList.getCsv(), dtoType, log);
         BindException exception = new BindException(list, list.getClass().getSimpleName());

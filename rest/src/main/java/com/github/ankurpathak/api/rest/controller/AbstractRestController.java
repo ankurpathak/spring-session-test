@@ -13,6 +13,7 @@ import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IRestControllerService;
 import com.github.ankurpathak.api.service.callback.*;
+import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -111,7 +112,7 @@ public abstract class AbstractRestController<T extends Domain<ID>, ID extends Se
         return this.restControllerService.patch(getDomainService(), patch, t, converter, updater, dtoType, hints);
     }
 
-    protected ResponseEntity<?> createManyByCsv(DomainDtoList<T, ID, TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T, ID, TDto> converter, Logger log, BindingResult result, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate, Class<?>... hints) {
+    protected ResponseEntity<?> createManyByCsv(DomainDtoList<T, ID, TDto> csvList, Class<TDto> dtoType, Class<T> type, HttpServletRequest request, IToDomain<T, ID, TDto> converter, Logger log, BindingResult result, IPreCreateMany<T, ID, TDto> preCreate, IPostCreateMany<T, ID, TDto> postCreate, Class<?>... hints) throws CsvException {
         return this.restControllerService.createManyByCsv(getDomainService(), csvList, dtoType, type, request, converter, log, result, preCreate, postCreate, hints);
     }
 

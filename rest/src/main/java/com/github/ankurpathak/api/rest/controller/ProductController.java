@@ -14,6 +14,7 @@ import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
 import com.github.ankurpathak.api.service.IDomainService;
 import com.github.ankurpathak.api.service.IProductService;
 import com.github.ankurpathak.api.service.IRestControllerService;
+import com.opencsv.exceptions.CsvException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -58,7 +59,7 @@ public class ProductController extends AbstractRestController<Product, String, P
 
 
     @PostMapping(PATH_SERVICE_UPLOAD)
-    public ResponseEntity<?> createManyCsv(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Product, String, ProductDto> csvList, BindingResult result){
+    public ResponseEntity<?> createManyCsv(@CurrentBusiness Business business, HttpServletRequest request, HttpServletResponse response, @Validated(DomainDtoList.Upload.class) DomainDtoList<Product, String, ProductDto> csvList, BindingResult result) throws CsvException {
         return createManyByCsv(csvList, ProductDto.class, Product.class, request, ProductConverters.createOne, log,result, (rest, list) -> {}, (rest, list, count) -> {}, Default.class);
     }
 
