@@ -6,6 +6,7 @@ import com.github.ankurpathak.api.domain.repository.dto.FileContext;
 import com.github.ankurpathak.api.exception.ServiceException;
 import com.github.ankurpathak.api.util.LogUtil;
 import com.github.ankurpathak.api.util.PathUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -40,6 +41,7 @@ public class AmazonS3FileRepository implements IFileRepository {
     @Override
     public String store(InputStream is, String fileName, String mime, Map<String, String> meta)  {
         try{
+           // meta.put("fileName", fileName);
             String key = String.format("%s-%s", UUID.randomUUID().toString().replaceAll("-",""), fileName);
             Path tempPath = PathUtils.createTempPath(String.format("%s-",FilenameUtils.getBaseName(fileName)), String.format(".%s",FilenameUtils.getExtension(fileName)));
             FileUtils.copyInputStreamToFile(is, tempPath.toFile());
@@ -74,6 +76,7 @@ public class AmazonS3FileRepository implements IFileRepository {
             Map<String, String> meta = response.metadata();
             return Optional.of(FileContext.getInstance()
                     .path(tempFile)
+                    .fileName(MapUtils.getString(meta, "fileName"))
                     .mime(response.contentType())
                     .meta(response.metadata()));
 

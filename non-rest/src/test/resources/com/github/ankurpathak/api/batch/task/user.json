@@ -19,7 +19,8 @@
       "value" : "+917385500660"
     },
     "password" : "{bcrypt}$2a$10$lunZUailKbXQy2MvEpRXc.XkU4LTUf/uQHC9OqG0wn0F8g.G3FCqG",
-    "enabled":  true
+    "enabled":  true,
+    "businessIds" : ["1"]
   },
   {
     "_id" : "3",

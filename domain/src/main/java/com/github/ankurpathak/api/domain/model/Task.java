@@ -2,10 +2,14 @@ package com.github.ankurpathak.api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.ankurpathak.api.constant.Model;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Document(collection = Model.Task.TASK)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -31,6 +35,26 @@ public class Task extends Domain<String> implements Serializable {
 
     public Task request(Map<String, Object> request) {
         this.request = request;
+        return this;
+    }
+
+    public Task addRequestParam(String key, Object value){
+        if(MapUtils.isEmpty(this.request)){
+            this.request = new HashMap<>();
+        }
+        if(StringUtils.isNotEmpty(key) && Objects.nonNull(value)){
+            this.request.put(key, value);
+        }
+        return this;
+    }
+
+    public Task addResponseParam(String key, Object value){
+        if(MapUtils.isEmpty(this.response)){
+            this.response = new HashMap<>();
+        }
+        if(StringUtils.isNotEmpty(key) && Objects.nonNull(value)){
+            this.response.put(key, value);
+        }
         return this;
     }
 

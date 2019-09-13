@@ -10,6 +10,7 @@ public interface SchemaConstants {
             "Sequences",
             "JobInstance",
             "JobExecution",
-            "ExecutionContext"
+            "ExecutionContext",
+            "StepExecution"
     };
 }

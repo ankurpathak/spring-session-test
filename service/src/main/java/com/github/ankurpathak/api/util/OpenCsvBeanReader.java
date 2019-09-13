@@ -1,10 +1,10 @@
 package com.github.ankurpathak.api.util;
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
-import com.opencsv.bean.MappingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -36,19 +36,19 @@ public class OpenCsvBeanReader<T> implements AutoCloseable{
         this.tClass = tClass;
     }
 
-    public void init() throws Exception{
+    public void init() throws IOException {
         this.inputStreamReader = new InputStreamReader(resource.getInputStream());
         this.bufferedReader = new BufferedReader(this.inputStreamReader);
-        this.csvReader = new CSVReader(this.bufferedReader);
-        MappingStrategy<T> ms = new HeaderColumnNameMappingStrategy<T>();
+        this.csvReader = new CSVReader(bufferedReader);
+        HeaderColumnNameMappingStrategy<T> ms = new HeaderColumnNameMappingStrategy<>();
         ms.setType(this.tClass);
+
         this.csvToBean = new CsvToBeanBuilder<T>(this.csvReader)
             .withType(tClass)
             .withIgnoreLeadingWhiteSpace(true)
             .withThrowExceptions(true)
             .withMappingStrategy(ms)
             .build();
-        this.it = this.csvToBean.iterator();
     }
 
 
@@ -69,20 +69,27 @@ public class OpenCsvBeanReader<T> implements AutoCloseable{
     }
 
 
-    public Optional<T> readLine() throws Exception {
-        if (this.it == null)
-                init();
+    public String [] readHeaders(){
+        return null;
+    }
+
+    public Optional<T> readLine() throws IOException {
+        if (this.csvToBean == null){
+            init();
+            it = csvToBean.iterator();
+        }
+
         return it.hasNext() ? Optional.of(it.next()): Optional.empty();
     }
 
-    public List<T> readLines() throws Exception {
+    public List<T> readLines() throws IOException {
         if(this.it == null)
             init();
         return this.csvToBean.parse();
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
         shutDown();
     }
 }

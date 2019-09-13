@@ -30,12 +30,9 @@ import com.github.ankurpathak.api.service.impl.util.ControllerUtil;
 import com.github.ankurpathak.api.service.impl.util.DuplicateKeyExceptionProcessor;
 import com.github.ankurpathak.api.service.impl.util.PagingUtil;
 import com.github.ankurpathak.api.util.LogUtil;
+import com.github.ankurpathak.api.util.OpenCsvBeanReader;
 import com.google.common.collect.Maps;
 import com.mongodb.bulk.BulkWriteResult;
-import com.opencsv.CSVReader;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
@@ -53,9 +50,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -316,25 +311,15 @@ public class RestControllerService implements IRestControllerService {
 
     private <T extends Domain<ID>, ID extends Serializable, TDto extends DomainDto<T, ID>> DomainDtoList<T, ID, TDto>
     csvToDomainDtoList(MultipartFile csv, Class<TDto> dtoType, Logger log) {
-        HeaderColumnNameMappingStrategy<TDto> ms = new HeaderColumnNameMappingStrategy<>();
-        ms.setType(dtoType);
         List<TDto> dtos = Collections.emptyList();
-        try (CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(csv.getInputStream())))
-        ) {
-            CsvToBean<TDto> cb = new CsvToBeanBuilder<TDto>(reader)
-                    .withType(dtoType)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .withThrowExceptions(true)
-                    .withMappingStrategy(ms)
-                    .build();
-            dtos = cb.parse();
+        try (OpenCsvBeanReader<TDto> reader = new OpenCsvBeanReader<>(csv.getResource(), dtoType)) {
+            dtos = reader.readLines();
         } catch (IOException ex) {
             LogUtil.logStackTrace(log, ex);
         } catch (RuntimeException ex) {
             LogUtil.logStackTrace(log, ex);
             throw new CsvException(ex.getMessage(), ex, csv.getOriginalFilename());
         }
-
         DomainDtoList<T, ID, TDto> dtoList = new DomainDtoList<>();
         return dtoList.dtos(dtos);
     }
@@ -360,7 +345,8 @@ public class RestControllerService implements IRestControllerService {
         Map<String, String> request  = Map.of(
                 "fileId", csvFileId,
                 "userId", String.valueOf(user.getId()),
-                "businessId", String.valueOf(business.getId())
+                "businessId", String.valueOf(business.getId()),
+                "taskType", type
         );
         Task task = Task.getInstance()
                 .type(type)
@@ -369,7 +355,6 @@ public class RestControllerService implements IRestControllerService {
         task = this.taskService.create(task);
         request = Maps.newHashMap(request);
         request.put("taskId", task.getId());
-        request.put("taskType", task.getType());
         this.messageSenderService.send(new MessageContext(request, RabbitConfig.TASK_EXCHANGE, RabbitConfig.TASK_QUEUE));
         return this.restControllerResponseService.processSuccessAccepted(Map.of("obj", task));
     }

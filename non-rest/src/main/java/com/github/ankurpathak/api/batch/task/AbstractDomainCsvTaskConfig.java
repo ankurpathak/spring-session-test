@@ -13,6 +13,7 @@ import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IBusinessService;
 import com.github.ankurpathak.api.service.IFileService;
+import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.ITaskService;
 import org.springframework.batch.core.ItemProcessListener;
 import org.springframework.batch.core.Job;
@@ -53,13 +54,14 @@ public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID exten
     @Autowired
     protected MongoTemplate mongoTemplate;
 
-
+    @Autowired
+    protected IMessageService messageService;
 
 
     protected Job job(String name, Step step){
         return this.jobBuilderFactory.get(name)
                 .incrementer(new RunIdIncrementer())
-                .listener(new TaskStatusListener(taskService, userDetailsService, businessService, fileService))
+                .listener(new TaskStatusListener(taskService, userDetailsService, businessService, fileService, messageService))
                 .start(step).build();
     }
 

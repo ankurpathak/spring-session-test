@@ -7,7 +7,6 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,29 +15,29 @@ public class MongoItemWriter<T> implements ItemWriter<T>, InitializingBean {
 
     private MongoOperations template;
     private final Object bufferKey;
-    private String collection;
-    private boolean delete = false;
+    private Class<T> type;
 
     public MongoItemWriter() {
         super();
         this.bufferKey = new Object();
     }
 
-    public void setDelete(boolean delete) {
-        this.delete = delete;
+    public void setType(Class<T> type) {
+        this.type = type;
     }
-
 
     public void setTemplate(MongoOperations template) {
         this.template = template;
     }
 
-    protected MongoOperations getTemplate() {
-        return template;
+    public Class<T> getType() {
+        return type;
     }
 
-        public void setCollection(String collection) {
-        this.collection = collection;
+
+
+    protected MongoOperations getTemplate() {
+        return template;
     }
 
 
@@ -55,28 +54,7 @@ public class MongoItemWriter<T> implements ItemWriter<T>, InitializingBean {
 
 
     protected void doWrite(List<? extends T> items) {
-        if(! CollectionUtils.isEmpty(items)) {
-            if(delete) {
-                if(StringUtils.hasText(collection)) {
-                    for (Object object : items) {
-                        template.remove(object, collection);
-                    }
-                }
-                else {
-                    for (Object object : items) {
-                        template.remove(object);
-                    }
-                }
-            }
-            else {
-                if(StringUtils.hasText(collection)) {
-                    template.insert(items, collection);
-                }
-                else {
-                    template.insert(items);
-                }
-            }
-        }
+        template.insertAll(items);
     }
 
     private boolean transactionActive() {

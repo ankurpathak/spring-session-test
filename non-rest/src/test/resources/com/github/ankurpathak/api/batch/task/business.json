@@ -1,0 +1,18 @@
+[
+  {
+    "_id" : "1",
+    "name" : "Example Pvt Ltd",
+    "tags" : ["RENTAL"]
+  },
+
+  {
+    "_id" : "2",
+    "name" : "Modi Pvt Ltd",
+    "tags" : ["RENTAL"]
+  },
+  {
+    "_id" : "3",
+    "name" : "Jhool Pvt Ltd",
+    "tags" : ["RENTAL"]
+  }
+]

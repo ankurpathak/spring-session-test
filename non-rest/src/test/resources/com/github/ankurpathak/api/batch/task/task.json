@@ -1,0 +1,12 @@
+[
+  {
+    "status" : "ACCEPTED",
+    "type" : "CSV_PRODUCT",
+    "request" : {
+      "businessId" : "1",
+      "userId" : "2",
+      "taskType" : ""
+    },
+    "_class" : "com.github.ankurpathak.api.domain.model.Task"
+  }
+]

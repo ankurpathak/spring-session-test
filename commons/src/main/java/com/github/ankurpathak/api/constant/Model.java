@@ -53,6 +53,7 @@ public interface Model {
             String PHONE = "phone";
             String PHONE_VALUE = "phone.value";
             String USERNAME = "username";
+            String BUSINESS_IDS = "businessIds";
 
         }
 

@@ -294,14 +294,4 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
                 .andExpect(authenticated())
                 .andExpect(jsonPath("$.code", equalTo(0)));
     }
-
-
-
-
-
-
-
-
-
-
 }

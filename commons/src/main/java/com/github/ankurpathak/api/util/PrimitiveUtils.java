@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 public class PrimitiveUtils {
 
@@ -42,9 +43,9 @@ public class PrimitiveUtils {
         }
     }
 
-    public static <T> T cast(Object obj, Class<T> t){
-        if(t.isAssignableFrom(obj.getClass()))
-            return t.cast(obj);
+    public static <T> T cast(Object obj, Class<T> type){
+        if(Objects.nonNull(type) && Objects.nonNull(type) && type.isAssignableFrom(obj.getClass()))
+            return type.cast(obj);
         else
             return null;
     }

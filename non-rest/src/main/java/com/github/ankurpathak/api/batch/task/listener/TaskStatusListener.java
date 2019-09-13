@@ -5,9 +5,13 @@ import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Task;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.repository.dto.FileContext;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
+import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
 import com.github.ankurpathak.api.security.service.CustomUserDetailsService;
 import com.github.ankurpathak.api.service.IBusinessService;
 import com.github.ankurpathak.api.service.IFileService;
+import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.ITaskService;
 import com.github.ankurpathak.api.util.PrimitiveUtils;
 import org.slf4j.Logger;
@@ -15,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.notNullValue;
@@ -27,13 +32,15 @@ public class TaskStatusListener implements JobExecutionListener {
     private final CustomUserDetailsService userDetailsService;
     private final IBusinessService businessService;
     private final IFileService fileService;
+    private final IMessageService messageService;
 
 
-    public TaskStatusListener(ITaskService taskService, CustomUserDetailsService userDetailsService, IBusinessService businessService, IFileService fileService) {
+    public TaskStatusListener(ITaskService taskService, CustomUserDetailsService userDetailsService, IBusinessService businessService, IFileService fileService, IMessageService messageService) {
         this.taskService = taskService;
         this.userDetailsService = userDetailsService;
         this.businessService = businessService;
         this.fileService = fileService;
+        this.messageService = messageService;
     }
 
 
@@ -55,14 +62,16 @@ public class TaskStatusListener implements JobExecutionListener {
         taskService.update(task.get());
     }
 
-
-
-
     @Override
     public void afterJob(JobExecution jobExecution) {
         Task task= (Task) PrimitiveUtils.cast(jobExecution.getExecutionContext().get("task"), Task.class);
         ensure(task, notNullValue());
-        task.status(Task.TaskStatus.COMPLETED);
-        taskService.update(task);
+        if(Objects.equals(task.getStatus(), Task.TaskStatus.RUNNING)){
+            task.status(Task.TaskStatus.COMPLETED);
+            task.addRequestParam("taskId", task.getId());
+            task.response(ApiResponse.getInstance(ApiCode.SUCCESS, messageService.getMessage(ApiMessages.SUCCESS)).getExtras());
+            taskService.update(task);
+        }
+
     }
 }
