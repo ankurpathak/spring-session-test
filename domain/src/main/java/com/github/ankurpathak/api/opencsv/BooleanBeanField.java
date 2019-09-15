@@ -1,4 +1,4 @@
-package com.github.ankurpathak.api.csv;
+package com.github.ankurpathak.api.opencsv;
 
 import com.opencsv.bean.AbstractBeanField;
 import com.opencsv.exceptions.CsvConstraintViolationException;

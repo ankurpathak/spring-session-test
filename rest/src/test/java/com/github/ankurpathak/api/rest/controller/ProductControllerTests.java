@@ -2,10 +2,11 @@ package com.github.ankurpathak.api.rest.controller;
 
 import com.github.ankurpathak.api.AbstractRestIntegrationTest;
 import com.github.ankurpathak.api.SpringSessionTestApplication;
-import com.github.ankurpathak.api.constant.Params;
-import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
 import com.github.ankurpathak.api.config.test.MongoConfig;
 import com.github.ankurpathak.api.config.test.RedisConfig;
+import com.github.ankurpathak.api.constant.Params;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
+import com.github.ankurpathak.api.rest.controllor.dto.ProductDto;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -101,6 +102,35 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
                 .andExpect(jsonPath("$.code", equalTo(0)));
     }
 
+    @Test
+    public void testServicesCsvHeaderFieldMismatch() throws Exception {
+        Resource csv = new ClassPathResource("service-header-field-mismatch.csv", this.getClass());
+        MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
+
+        mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD)).file(csvFile)
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(ApiCode.INVALID_CSV.getCode())));
+    }
+
+    @Test
+    public void testServicesCsvMissingRequiredField() throws Exception {
+        Resource csv = new ClassPathResource("service-missing-required-field.csv", this.getClass());
+        MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
+
+        mockMvc.perform(multipart(apiPath(PATH_SERVICE_UPLOAD)).file(csvFile)
+                .with(authentication(token("+918000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(ApiCode.INVALID_CSV.getCode())));
+    }
+
+
     @Test // Enable Name Index on product To Test
     @Ignore
     public void testServicesCsvWithDuplicates() throws Exception {
@@ -128,7 +158,7 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
                 .andDo(print())
                 .andExpect(status().isConflict())
                 .andExpect(authenticated())
-                .andExpect(jsonPath("$.code", equalTo(5)));
+                .andExpect(jsonPath("$.code", equalTo(ApiCode.INVALID_CSV.getCode())));
     }
 
     @Test
@@ -142,7 +172,7 @@ public class ProductControllerTests extends AbstractRestIntegrationTest<ProductC
                 .andDo(print())
                 .andExpect(status().isConflict())
                 .andExpect(authenticated())
-                .andExpect(jsonPath("$.code", equalTo(5)));
+                .andExpect(jsonPath("$.code", equalTo(ApiCode.INVALID_CSV.getCode())));
     }
 
 

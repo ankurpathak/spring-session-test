@@ -34,6 +34,7 @@ import com.github.ankurpathak.api.util.WebUtil;
 import com.google.common.collect.Maps;
 import com.mongodb.bulk.BulkWriteResult;
 import com.opencsv.exceptions.CsvException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
@@ -319,12 +320,11 @@ public class RestControllerService implements IRestControllerService {
             LogUtil.logStackTrace(log, ex);
         } catch (RuntimeException ex) {
             LogUtil.logStackTrace(log, ex);
-            WebUtil.getRequest().ifPresent((request -> {
-                request.setAttribute(RuntimeException.class.getName(), ex.getMessage());
-            }));
             if(ex.getCause() instanceof CsvException) {
                 WebUtil.getRequest().ifPresent((request -> {
                     request.setAttribute(MultipartFile.class.getName(), csv.getOriginalFilename());
+                    request.setAttribute(RuntimeException.class.getName(), ex.getMessage());
+                    request.setAttribute(CsvException.class.getName(), ex.getCause().getMessage());
                 }));
                 throw ((CsvException) ex.getCause());
             } else {

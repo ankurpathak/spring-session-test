@@ -2,10 +2,11 @@ package com.github.ankurpathak.api.batch.task;
 
 import com.github.ankurpathak.api.AbstractBatchIntegrationTest;
 import com.github.ankurpathak.api.NonRestCmdApplication;
-import com.github.ankurpathak.api.config.test.TaskConfig;
 import com.github.ankurpathak.api.config.test.MongoConfig;
 import com.github.ankurpathak.api.config.test.RedisConfig;
+import com.github.ankurpathak.api.config.test.TaskConfig;
 import com.github.ankurpathak.api.domain.model.Task;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.service.IFileService;
 import com.github.ankurpathak.api.service.ITaskService;
 import org.junit.Test;
@@ -23,7 +24,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Map;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest
@@ -61,10 +65,18 @@ public class ProductCsvTaskTests extends AbstractBatchIntegrationTest<ProductCsv
                 .toJobParameters();
         Job job = jobLauncherTestUtils.getJob();
         jobLauncherTestUtils.launchJob(jps);
+        Task taskResult = taskService.findAll().stream().findFirst().orElse(null);
+        assertThat(taskResult).isNotNull();
+        assertThat(taskResult.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
+        assertThat(taskResult.getResponse()).isNotNull()
+                .isNotEmpty()
+                .containsAllEntriesOf(Map.of("code", ApiCode.SUCCESS.getCode()))
+                .containsKey("message")
+                .containsValue("Success.");
     }
 
     @Test
-    public void testLaunchCorrectCsvEmpty() throws Exception {
+    public void testLaunchCsvEmpty() throws Exception {
         Resource csv = new ClassPathResource("service-empty.csv", this.getClass());
         MockMultipartFile csvMf = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
         String fileId = fileService.store(csvMf);
@@ -83,6 +95,14 @@ public class ProductCsvTaskTests extends AbstractBatchIntegrationTest<ProductCsv
                 .toJobParameters();
         Job job = jobLauncherTestUtils.getJob();
         jobLauncherTestUtils.launchJob(jps);
+        Task taskResult = taskService.findAll().stream().findFirst().orElse(null);
+
+        assertThat(taskResult).isNotNull();
+        assertThat(taskResult.getStatus()).isEqualTo(Task.TaskStatus.ERROR);
+        assertThat(taskResult.getResponse()).isNotNull()
+                .isNotEmpty()
+                .containsAllEntriesOf(Map.of("code", ApiCode.INVALID_CSV.getCode()))
+                .containsKey("message");
     }
 
     @Test
@@ -105,5 +125,12 @@ public class ProductCsvTaskTests extends AbstractBatchIntegrationTest<ProductCsv
                 .toJobParameters();
         Job job = jobLauncherTestUtils.getJob();
         jobLauncherTestUtils.launchJob(jps);
+        Task taskResult = taskService.findAll().stream().findFirst().orElse(null);
+        assertThat(taskResult.getStatus()).isEqualTo(Task.TaskStatus.ERROR);
+        assertThat(taskResult).isNotNull();
+        assertThat(taskResult.getResponse()).isNotNull()
+                .isNotEmpty()
+                .containsAllEntriesOf(Map.of("code", ApiCode.INVALID_CSV.getCode()))
+                .containsKey("message");
     }
 }

@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.batch.item.processor.DomainItemProcessor;
 import com.github.ankurpathak.api.batch.item.processor.listener.DomainItemProcessListener;
 import com.github.ankurpathak.api.batch.item.reader.DomainItemReader;
+import com.github.ankurpathak.api.batch.item.reader.listener.DomainItemReadListener;
 import com.github.ankurpathak.api.batch.item.writer.DomainItemWriter;
 import com.github.ankurpathak.api.batch.item.writer.listener.DomainItemWriteListener;
+import com.github.ankurpathak.api.batch.task.exception.handler.CsvExceptionHandler;
+import com.github.ankurpathak.api.batch.task.exception.handler.ExceptionHandler;
 import com.github.ankurpathak.api.batch.task.listener.TaskStatusListener;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
@@ -15,9 +18,7 @@ import com.github.ankurpathak.api.service.IBusinessService;
 import com.github.ankurpathak.api.service.IFileService;
 import com.github.ankurpathak.api.service.IMessageService;
 import com.github.ankurpathak.api.service.ITaskService;
-import org.springframework.batch.core.ItemProcessListener;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -74,12 +75,14 @@ public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID exten
 
 
 
-    protected Step step(String name, ItemReader<Tdto> itemReader, ItemProcessor<Tdto, T> itemProcessor, ItemWriter<T> itemWriter, ItemProcessListener<Tdto, T> itemProcessListener) throws Exception{
+    protected Step step(String name, ItemReader<Tdto> itemReader, ItemProcessor<Tdto, T> itemProcessor, ItemWriter<T> itemWriter, ItemReadListener<Tdto> itemReadListener, ItemProcessListener<Tdto, T> itemProcessListener, ItemWriteListener<T> itemWriteListener) throws Exception{
         return this.stepBuilderFactory.get(name)
                 .<Tdto, T>chunk(10)
                 .reader(itemReader)
                 .processor(itemProcessor)
+                .listener(itemReadListener)
                 .listener(itemProcessListener)
+                .listener(itemWriteListener)
                 .writer(itemWriter)
                 .build();
     }
@@ -103,6 +106,10 @@ public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID exten
 
     protected DomainItemProcessListener<Tdto,ID, T> itemProcessListener(){
         return new DomainItemProcessListener<>(getType(), getDtoType());
+    }
+
+    protected DomainItemReadListener<Tdto,ID, T> itemReadListener(){
+        return new DomainItemReadListener<>(getDtoType(), taskService, new CsvExceptionHandler(messageService), new ExceptionHandler(messageService));
     }
 
     protected DomainItemWriteListener<T,ID> itemWriteListener(){

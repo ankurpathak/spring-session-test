@@ -32,8 +32,8 @@ public class LogUtil {
     }
 
     public static void logStackTrace(Logger log, Throwable ex){
-        String stacktrace = ExceptionUtils.getStackTrace(ex);
-        log.error(MESSAGE_EXCEPTION, stacktrace);
+        String stackTrace = ExceptionUtils.getStackTrace(ex);
+        log.error(MESSAGE_EXCEPTION, stackTrace);
     }
 
 

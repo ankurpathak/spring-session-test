@@ -35,6 +35,7 @@ public class CsvExceptionHandler{
         log.error("{} message: {} cause: {}",ex.getClass().getSimpleName(),  ex.getMessage(), ex.getCause());
         LogUtil.logStackTrace(log, ex);
         List<String> hints = new ArrayList<>();
+        hints.add(PrimitiveUtils.cast(request.getAttribute(CsvException.class.getName(), RequestAttributes.SCOPE_REQUEST), String.class));
         hints.add(PrimitiveUtils.cast(request.getAttribute(RuntimeException.class.getName(), RequestAttributes.SCOPE_REQUEST), String.class));
         return advice.handleExceptionInternal(
                 ex,

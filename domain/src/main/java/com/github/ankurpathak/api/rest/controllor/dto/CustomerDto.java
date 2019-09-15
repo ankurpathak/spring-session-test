@@ -23,7 +23,7 @@ public class CustomerDto extends DomainDto<Customer,CustomerId> {
 
     @Contact
     @NotBlank
-    @CsvBindByName(column = CsvConstant.Customer.PHONE)
+    @CsvBindByName(column = CsvConstant.Customer.PHONE, required = true)
     private String phone;
 
 

@@ -27,19 +27,13 @@ public class DomainContext extends WebAuthenticationDetails implements Serializa
     public BigInteger getRequestedBusinessId() {
         return requestedBusinessId;
     }
-
     public boolean isAsync() { return this.isAsync; }
-
-
     public boolean isOtpFlow() {
         return isOtpFlow;
     }
-
-
     public Business getBusiness() {
         return business;
     }
-
     public void setBusiness(Business business) {
         this.business = business;
     }

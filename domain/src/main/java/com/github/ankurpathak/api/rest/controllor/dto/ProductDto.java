@@ -3,8 +3,8 @@ package com.github.ankurpathak.api.rest.controllor.dto;
 import com.github.ankurpathak.api.constant.CsvConstant;
 import com.github.ankurpathak.api.constraint.BigDecimalMin;
 import com.github.ankurpathak.api.constraint.VariableOrAmount;
-import com.github.ankurpathak.api.csv.BooleanBeanField;
 import com.github.ankurpathak.api.domain.model.Product;
+import com.github.ankurpathak.api.opencsv.BooleanBeanField;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvCustomBindByName;
@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @VariableOrAmount(groups = {Default.class})
 public class ProductDto extends DomainDto<Product, String> {
     @NotBlank(groups = {Default.class})
-    @CsvBindByName(column = CsvConstant.Product.NAME)
+    @CsvBindByName(column = CsvConstant.Product.NAME, required = true)
     private String name;
 
 
@@ -30,7 +30,7 @@ public class ProductDto extends DomainDto<Product, String> {
     private BigDecimal tax;
 
     @NotNull(groups = {Default.class})
-    @CsvCustomBindByName(column = CsvConstant.Product.VARIABLE, converter = BooleanBeanField.class)
+    @CsvCustomBindByName(column = CsvConstant.Product.VARIABLE, converter = BooleanBeanField.class, required = true)
     private Boolean variable;
 
     @CsvBindByName(column = CsvConstant.Product.DESCRIPTION)

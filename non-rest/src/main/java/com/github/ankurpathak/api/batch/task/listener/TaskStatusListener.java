@@ -1,10 +1,10 @@
 package com.github.ankurpathak.api.batch.task.listener;
 
 
-import com.github.ankurpathak.api.domain.model.Business;
+import com.github.ankurpathak.api.batch.task.CsvTaskContext;
+import com.github.ankurpathak.api.batch.task.ITaskContext;
+import com.github.ankurpathak.api.batch.task.TaskContextHolder;
 import com.github.ankurpathak.api.domain.model.Task;
-import com.github.ankurpathak.api.domain.model.User;
-import com.github.ankurpathak.api.domain.repository.dto.FileContext;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
@@ -18,12 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
-
-import java.util.Objects;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.notNullValue;
-import static org.valid4j.Assertive.ensure;
+import org.springframework.transaction.annotation.Transactional;
 
 public class TaskStatusListener implements JobExecutionListener {
     private static final Logger log = LoggerFactory.getLogger(TaskStatusListener.class);
@@ -46,32 +41,35 @@ public class TaskStatusListener implements JobExecutionListener {
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
-        Optional<Task> task = taskService.findById(jobExecution.getJobParameters().getString("taskId"));
-        ensure(task.isPresent());
-        Optional<User> user = userDetailsService.getUserService().findById(PrimitiveUtils.toBigInteger(jobExecution.getJobParameters().getString("userId")));
-        ensure(user.isPresent());
-        Optional<Business> business = businessService.findById(PrimitiveUtils.toBigInteger(jobExecution.getJobParameters().getString("businessId")));
-        ensure(business.isPresent());
-        Optional<FileContext> file = fileService.findById(jobExecution.getJobParameters().getString("fileId"));
-        ensure(file.isPresent());
-        jobExecution.getExecutionContext().put("task", task.get());
-        jobExecution.getExecutionContext().put("user", user.get());
-        jobExecution.getExecutionContext().put("business", business.get());
-        jobExecution.getExecutionContext().put("file", file.get());
-        task.get().status(Task.TaskStatus.RUNNING);
-        taskService.update(task.get());
+        var task = this.taskService.findById(jobExecution.getJobParameters().getString("taskId"));
+        CsvTaskContext csvTaskContext = new CsvTaskContext()
+                .task(task.orElse(null))
+                .user(this.userDetailsService.getUserService().findById(PrimitiveUtils.toBigInteger(jobExecution.getJobParameters().getString("userId"))).orElse(null))
+                .business(this.businessService.findById(PrimitiveUtils.toBigInteger(jobExecution.getJobParameters().getString("businessId"))).orElse(null))
+                .file(this.fileService.findById(jobExecution.getJobParameters().getString("fileId")).orElse(null));
+        csvTaskContext.afterPropertiesSet();
+        TaskContextHolder.setContext(csvTaskContext);
+        task.map(x -> x.status(Task.TaskStatus.RUNNING))
+                .ifPresent(this.taskService::update);
     }
 
     @Override
+    @Transactional
     public void afterJob(JobExecution jobExecution) {
-        Task task= (Task) PrimitiveUtils.cast(jobExecution.getExecutionContext().get("task"), Task.class);
-        ensure(task, notNullValue());
-        if(Objects.equals(task.getStatus(), Task.TaskStatus.RUNNING)){
-            task.status(Task.TaskStatus.COMPLETED);
-            task.addRequestParam("taskId", task.getId());
-            task.response(ApiResponse.getInstance(ApiCode.SUCCESS, messageService.getMessage(ApiMessages.SUCCESS)).getExtras());
-            taskService.update(task);
-        }
+        TaskContextHolder
+                .getContext()
+                .flatMap(ITaskContext::getTask)
+                .map(task -> {
+                            if (task.getStatus() == Task.TaskStatus.RUNNING) {
+                                return task.status(Task.TaskStatus.COMPLETED)
+                                        .addRequestParam("taskId", task.getId())
+                                        .response(ApiResponse.getInstance(ApiCode.SUCCESS, this.messageService.getMessage(ApiMessages.SUCCESS)).getExtras());
+                            }
+                            return task;
+                        }
 
+                )
+                .ifPresent(this.taskService::update);
+        TaskContextHolder.clearContext();
     }
 }

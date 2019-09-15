@@ -1,5 +1,5 @@
 NAME,VARIABLE(y/n),AMOUNT
-m service 1,y,
+,y,
 z service 2,n,30
 i service 3,y,
 x service 4,y,
