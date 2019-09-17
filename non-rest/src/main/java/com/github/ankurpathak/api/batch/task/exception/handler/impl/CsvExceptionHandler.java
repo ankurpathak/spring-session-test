@@ -8,6 +8,7 @@ import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controller.dto.ApiMessages;
 import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
 import com.github.ankurpathak.api.service.IMessageService;
+import com.opencsv.exceptions.CsvException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,7 @@ public class CsvExceptionHandler implements IExceptionHandler<RuntimeException> 
     }
 
     @Override
-    public Map<String, Object> handelException(RuntimeException ex) {
+    public Map<String, Object> handelException(Exception ex) {
         List<String> hints = new ArrayList<>();
         hints.add(ex.getMessage());
         hints.add(ex.getCause().getMessage());
@@ -34,6 +35,11 @@ public class CsvExceptionHandler implements IExceptionHandler<RuntimeException> 
                 .addExtra("hints", hints)
                 .addExtra("stackTrace", ExceptionUtils.getStackTrace(ex))
                 .getExtras();
+    }
+
+    @Override
+    public boolean supports(Exception ex) {
+        return RuntimeException.class.isInstance(ex) && CsvException.class.isInstance(ex.getCause());
     }
 
 

@@ -22,7 +22,7 @@ public class DuplicateKeyExceptionHandler implements IExceptionHandler<Duplicate
     }
 
     @Override
-    public Map<String, Object> handelException(DuplicateKeyException ex) {
+    public Map<String, Object> handelException(Exception ex) {
         List<String> hints = new ArrayList<>();
         hints.add(ex.getMessage());
         return ApiResponse.getInstance(
@@ -31,5 +31,10 @@ public class DuplicateKeyExceptionHandler implements IExceptionHandler<Duplicate
                 .addExtra("hints", hints)
                 .addExtra("stackTrace", ExceptionUtils.getStackTrace(ex))
                 .getExtras();
+    }
+
+    @Override
+    public boolean supports(Exception ex) {
+        return DuplicateKeyException.class.isInstance(ex);
     }
 }

@@ -7,6 +7,7 @@ import com.github.ankurpathak.api.batch.item.reader.DomainItemReader;
 import com.github.ankurpathak.api.batch.item.reader.listener.DomainItemReadListener;
 import com.github.ankurpathak.api.batch.item.writer.DomainItemWriter;
 import com.github.ankurpathak.api.batch.item.writer.listener.DomainItemWriteListener;
+import com.github.ankurpathak.api.batch.task.exception.handler.IExceptionHandler;
 import com.github.ankurpathak.api.batch.task.exception.handler.impl.*;
 import com.github.ankurpathak.api.batch.task.listener.TaskStatusListener;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
@@ -29,6 +30,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID extends Serializable, Tdto extends DomainDto<T,ID>> {
@@ -56,6 +58,9 @@ public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID exten
 
     @Autowired
     protected IMessageService messageService;
+
+    @Autowired
+    protected IExceptionHandler<?> exceptionHandler;
 
 
     protected Job job(String name, Step step){
@@ -87,6 +92,9 @@ public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID exten
     }
 
 
+    protected IExceptionHandler<?> exceptionHandler(List<IExceptionHandler<?>> exceptionHandlers){
+        return new CompositeExceptionHandler(exceptionHandlers);
+    }
 
     protected DomainItemReader<Tdto, T, ID> itemReader()  {
         return new DomainItemReader<>(getDtoType());
@@ -104,14 +112,14 @@ public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID exten
     }
 
     protected DomainItemProcessListener<Tdto,ID, T> itemProcessListener(){
-        return new DomainItemProcessListener<>(getType(), getDtoType(), new ValidationExceptionHandler(messageService), new ExceptionHandler(messageService));
+        return new DomainItemProcessListener<>(getType(), getDtoType(), exceptionHandler);
     }
 
     protected DomainItemReadListener<Tdto,ID, T> itemReadListener(){
-        return new DomainItemReadListener<>(getDtoType(), taskService, new CsvExceptionHandler(messageService), new ExceptionHandler(messageService));
+        return new DomainItemReadListener<>(getDtoType(), taskService, exceptionHandler);
     }
 
-    protected DomainItemWriteListener<T,ID> itemWriteListener(){
-        return new DomainItemWriteListener<>(getType(), new DuplicateKeyExceptionHandler(messageService), new FoundExceptionHandler(messageService), new ExceptionHandler(messageService));
+    protected DomainItemWriteListener<T,ID, Tdto> itemWriteListener(){
+        return new DomainItemWriteListener<>(getType(), getDtoType(), exceptionHandler);
     }
 }

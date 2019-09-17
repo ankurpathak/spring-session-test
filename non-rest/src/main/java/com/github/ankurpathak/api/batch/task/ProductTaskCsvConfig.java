@@ -6,6 +6,7 @@ import com.github.ankurpathak.api.batch.item.reader.DomainItemReader;
 import com.github.ankurpathak.api.batch.item.reader.listener.DomainItemReadListener;
 import com.github.ankurpathak.api.batch.item.writer.DomainItemWriter;
 import com.github.ankurpathak.api.batch.item.writer.listener.DomainItemWriteListener;
+import com.github.ankurpathak.api.batch.task.exception.handler.IExceptionHandler;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.converter.ProductConverters;
 import com.github.ankurpathak.api.domain.model.Product;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @Configuration
 public class ProductTaskCsvConfig extends AbstractDomainCsvTaskConfig<Product, String, ProductDto> {
@@ -48,7 +50,7 @@ public class ProductTaskCsvConfig extends AbstractDomainCsvTaskConfig<Product, S
         DomainItemProcessListener<ProductDto, String, Product> itemProcessListener = itemProcessListener();
         applicationContext.registerBean(ProductTask.CSV_PRODUCT_PROCESS_LISTENER, DomainItemProcessListener.class, () -> itemProcessListener);
         applicationContext.registerBean(ProductTask.CSV_PRODUCT_PROCESS_LISTENER, DomainItemProcessListener.class, () -> itemProcessListener);
-        DomainItemWriteListener<Product, String> itemWriteListener = itemWriteListener();
+        DomainItemWriteListener<Product, String, ProductDto> itemWriteListener = itemWriteListener();
         applicationContext.registerBean(ProductTask.CSV_PRODUCT_WRITE_LISTENER, DomainItemWriteListener.class, () -> itemWriteListener);
         Step step = step(ProductTask.CSV_PRODUCT_STEP, itemReader, itemProcessor, itemWriter, itemReadListener, itemProcessListener, itemWriteListener);
         applicationContext.registerBean(ProductTask.CSV_PRODUCT_STEP, Step.class, () -> step);

@@ -34,4 +34,9 @@ public class ExceptionHandler implements IExceptionHandler<Exception> {
                 .addExtra("stackTrace", ExceptionUtils.getStackTrace(ex))
                 .getExtras();
     }
+
+    @Override
+    public boolean supports(Exception ex) {
+        return Exception.class.isInstance(ex);
+    }
 }

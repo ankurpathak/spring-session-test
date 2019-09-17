@@ -29,12 +29,13 @@ public class ValidationExceptionHandler implements IExceptionHandler<ValidationE
     }
 
     @Override
-    public Map<String, Object> handelException(ValidationException ex) {
+    public Map<String, Object> handelException(Exception ex) {
+        ValidationException vEx = getException(ex);
         String[] messages = {};
         ApiCode code = null;
-        List<BindingResult> results = new ArrayList<>(ex.getBindingResults());
-        messages = ArrayUtils.addAll(messages, ex.getMessages());
-        code = ex.getCode();
+        List<BindingResult> results = new ArrayList<>(vEx.getBindingResults());
+        messages = ArrayUtils.addAll(messages, vEx.getMessages());
+        code = vEx.getCode();
 
         if(ArrayUtils.isEmpty(messages))
             messages = ArrayUtils.add(messages, messageService.getMessage(ApiMessages.VALIDATION));
@@ -61,5 +62,10 @@ public class ValidationExceptionHandler implements IExceptionHandler<ValidationE
 
         }
         return dto.getExtras();
+    }
+
+    @Override
+    public boolean supports(Exception ex) {
+        return ValidationException.class.isInstance(ex);
     }
 }

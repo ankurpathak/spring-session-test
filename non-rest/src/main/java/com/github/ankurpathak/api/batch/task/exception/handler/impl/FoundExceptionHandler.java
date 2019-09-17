@@ -25,14 +25,20 @@ public class FoundExceptionHandler implements IExceptionHandler<FoundException> 
     }
 
     @Override
-    public Map<String, Object> handelException(FoundException ex) {
-        ApiCode code = FoundExceptionUtil.processApiCode(ex);
-        ValidationErrorDto validationErrorDto = FoundExceptionUtil.processFounds(ex);
+    public Map<String, Object> handelException(Exception ex) {
+        FoundException fEx =getException(ex);
+        ApiCode code = FoundExceptionUtil.processApiCode(fEx);
+        ValidationErrorDto validationErrorDto = FoundExceptionUtil.processFounds(fEx);
         return ApiResponse.getInstance(
                 code,
                 messageService.getMessage(ApiMessages.INVALID, "Csv", TaskContextHolder.getContext().filter(CsvTaskContext.class::isInstance).map(CsvTaskContext.class::cast).flatMap(CsvTaskContext::getFile).map(FileContext::getFileName).orElse("")))
                 .addExtra("hints", validationErrorDto)
                 .addExtra("stackTrace", ExceptionUtils.getStackTrace(ex))
                 .getExtras();
+    }
+
+    @Override
+    public boolean supports(Exception ex) {
+        return FoundException.class.isInstance(ex);
     }
 }
