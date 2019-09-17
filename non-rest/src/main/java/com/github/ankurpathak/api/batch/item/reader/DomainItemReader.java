@@ -12,11 +12,13 @@ import org.springframework.batch.item.ItemStreamSupport;
 import org.springframework.core.io.FileSystemResource;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class DomainItemReader<Tdto extends DomainDto<T, ID>, T extends Domain<ID>, ID extends Serializable> extends ItemStreamSupport implements ItemReader<Tdto> {
 
     private ItemReader<Tdto> delegate;
     private final Class<Tdto> tDtoClass;
+    private int currentItemCount = 0;
 
     public DomainItemReader(Class<Tdto> tDtoClass) {
         this.tDtoClass = tDtoClass;
@@ -46,7 +48,12 @@ public class DomainItemReader<Tdto extends DomainDto<T, ID>, T extends Domain<ID
 
     @Override
     public Tdto read() throws Exception {
-        return delegate.read();
+        Tdto dto = delegate.read();
+        if(Objects.nonNull(dto)){
+            currentItemCount++;
+            dto.setItemCount(currentItemCount);
+        }
+        return dto;
     }
 
     @BeforeStep

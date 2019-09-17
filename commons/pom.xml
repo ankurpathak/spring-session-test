@@ -69,6 +69,14 @@
             <artifactId>validation-api</artifactId>
         </dependency>
         <!--Bean Validation 2.0 API -->
+        <!-- Spring Batch Core -->
+        <dependency>
+            <groupId>org.springframework.batch</groupId>
+            <artifactId>spring-batch-core</artifactId>
+        </dependency>
+        <!--\ Spring Batch Core -->
+
+
     </dependencies>
 
 

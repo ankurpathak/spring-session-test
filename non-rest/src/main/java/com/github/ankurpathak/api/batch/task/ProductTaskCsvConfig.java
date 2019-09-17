@@ -5,7 +5,7 @@ import com.github.ankurpathak.api.batch.item.processor.listener.DomainItemProces
 import com.github.ankurpathak.api.batch.item.reader.DomainItemReader;
 import com.github.ankurpathak.api.batch.item.reader.listener.DomainItemReadListener;
 import com.github.ankurpathak.api.batch.item.writer.DomainItemWriter;
- import com.github.ankurpathak.api.batch.item.writer.listener.DomainItemWriteListener;
+import com.github.ankurpathak.api.batch.item.writer.listener.DomainItemWriteListener;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.converter.ProductConverters;
 import com.github.ankurpathak.api.domain.model.Product;

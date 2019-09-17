@@ -1,0 +1,28 @@
+NAME,VARIABLE(y/n),AMOUNT
+m service 1,y
+z service 2,n,30
+i service 3,y,
+x service 4,y,
+p service 5,n,65
+e service 6,y,
+f service 7,y,
+g service 8,n,69
+q service 9,y,
+x service 10,y,
+y service 11,n,87
+w service 12,y,
+x service 13,y,
+w service 14,n,20
+y service 15,y,
+z service 16,y,
+service 17,n,1001
+service 18,y,
+service 19,y,
+service 20,n,1002
+service 21,y,
+service 22,y,
+service 23,n,203
+service 24,y,
+service 25,y,
+service 26,n,86
+service 27,y,

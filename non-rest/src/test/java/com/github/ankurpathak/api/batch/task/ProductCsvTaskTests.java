@@ -23,6 +23,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 import java.util.Optional;
@@ -44,6 +45,7 @@ public class ProductCsvTaskTests extends AbstractBatchIntegrationTest<ProductCsv
 
     @Autowired
     private ITaskService taskService;
+
 
     @Test
     public void testLaunchCorrectCsv() throws Exception {
@@ -73,6 +75,7 @@ public class ProductCsvTaskTests extends AbstractBatchIntegrationTest<ProductCsv
                 .containsAllEntriesOf(Map.of("code", ApiCode.SUCCESS.getCode()))
                 .containsKey("message")
                 .containsValue("Success.");
+        objectMapper.writer().withDefaultPrettyPrinter().writeValue(System.out, taskResult);
     }
 
     @Test
@@ -103,10 +106,12 @@ public class ProductCsvTaskTests extends AbstractBatchIntegrationTest<ProductCsv
                 .isNotEmpty()
                 .containsAllEntriesOf(Map.of("code", ApiCode.INVALID_CSV.getCode()))
                 .containsKey("message");
+        objectMapper.writer().withDefaultPrettyPrinter().writeValue(System.out, taskResult);
+
     }
 
     @Test
-    public void testLaunchCorrectCsvMissingHeader() throws Exception {
+    public void testLaunchMissingHeader() throws Exception {
         Resource csv = new ClassPathResource("service-missing-header.csv", this.getClass());
         MockMultipartFile csvMf = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
         String fileId = fileService.store(csvMf);
@@ -132,5 +137,100 @@ public class ProductCsvTaskTests extends AbstractBatchIntegrationTest<ProductCsv
                 .isNotEmpty()
                 .containsAllEntriesOf(Map.of("code", ApiCode.INVALID_CSV.getCode()))
                 .containsKey("message");
+        objectMapper.writer().withDefaultPrettyPrinter().writeValue(System.out, taskResult);
+
+    }
+
+    @Test
+    public void testLaunchHeaderFieldMismatch() throws Exception {
+        Resource csv = new ClassPathResource("service-header-field-mismatch.csv", this.getClass());
+        MockMultipartFile csvMf = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
+        String fileId = fileService.store(csvMf);
+        Optional<Task> task = taskService.findAll().stream().findFirst();
+        task.ifPresent(x -> {
+            x.addRequestParam("fileId", fileId);
+            x.addRequestParam("taskId", x.getId());
+            taskService.update(x);
+        });
+        JobParameters jps= new JobParametersBuilder()
+                .addString("taskId", task.map(Task::getId).get())
+                .addString("userId", String.valueOf(2))
+                .addString("businessId", String.valueOf(1))
+                .addString("fileId", fileId)
+                .addString("fileType", Task.TaskType.CSV_PRODUCT)
+                .toJobParameters();
+        Job job = jobLauncherTestUtils.getJob();
+        jobLauncherTestUtils.launchJob(jps);
+        Task taskResult = taskService.findAll().stream().findFirst().orElse(null);
+        assertThat(taskResult.getStatus()).isEqualTo(Task.TaskStatus.ERROR);
+        assertThat(taskResult).isNotNull();
+        assertThat(taskResult.getResponse()).isNotNull()
+                .isNotEmpty()
+                .containsAllEntriesOf(Map.of("code", ApiCode.INVALID_CSV.getCode()))
+                .containsKey("message");
+        objectMapper.writer().withDefaultPrettyPrinter().writeValue(System.out, taskResult);
+
+    }
+
+    @Test
+    public void testLaunchMissingRequiredField() throws Exception {
+        Resource csv = new ClassPathResource("service-missing-required-field.csv", this.getClass());
+        MockMultipartFile csvMf = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
+        String fileId = fileService.store(csvMf);
+        Optional<Task> task = taskService.findAll().stream().findFirst();
+        task.ifPresent(x -> {
+            x.addRequestParam("fileId", fileId);
+            x.addRequestParam("taskId", x.getId());
+            taskService.update(x);
+        });
+        JobParameters jps= new JobParametersBuilder()
+                .addString("taskId", task.map(Task::getId).get())
+                .addString("userId", String.valueOf(2))
+                .addString("businessId", String.valueOf(1))
+                .addString("fileId", fileId)
+                .addString("fileType", Task.TaskType.CSV_PRODUCT)
+                .toJobParameters();
+        Job job = jobLauncherTestUtils.getJob();
+        jobLauncherTestUtils.launchJob(jps);
+        Task taskResult = taskService.findAll().stream().findFirst().orElse(null);
+        assertThat(taskResult.getStatus()).isEqualTo(Task.TaskStatus.ERROR);
+        assertThat(taskResult).isNotNull();
+        assertThat(taskResult.getResponse()).isNotNull()
+                .isNotEmpty()
+                .containsAllEntriesOf(Map.of("code", ApiCode.INVALID_CSV.getCode()))
+                .containsKey("message");
+        objectMapper.writer().withDefaultPrettyPrinter().writeValue(System.out, taskResult);
+
+    }
+
+
+    @Test
+    public void testLaunchMissingValidation() throws Exception {
+        Resource csv = new ClassPathResource("service-missing-validation.csv", this.getClass());
+        MockMultipartFile csvMf = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
+        String fileId = fileService.store(csvMf);
+        Optional<Task> task = taskService.findAll().stream().findFirst();
+        task.ifPresent(x -> {
+            x.addRequestParam("fileId", fileId);
+            x.addRequestParam("taskId", x.getId());
+            taskService.update(x);
+        });
+        JobParameters jps= new JobParametersBuilder()
+                .addString("taskId", task.map(Task::getId).get())
+                .addString("userId", String.valueOf(2))
+                .addString("businessId", String.valueOf(1))
+                .addString("fileId", fileId)
+                .addString("fileType", Task.TaskType.CSV_PRODUCT)
+                .toJobParameters();
+        Job job = jobLauncherTestUtils.getJob();
+        jobLauncherTestUtils.launchJob(jps);
+        Task taskResult = taskService.findAll().stream().findFirst().orElse(null);
+        assertThat(taskResult.getStatus()).isEqualTo(Task.TaskStatus.ERROR);
+        assertThat(taskResult).isNotNull();
+        assertThat(taskResult.getResponse()).isNotNull()
+                .isNotEmpty()
+                .containsAllEntriesOf(Map.of("code", ApiCode.INVALID_CSV.getCode()))
+                .containsKey("message");
+        objectMapper.writer().withDefaultPrettyPrinter().writeValue(System.out, taskResult);
     }
 }

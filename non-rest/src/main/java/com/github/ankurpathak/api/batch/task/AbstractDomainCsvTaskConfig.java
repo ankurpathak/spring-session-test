@@ -7,8 +7,7 @@ import com.github.ankurpathak.api.batch.item.reader.DomainItemReader;
 import com.github.ankurpathak.api.batch.item.reader.listener.DomainItemReadListener;
 import com.github.ankurpathak.api.batch.item.writer.DomainItemWriter;
 import com.github.ankurpathak.api.batch.item.writer.listener.DomainItemWriteListener;
-import com.github.ankurpathak.api.batch.task.exception.handler.CsvExceptionHandler;
-import com.github.ankurpathak.api.batch.task.exception.handler.ExceptionHandler;
+import com.github.ankurpathak.api.batch.task.exception.handler.impl.*;
 import com.github.ankurpathak.api.batch.task.listener.TaskStatusListener;
 import com.github.ankurpathak.api.domain.converter.IToDomain;
 import com.github.ankurpathak.api.domain.model.Domain;
@@ -105,7 +104,7 @@ public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID exten
     }
 
     protected DomainItemProcessListener<Tdto,ID, T> itemProcessListener(){
-        return new DomainItemProcessListener<>(getType(), getDtoType());
+        return new DomainItemProcessListener<>(getType(), getDtoType(), new ValidationExceptionHandler(messageService), new ExceptionHandler(messageService));
     }
 
     protected DomainItemReadListener<Tdto,ID, T> itemReadListener(){
@@ -113,6 +112,6 @@ public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID exten
     }
 
     protected DomainItemWriteListener<T,ID> itemWriteListener(){
-        return new DomainItemWriteListener<>(getType());
+        return new DomainItemWriteListener<>(getType(), new DuplicateKeyExceptionHandler(messageService), new FoundExceptionHandler(messageService), new ExceptionHandler(messageService));
     }
 }

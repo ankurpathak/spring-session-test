@@ -1,22 +1,24 @@
 package com.github.ankurpathak.api.domain.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controller.dto.View;
 import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.batch.item.ItemCountAware;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Version;
+import org.springframework.data.annotation.Transient;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-abstract public class Domain<ID extends Serializable> implements Serializable {
+abstract public class Domain<ID extends Serializable> implements Serializable, ItemCountAware {
 
     private  ID id;
 
@@ -167,5 +169,18 @@ abstract public class Domain<ID extends Serializable> implements Serializable {
     public Domain fields(Set<CustomField> fields) {
         this.fields = fields;
         return this;
+    }
+
+    @Transient
+    @JsonIgnore
+    transient private int itemCount;
+
+    @Override
+    public void setItemCount(int itemCount) {
+        this.itemCount = itemCount;
+    }
+
+    public int getItemCount() {
+        return itemCount;
     }
 }

@@ -2,6 +2,7 @@ package com.github.ankurpathak.api.exception;
 
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.util.MatcherUtil;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
@@ -20,6 +21,13 @@ public class ValidationException extends RuntimeException {
         this.bindingResults = bindingResults;
         this.code = code;
         this.messages = messages;
+    }
+
+    public ValidationException(List<BindingResult> bindingResults) {
+        require(bindingResults, MatcherUtil.notCollectionEmpty());
+        this.bindingResults = bindingResults;
+        this.code = ApiCode.VALIDATION;
+        this.messages = ArrayUtils.EMPTY_STRING_ARRAY;
     }
 
 

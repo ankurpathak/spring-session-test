@@ -1,6 +1,7 @@
 package com.github.ankurpathak.api.util;
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
@@ -39,7 +40,8 @@ public class OpenCsvBeanReader<T> implements AutoCloseable{
     public void init() throws IOException {
         this.inputStreamReader = new InputStreamReader(resource.getInputStream());
         this.bufferedReader = new BufferedReader(this.inputStreamReader);
-        this.csvReader = new CSVReader(bufferedReader);
+        this.csvReader = new CSVReaderBuilder(bufferedReader)
+        .build();
         HeaderColumnNameMappingStrategy<T> ms = new HeaderColumnNameMappingStrategy<>();
         ms.setType(this.tClass);
 
@@ -69,9 +71,6 @@ public class OpenCsvBeanReader<T> implements AutoCloseable{
     }
 
 
-    public String [] readHeaders(){
-        return null;
-    }
 
     public Optional<T> readLine() throws IOException {
         if (this.csvToBean == null){
