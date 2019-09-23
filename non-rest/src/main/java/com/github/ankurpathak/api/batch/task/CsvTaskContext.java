@@ -4,6 +4,7 @@ import com.github.ankurpathak.api.domain.model.Business;
 import com.github.ankurpathak.api.domain.model.Task;
 import com.github.ankurpathak.api.domain.model.User;
 import com.github.ankurpathak.api.domain.repository.dto.FileContext;
+import com.github.ankurpathak.api.service.ITaskService;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -16,12 +17,15 @@ public class CsvTaskContext implements ITaskContext,  Serializable {
     private User user;
     private Business business;
     private FileContext file;
+    private String requestedBusinessId;
+
+
+
+
 
     public void afterPropertiesSet(){
-        require(task, notNullValue());
-        require(user, notNullValue());
-        require(business, notNullValue());
-        require(file, notNullValue());
+        ITaskContext.super.afterPropertiesSet();
+        require(this.file, notNullValue());
     }
 
     public static final CsvTaskContext getInstance(){
@@ -31,25 +35,18 @@ public class CsvTaskContext implements ITaskContext,  Serializable {
 
 
 
-    public Optional<Task> getTask() {
-        return Optional.ofNullable(task);
-    }
 
     public void setTask(Task task) {
         this.task = task;
     }
 
-    public Optional<User> getUser() {
-        return Optional.ofNullable(user);
-    }
 
     public void setUser(User user) {
         this.user = user;
     }
 
-    public Optional<Business> getBusiness() {
-        return Optional.ofNullable(business);
-    }
+
+
 
     public void setBusiness(Business business) {
         this.business = business;
@@ -80,6 +77,35 @@ public class CsvTaskContext implements ITaskContext,  Serializable {
 
     public CsvTaskContext file(FileContext file) {
         this.file = file;
+        return this;
+    }
+
+    @Override
+    public Task getTask() {
+        return this.task;
+    }
+
+    @Override
+    public User getUser() {
+        return this.user;
+    }
+
+    @Override
+    public Business getBusiness() {
+        return this.business;
+    }
+
+    @Override
+    public String getRequestedBusinessId() {
+        return this.requestedBusinessId;
+    }
+
+    public void setRequestedBusinessId(String requestedBusinessId) {
+        this.requestedBusinessId = requestedBusinessId;
+    }
+
+    public CsvTaskContext requestedBusinessId(String requestedBusinessId) {
+        this.requestedBusinessId = requestedBusinessId;
         return this;
     }
 }

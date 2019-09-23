@@ -13,7 +13,7 @@ import java.math.BigInteger;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Product extends BusinessExtendedDomain<String> {
 
-   // @Indexed(name = Model.Product.Index.NAME_IDX , sparse = true, unique = true)
+//    @Indexed(name = Model.Product.Index.NAME_IDX , sparse = true, unique = true)
    // Uncomment for testing duplicate key exception in createMany
     private String name;
     private String description;

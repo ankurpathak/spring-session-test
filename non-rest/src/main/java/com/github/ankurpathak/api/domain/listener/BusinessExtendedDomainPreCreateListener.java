@@ -13,7 +13,7 @@ public class BusinessExtendedDomainPreCreateListener extends AbstractMongoEventL
     @Override
     public void onBeforeSave(BeforeSaveEvent<BusinessExtendedDomain<?>> event) {
         TaskContextHolder.getContext()
-                .flatMap(ITaskContext::getBusiness)
+                .map(ITaskContext::getBusiness)
                 .ifPresent( business -> {
                     if(business != null){
                         event.getSource().setBusinessId(business.getId());

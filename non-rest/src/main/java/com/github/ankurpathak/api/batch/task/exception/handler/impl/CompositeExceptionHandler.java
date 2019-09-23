@@ -14,7 +14,6 @@ public class CompositeExceptionHandler implements IExceptionHandler<Exception> {
         this.exceptionHandlers = exceptionHandlers;
     }
 
-
     @Override
     public Map<String, Object> handelException(Exception ex) {
         for(IExceptionHandler<?> exceptionHandler: exceptionHandlers){
@@ -27,6 +26,6 @@ public class CompositeExceptionHandler implements IExceptionHandler<Exception> {
 
     @Override
     public boolean supports(Exception ex) {
-        return Exception.class.isInstance(ex);
+        return false;
     }
 }

@@ -4,6 +4,7 @@ import com.github.ankurpathak.api.AbstractRestIntegrationTest;
 import com.github.ankurpathak.api.SpringSessionTestApplication;
 import com.github.ankurpathak.api.config.test.MongoConfig;
 import com.github.ankurpathak.api.config.test.RedisConfig;
+import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
 import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
 import com.github.ankurpathak.api.util.MatcherUtil;
 import org.junit.Test;
@@ -85,14 +86,29 @@ public class CustomerControllerTests extends AbstractRestIntegrationTest<Custome
     public void testCustomersCsv() throws Exception{
         Resource csv = new ClassPathResource("customer.csv", this.getClass());
         MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
-
         mockMvc.perform(multipart(apiPath(PATH_CUSTOMER_UPLOAD)).file(csvFile)
                 .with(authentication(token("+919000000000")))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(authenticated())
-                .andExpect(jsonPath("$.code", equalTo(0)));
+                .andExpect(jsonPath("$.code", equalTo(ApiCode.SUCCESS.getCode())));
+
+    }
+
+
+    @Test
+    public void testCustomersCsvMissingValidation() throws Exception{
+        Resource csv = new ClassPathResource("customer-missing-validation.csv", this.getClass());
+        MockMultipartFile csvFile = new MockMultipartFile("csv", csv.getFilename(), "text/csv", csv.getInputStream());
+
+        mockMvc.perform(multipart(apiPath(PATH_CUSTOMER_UPLOAD)).file(csvFile)
+                .with(authentication(token("+919000000000")))
+        )
+                .andDo(print())
+                .andExpect(status().isConflict())
+                .andExpect(authenticated())
+                .andExpect(jsonPath("$.code", equalTo(ApiCode.VALIDATION.getCode())));
 
     }
 

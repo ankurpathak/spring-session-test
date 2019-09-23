@@ -36,9 +36,11 @@ public class DomainItemProcessListener<Tdto extends DomainDto<T, ID>, ID extends
     @Override
     public void onProcessError(Tdto item, Exception ex) {
         final Map<String, Object> response = exceptionHandler.handelException(ex);
+        response.put("item", item);
+        response.put("itemCount", item.getItemCount());
         TaskContextHolder
                 .getContext()
-                .flatMap(ITaskContext::getTask)
+                .map(ITaskContext::getTask)
                 .filter(x -> Task.TaskStatus.RUNNING == x.getStatus())
                 .map(x ->
                         x.status(Task.TaskStatus.ERROR)

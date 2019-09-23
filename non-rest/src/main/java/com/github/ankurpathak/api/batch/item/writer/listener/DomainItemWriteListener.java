@@ -48,9 +48,11 @@ public class DomainItemWriteListener<T extends Domain<ID>, ID extends Serializab
                 exOut = fEx.get();
         }
         response = exceptionHandler.handelException(exOut);
+        response.put("items", items);
+        response.put("itemCounts", items.stream().map(Domain::getItemCount));
         TaskContextHolder
                 .getContext()
-                .flatMap(ITaskContext::getTask)
+                .map(ITaskContext::getTask)
                 .filter(x -> Task.TaskStatus.RUNNING == x.getStatus())
                 .map(x ->
                         x.status(Task.TaskStatus.ERROR)

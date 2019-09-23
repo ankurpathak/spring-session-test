@@ -17,12 +17,12 @@ public class CustomerDto extends DomainDto<Customer,CustomerId> {
     @CsvBindByName(column = CsvConstant.Customer.NAME)
     private String name;
 
-    @Email
     @CsvBindByName(column = CsvConstant.Customer.EMAIL)
+    @Email
     private String email;
 
-    @Contact
     @NotBlank
+    @Contact
     @CsvBindByName(column = CsvConstant.Customer.PHONE, required = true)
     private String phone;
 

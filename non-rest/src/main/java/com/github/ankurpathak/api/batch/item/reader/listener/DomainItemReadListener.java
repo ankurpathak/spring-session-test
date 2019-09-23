@@ -38,7 +38,7 @@ public class DomainItemReadListener<Tdto extends DomainDto<T, ID> , ID extends S
         final Map<String, Object> response =  exceptionHandler.handelException(ex);
         TaskContextHolder
                 .getContext()
-                .flatMap(ITaskContext::getTask)
+                .map(ITaskContext::getTask)
                 .filter(x -> Task.TaskStatus.RUNNING == x.getStatus())
                 .map(x ->
                         x.status(Task.TaskStatus.ERROR)

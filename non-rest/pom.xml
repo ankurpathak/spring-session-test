@@ -237,6 +237,21 @@
             <artifactId>java-jwt</artifactId>
         </dependency>
         <!--/ Auth0 JWT Parser -->
+        <!-- Ankur Validation Work -->
+        <dependency>
+            <groupId>com.github.ankurpathak.username</groupId>
+            <artifactId>username-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ankurpathak.password</groupId>
+            <artifactId>password-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ankurpathak.primitive</groupId>
+            <artifactId>primitive-validation</artifactId>
+        </dependency>
+        <!--/ Ankur Validation Work -->
+
 
     </dependencies>
 
@@ -260,13 +275,8 @@
         </resources>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven.surefire.plugin.version}</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -284,8 +294,13 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.github.ankurpathak.api.NonRestCmdApplication</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
-
 </project>

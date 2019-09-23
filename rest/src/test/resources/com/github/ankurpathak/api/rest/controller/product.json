@@ -102,11 +102,6 @@
     "variable": true
   },
   {
-    "name": "Q",
-    "variable": false,
-    "amount": 1002
-  },
-  {
     "name": "P",
     "variable": true
   },

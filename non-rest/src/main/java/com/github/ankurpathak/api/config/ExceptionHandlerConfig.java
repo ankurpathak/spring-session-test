@@ -19,15 +19,19 @@ public class ExceptionHandlerConfig {
     public IExceptionHandler<?> compositeExceptionHandler(){
         return new CompositeExceptionHandler(
                 List.of(
-                        exceptionHandler(),
                         csvExceptionHandler(),
-                        duplicateKeyExceptionHandler(),
                         foundExceptionHandler(),
-                        validationExceptionHandler()
-                )
+                        duplicateKeyExceptionHandler(),
+                        validationExceptionHandler(),
+                        notFoundExceptionHandler(),
+                        exceptionHandler()
+                        )
         );
     }
 
+    protected NotFoundExceptionHandler notFoundExceptionHandler() {
+        return new NotFoundExceptionHandler(messageService);
+    }
 
 
     protected ExceptionHandler exceptionHandler(){

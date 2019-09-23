@@ -46,7 +46,8 @@ public class TaskStatusListener implements JobExecutionListener {
                 .task(task.orElse(null))
                 .user(this.userDetailsService.getUserService().findById(PrimitiveUtils.toBigInteger(jobExecution.getJobParameters().getString("userId"))).orElse(null))
                 .business(this.businessService.findById(PrimitiveUtils.toBigInteger(jobExecution.getJobParameters().getString("businessId"))).orElse(null))
-                .file(this.fileService.findById(jobExecution.getJobParameters().getString("fileId")).orElse(null));
+                .file(this.fileService.findById(jobExecution.getJobParameters().getString("fileId")).orElse(null))
+                .requestedBusinessId(jobExecution.getJobParameters().getString("requestedBusinessId"));
         csvTaskContext.afterPropertiesSet();
         TaskContextHolder.setContext(csvTaskContext);
         task.map(x -> x.status(Task.TaskStatus.RUNNING))
@@ -58,7 +59,7 @@ public class TaskStatusListener implements JobExecutionListener {
     public void afterJob(JobExecution jobExecution) {
         TaskContextHolder
                 .getContext()
-                .flatMap(ITaskContext::getTask)
+                .map(ITaskContext::getTask)
                 .map(task -> {
                             if (task.getStatus() == Task.TaskStatus.RUNNING) {
                                 return task.status(Task.TaskStatus.COMPLETED)

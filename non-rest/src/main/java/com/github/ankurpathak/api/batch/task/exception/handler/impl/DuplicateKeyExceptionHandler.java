@@ -7,13 +7,11 @@ import com.github.ankurpathak.api.rest.controller.dto.ApiResponse;
 import com.github.ankurpathak.api.service.IMessageService;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class DuplicateKeyExceptionHandler implements IExceptionHandler<DuplicateKeyException> {
     private final IMessageService messageService;
 

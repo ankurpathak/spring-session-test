@@ -23,6 +23,8 @@ import com.github.ankurpathak.api.rest.controller.dto.DomainDto;
 import com.github.ankurpathak.api.rest.controller.dto.PageDto;
 import com.github.ankurpathak.api.rest.controller.dto.converter.IToDto;
 import com.github.ankurpathak.api.rest.controllor.dto.DomainDtoList;
+import com.github.ankurpathak.api.security.dto.DomainContextHolder;
+import com.github.ankurpathak.api.security.util.SecurityUtil;
 import com.github.ankurpathak.api.service.*;
 import com.github.ankurpathak.api.service.callback.*;
 import com.github.ankurpathak.api.service.impl.util.ControllerUtil;
@@ -54,6 +56,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -358,6 +361,7 @@ public class RestControllerService implements IRestControllerService {
                 "fileId", csvFileId,
                 "userId", String.valueOf(user.getId()),
                 "businessId", String.valueOf(business.getId()),
+                "requestedBusinessId", String.valueOf(SecurityUtil.getRequestedBusinessId().orElse(BigInteger.ZERO)),
                 "taskType", type
         );
         Task task = Task.getInstance()

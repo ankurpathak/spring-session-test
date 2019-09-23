@@ -14,6 +14,6 @@ import java.util.Optional;
 public class UserIdAuditorAware implements AuditorAware<BigInteger> {
     @Override
     public Optional<BigInteger> getCurrentAuditor() {
-        return TaskContextHolder.getContext().flatMap(ITaskContext::getUser).map(User::getId).or(()-> Optional.of(User.ANONYMOUS_ID));
+        return TaskContextHolder.getContext().map(ITaskContext::getUser).map(User::getId).or(()-> Optional.of(User.ANONYMOUS_ID));
     }
 }

@@ -2,6 +2,8 @@ package com.github.ankurpathak.api.batch.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ankurpathak.api.batch.item.processor.DomainItemProcessor;
+import com.github.ankurpathak.api.batch.item.processor.callback.IPostProcess;
+import com.github.ankurpathak.api.batch.item.processor.callback.IPreProcess;
 import com.github.ankurpathak.api.batch.item.processor.listener.DomainItemProcessListener;
 import com.github.ankurpathak.api.batch.item.reader.DomainItemReader;
 import com.github.ankurpathak.api.batch.item.reader.listener.DomainItemReadListener;
@@ -102,8 +104,12 @@ public abstract class AbstractDomainCsvTaskConfig<T extends Domain<ID>, ID exten
 
 
 
+    protected DomainItemProcessor<Tdto,ID, T> itemProcessor(IPreProcess<Tdto, ID,T> preProcess, IPostProcess<Tdto, ID,T> postProcess){
+        return new DomainItemProcessor<>(validator, getConverter(), getType(), getDtoType(), preProcess, postProcess);
+    }
+
     protected DomainItemProcessor<Tdto,ID, T> itemProcessor(){
-        return new DomainItemProcessor<>(validator, getConverter(), getType(), getDtoType());
+        return itemProcessor(IPreProcess.preProcess(), IPostProcess.postProcess());
     }
 
 
