@@ -179,6 +179,48 @@ public interface Model {
 
     }
 
+    interface Notification {
+        String NOTIFICATION = "notification";
+
+        interface Field extends Domain.Field{
+        }
+
+        interface Index {
+            interface Definition { }
+        }
+
+        interface Query { }
+
+    }
+
+    interface Invoice {
+        String INVOICE = "invoice";
+
+        interface Field extends BusinessExtendedDomain.Field {
+        }
+
+        interface Index {
+            interface Definition { }
+        }
+
+        interface Query { }
+
+    }
+
+    interface InvoiceTemplate {
+        String INVOICE_TEMPLATE = "invoiceTemplate";
+
+        interface Field extends BusinessExtendedDomain.Field {
+        }
+
+        interface Index {
+            interface Definition { }
+        }
+
+        interface Query { }
+
+    }
+
     interface Customer {
         String CUSTOMER = "customer";
 

@@ -9,8 +9,6 @@ import java.math.BigInteger;
 import java.util.Collections;
 
 public class UserConverters {
-
-
     public static IToDomain<User, BigInteger, UserDto> createOne = dto -> User.getInstance()
             .firstName(dto.getFirstName())
             .lastName(dto.getLastName())
@@ -28,6 +26,4 @@ public class UserConverters {
                 .roles(Collections.singleton(Role.ROLE_ADMIN))
                 .password(dto.getEncodedPassword());
     }
-
-
 }

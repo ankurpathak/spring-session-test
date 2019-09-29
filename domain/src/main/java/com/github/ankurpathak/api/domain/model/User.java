@@ -125,7 +125,7 @@ public class User extends ExtendedDomain<BigInteger> implements Serializable {
         return this;
     }
 
-    public User removeRole(BigInteger businessId) {
+    public User removeBusinessId(BigInteger businessId) {
         if (!CollectionUtils.isEmpty(this.businessIds))
             if (ObjectUtils.compare(BigInteger.ZERO,businessId ) < 0)
                 this.businessIds.remove(businessId);

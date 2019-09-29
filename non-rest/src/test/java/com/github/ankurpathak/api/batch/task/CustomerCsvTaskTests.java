@@ -6,14 +6,11 @@ import com.github.ankurpathak.api.batch.test.ExtendedJobLauncherTestUtils;
 import com.github.ankurpathak.api.config.test.MongoConfig;
 import com.github.ankurpathak.api.config.test.RedisConfig;
 import com.github.ankurpathak.api.config.test.TaskConfig;
-import com.github.ankurpathak.api.domain.model.Customer;
 import com.github.ankurpathak.api.domain.model.Task;
 import com.github.ankurpathak.api.rest.controller.dto.ApiCode;
-import com.github.ankurpathak.api.rest.controllor.dto.CustomerDto;
 import com.github.ankurpathak.api.service.IFileService;
 import com.github.ankurpathak.api.service.ITaskService;
 import com.github.ankurpathak.api.util.LogUtil;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,26 +21,19 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.validation.BindException;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.annotation.PostConstruct;
-import javax.validation.Validation;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.doesNotHave;
 
 
 @SpringBootTest
