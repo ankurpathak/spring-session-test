@@ -3,9 +3,13 @@ package com.github.ankurpathak.api.domain.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.ankurpathak.api.rest.controller.dto.View;
+import com.github.ankurpathak.api.util.MatcherUtil;
 
 import java.io.Serializable;
 import java.util.Objects;
+
+import static org.valid4j.Assertive.require;
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Contact implements Serializable {
 
@@ -19,6 +23,7 @@ public class Contact implements Serializable {
 
 
     public static Contact getInstance(String value){
+        require(value, MatcherUtil.notStringEmpty());
         return new Contact(value);
     }
 

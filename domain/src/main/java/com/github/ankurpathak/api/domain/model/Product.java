@@ -3,11 +3,11 @@ package com.github.ankurpathak.api.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.ankurpathak.api.constant.Model;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Set;
 
 @Document(collection = Model.Product.PRODUCT)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -20,6 +20,17 @@ public class Product extends BusinessExtendedDomain<String> {
     private BigDecimal amount;
     private BigDecimal tax;
     private Boolean variable;
+    private Set<String> images;
+
+
+    public Set<String> getImages() {
+        return images;
+    }
+
+    public void setImages(Set<String> images) {
+        this.images = images;
+    }
+
 
 
     public BigDecimal getTax() {
@@ -98,6 +109,11 @@ public class Product extends BusinessExtendedDomain<String> {
 
     public Product variable(Boolean variable) {
         this.variable = variable;
+        return this;
+    }
+
+    public Product images(Set<String> images) {
+        this.images = images;
         return this;
     }
 }

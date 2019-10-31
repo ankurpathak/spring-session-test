@@ -32,18 +32,22 @@ public class Address implements Serializable {
     public static Address getInstance(){
         return new Address().tag(TAG_PRIMARY);
     }
-
-
     public static Address getInstance(CustomerDto dto){
+       return getInstance(dto, true);
+    }
+
+    public static Address getInstance(CustomerDto dto, boolean updatePhone){
         Address address = Address.getInstance()
                 .name(dto.getName())
                 .address(dto.getAddress())
-                .phone(Contact.getInstance(dto.getPhone()))
                 .state(dto.getState())
                 .city(dto.getCity())
                 .pinCode(dto.getPinCode());
-        if(StringUtils.isNotEmpty(dto.getEmail())){
+        if(StringUtils.isNotBlank(dto.getEmail())){
             address.email(Contact.getInstance(dto.getEmail()));
+        }
+        if(updatePhone && StringUtils.isNotBlank(dto.getPhone())){
+            address.phone(Contact.getInstance(dto.getPhone()));
         }
         return address;
     }

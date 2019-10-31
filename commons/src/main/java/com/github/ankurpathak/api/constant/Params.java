@@ -36,6 +36,7 @@ public interface Params {
     String PAGE = "page";
     String SIZE = "size";
     String SORT = "sort";
+    String USER_ID = "userId";
 
 
 

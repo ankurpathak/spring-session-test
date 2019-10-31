@@ -31,8 +31,7 @@ public class MatcherUtil {
     }
 
     public static Matcher<String> stringEmpty(){
-
-        return not(emptyOrNullString());
+        return not(blankOrNullString());
     }
 
     public static Matcher<String> notStringEmpty(){

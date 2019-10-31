@@ -59,5 +59,8 @@ public class DomainDto<T extends Domain<ID>, ID extends Serializable> implements
         return itemCount;
     }
 
+    public interface Update {}
+
+
 }
 

@@ -29,21 +29,15 @@ import java.math.BigInteger;
 
 @ApiController
 public class UserController extends AbstractRestController<User,BigInteger, UserDto> {
-
     private final CustomUserDetailsService service;
-
     public UserController(CustomUserDetailsService service, IRestControllerService restControllerService) {
         super(restControllerService);
         this.service = service;
     }
-
     @Override
     public IDomainService<User, BigInteger> getDomainService() {
         return service.getUserService();
     }
-
-
-
 
     @PostMapping(ApiPaths.PATH_USER)
     public ResponseEntity<?> createOne(HttpServletRequest request, HttpServletResponse response, @RequestBody @Validated({Default.class}) UserDto dto, BindingResult result){
@@ -93,8 +87,6 @@ public class UserController extends AbstractRestController<User,BigInteger, User
     }
 
      */
-
-
 
     @PutMapping(ApiPaths.PATH_USER)
     public ResponseEntity<?> update(HttpServletRequest request, @CurrentUser User user, @RequestBody @Validated({Default.class}) UserDto dto, BindingResult result){

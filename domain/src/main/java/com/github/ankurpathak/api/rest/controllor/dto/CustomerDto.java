@@ -14,11 +14,12 @@ import java.math.BigInteger;
 @Address
 public class CustomerDto extends DomainDto<Customer,CustomerId> {
 
-    @CsvBindByName(column = CsvConstant.Customer.NAME)
+    @CsvBindByName(column = CsvConstant.Customer.NAME, required = true)
+    @NotBlank(groups = {Update.class})
     private String name;
 
     @CsvBindByName(column = CsvConstant.Customer.EMAIL)
-    @Email
+    @Email(groups = {Update.class})
     private String email;
 
     @NotBlank
@@ -38,6 +39,18 @@ public class CustomerDto extends DomainDto<Customer,CustomerId> {
 
     @CsvBindByName(column = CsvConstant.Customer.PIN_CODE)
     private String pinCode;
+
+    private String description;
+
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     private BigInteger userId;
 
@@ -169,4 +182,8 @@ public class CustomerDto extends DomainDto<Customer,CustomerId> {
     }
 
 
+    public CustomerDto description(String description) {
+        this.description = description;
+        return this;
+    }
 }

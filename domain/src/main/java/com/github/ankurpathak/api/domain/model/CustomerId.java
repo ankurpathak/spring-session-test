@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
 
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.valid4j.Assertive.require;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CustomerId implements Serializable {
@@ -20,8 +20,8 @@ public class CustomerId implements Serializable {
 
     @PersistenceConstructor
     public CustomerId(BigInteger userId, BigInteger businessId) {
-        require(userId, notNullValue());
-        require(businessId, notNullValue());
+        require(userId, allOf(notNullValue(), greaterThan(BigInteger.ONE)));
+        require(businessId, allOf(notNullValue(), greaterThan(BigInteger.ZERO)));
         this.businessId = businessId;
         this.userId = userId;
     }

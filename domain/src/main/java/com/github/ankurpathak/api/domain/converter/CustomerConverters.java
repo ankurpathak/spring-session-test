@@ -7,6 +7,7 @@ public class CustomerConverters {
     public static IToDomain<Customer, CustomerId, CustomerDto> createOne = dto -> Customer
             .getInstance()
             .id(CustomerId.getInstance(dto.getUserId(), dto.getBusinessId()))
+            .description(dto.getDescription())
             .address(Address.getInstance(dto));
 
 }

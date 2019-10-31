@@ -35,8 +35,10 @@ public interface ApiPaths {
     String PATH_STATE_PIN_CODE = "/state/district/pin-code";
     String PATH_DISTRICT= "/district";
     String PATH_SERVICE = "/service";
+    String PATH_SERVICE_ID = "/service/{id}";
     String PATH_SERVICE_SEARCH = "/service/search";
     String PATH_CUSTOMER = "/customer";
+    String PATH_CUSTOMER_ID = "/customer/{userId}";
     String PATH_CUSTOMER_SEARCH = "/customer/search";
     String PATH_SERVICE_UPLOAD = "/service/upload";
     String PATH_SERVICE_UPLOAD_SUBMIT = "/service/upload/submit";

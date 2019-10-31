@@ -9,11 +9,146 @@ import java.util.List;
 import java.util.Set;
 @Document(collection = Model.Invoice.INVOICE)
 public class Invoice extends BusinessExtendedDomain<String> {
+    private String source = InvoiceSource.ONE_TIME;
+    private InvoiceTemplate invoiceTemplate;
+    private Customer customer;
+    private Set<String> paymentIds;
+    public Invoice source(String source) {
+        this.source = source;
+        return this;
+    }
+
+    public Invoice invoiceTemplate(InvoiceTemplate invoiceTemplate) {
+        this.invoiceTemplate = invoiceTemplate;
+        return this;
+    }
+
+    public Invoice previousDue(BigDecimal previousDue) {
+        this.previousDue = previousDue;
+        return this;
+    }
+
+    public Invoice previousAdvance(BigDecimal previousAdvance) {
+        this.previousAdvance = previousAdvance;
+        return this;
+    }
+
+    public Invoice lastPaidOn(LocalDate lastPaidOn) {
+        this.lastPaidOn = lastPaidOn;
+        return this;
+    }
+
+    public Invoice invoiceParams(InvoiceParams invoiceParams) {
+        this.invoiceParams = invoiceParams;
+        return this;
+    }
+
+    public Invoice customer(Customer customer) {
+        this.customer = customer;
+        return this;
+    }
+
+    public Invoice paymentIds(Set<String> paymentIds) {
+        this.paymentIds = paymentIds;
+        return this;
+    }
+
+    public Invoice amount(BigDecimal amount) {
+        this.amount = amount;
+        return this;
+    }
+
+    public static class InvoiceSource {
+        public static  final String ONE_TIME = "ONE_TIME";
+        public static  final String RECURRING = "RECURRING";
+    }
+
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public InvoiceTemplate getInvoiceTemplate() {
+        return invoiceTemplate;
+    }
+
+    public void setInvoiceTemplate(InvoiceTemplate invoiceTemplate) {
+        this.invoiceTemplate = invoiceTemplate;
+    }
+
+    public BigDecimal getPreviousDue() {
+        return previousDue;
+    }
+
+    public void setPreviousDue(BigDecimal previousDue) {
+        this.previousDue = previousDue;
+    }
+
+    public BigDecimal getPreviousAdvance() {
+        return previousAdvance;
+    }
+
+    public void setPreviousAdvance(BigDecimal previousAdvance) {
+        this.previousAdvance = previousAdvance;
+    }
+
+    public LocalDate getLastPaidOn() {
+        return lastPaidOn;
+    }
+
+    public void setLastPaidOn(LocalDate lastPaidOn) {
+        this.lastPaidOn = lastPaidOn;
+    }
+
+    public InvoiceParams getInvoiceParams() {
+        return invoiceParams;
+    }
+
+    public void setInvoiceParams(InvoiceParams invoiceParams) {
+        this.invoiceParams = invoiceParams;
+    }
+
+    public Set<String> getUrls() {
+        return urls;
+    }
+
     private String previous;
     private String next;
     private LocalDate issueDate;
     private LocalDate dueDate;
     private CustomerId customerId;
+    private BigDecimal amount = BigDecimal.ZERO;
+
+
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Set<String> getPaymentIds() {
+        return paymentIds;
+    }
+
+    public void setPaymentIds(Set<String> paymentIds) {
+        this.paymentIds = paymentIds;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
     private BigDecimal grandTotal = BigDecimal.ZERO;
     private BigDecimal amountPaid = BigDecimal.ZERO;
     private BigDecimal tax = BigDecimal.ZERO;
