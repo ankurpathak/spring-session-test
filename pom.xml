@@ -499,7 +499,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
         <concurrentunit.version>0.4.4</concurrentunit.version>
-        <jsoup.version>1.10.2</jsoup.version>
+        <jsoup.version>1.14.2</jsoup.version>
         <el.version>3.0.1-b08</el.version>
         <spring-data-releasetrain.version>Moore-RC1</spring-data-releasetrain.version>
         <hamcrest.version>2.1</hamcrest.version>
